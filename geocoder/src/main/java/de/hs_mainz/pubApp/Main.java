@@ -10,7 +10,7 @@ import java.net.URI;
 /**
  * Created by Arno on 03.12.2016.
  */
-public class main {
+public class Main {
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:8080/pubapp/";
 
@@ -21,7 +21,7 @@ public class main {
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
         // in com.example package
-        final ResourceConfig rc = new ResourceConfig().packages("de.hs_mainz.pubApp");
+        final ResourceConfig rc = new ResourceConfig().packages("de.hs_mainz.pubApp.resource");
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
