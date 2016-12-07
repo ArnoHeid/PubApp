@@ -2,7 +2,7 @@ package de.hs_mainz.pubApp;
 
 import com.google.gson.Gson;
 import de.hs_mainz.pubApp.jsonparser.ClientInputJson;
-import de.hs_mainz.pubApp.jsonparser.graphhopperJson.MainJson;
+import de.hs_mainz.pubApp.jsonparser.graphhopperJson.GrahhopperJson;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -24,10 +24,10 @@ public class HttpApiRequest {
     private String locale;
 
 
-    public MainJson requestGraphhopperGeocoder(ClientInputJson inputJson)
+    public GrahhopperJson requestGraphhopperGeocoder(ClientInputJson inputJson)
     {
         Gson gson = new Gson();
-        MainJson MainJson;
+        GrahhopperJson MainJson;
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         URI uri = buildGraphhopperUri(inputJson);
@@ -37,10 +37,10 @@ public class HttpApiRequest {
         try(CloseableHttpResponse response = httpclient.execute(httpget)) {
             InputStream tt = response.getEntity().getContent();
             Reader reader = new InputStreamReader(tt, "UTF-8");
-            MainJson = gson.fromJson(reader, MainJson.class);
+            MainJson = gson.fromJson(reader, GrahhopperJson.class);
         }
         catch (Exception e){
-            MainJson = new MainJson();
+            MainJson = new GrahhopperJson();
         }
         return MainJson;
     }

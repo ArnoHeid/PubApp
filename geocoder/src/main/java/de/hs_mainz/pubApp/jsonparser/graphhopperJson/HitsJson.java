@@ -8,4 +8,16 @@ private String name;
 private PointJson point;
 private String country;
 
+    public String getName() {
+        return name;
+    }
+
+    public PointJson getPoint() {
+        return point;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
 }
