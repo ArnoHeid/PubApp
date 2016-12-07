@@ -6,5 +6,5 @@ package de.hs_mainz.pubApp.jsonparser.geoJson;
 public class Geometry {
 
     private String type;
-    private double coordinates;
+    private double[] coordinates;
 }
