@@ -2,7 +2,7 @@ package de.hs_mainz.pubApp;
 
 import com.google.gson.Gson;
 import de.hs_mainz.pubApp.jsonparser.ClientInputJson;
-import de.hs_mainz.pubApp.jsonparser.MainJson;
+import de.hs_mainz.pubApp.jsonparser.graphhopperJson.MainJson;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;

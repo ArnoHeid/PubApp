@@ -1,4 +1,4 @@
-package de.hs_mainz.pubApp.jsonparser;
+package de.hs_mainz.pubApp.jsonparser.graphhopperJson;
 
 import java.util.List;
 
