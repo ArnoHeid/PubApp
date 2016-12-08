@@ -13,7 +13,7 @@ public class Geometry {
     public Geometry(PointJson point) {
         type = "Point";
         coordinates = new double[2];
-        coordinates[0] = point.getLat();
-        coordinates[1] = point.getLng();
+        coordinates[1] = point.getLat();
+        coordinates[0] = point.getLng();
     }
 }

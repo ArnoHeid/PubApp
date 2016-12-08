@@ -3,6 +3,7 @@ package de.hs_mainz.pubApp.jsonparser.geoJson;
 import de.hs_mainz.pubApp.jsonparser.graphhopperJson.GrahhopperJson;
 import de.hs_mainz.pubApp.jsonparser.graphhopperJson.HitsJson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,13 +16,16 @@ public class GeoJsonColection {
     
     public GeoJsonColection(GrahhopperJson grahhopperJson){
         type = "FeatureCollection";
-
+        features = new ArrayList<>();
         for (HitsJson hitsJson: grahhopperJson.getHits())
         {
             features.add(new GeoJson(hitsJson));
         }
         
     }
-    
-    
+
+
+    public GeoJsonColection() {
+
+    }
 }
