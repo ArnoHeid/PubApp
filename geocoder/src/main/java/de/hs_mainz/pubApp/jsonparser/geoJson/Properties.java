@@ -6,4 +6,9 @@ package de.hs_mainz.pubApp.jsonparser.geoJson;
 public class Properties {
     private String name;
     private String country;
+
+    public Properties(String country, String name) {
+        this.name = name;
+        this.country = country;
+    }
 }
