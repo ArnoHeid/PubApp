@@ -58,7 +58,7 @@ public class HttpApiRequest {
         uriBuilder.setScheme("http");
         uriBuilder.setHost("graphhopper.com");
         uriBuilder.setPath("/api/1/geocode");
-        uriBuilder.setParameter("q", inputJson.getText());
+        uriBuilder.setParameter("q", inputJson.getQueryString());
         uriBuilder.setParameter("locale", inputJson.getLocale());
         uriBuilder.setParameter("key", "e11a85db-7ff3-48ba-b365-da3538ae534a");
         URI uri = null;
