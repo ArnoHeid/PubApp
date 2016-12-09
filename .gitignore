@@ -1,5 +1,5 @@
 #API Keys
-APIKeys.txt
+*.key
 
 # Eclipse
 .classpath
