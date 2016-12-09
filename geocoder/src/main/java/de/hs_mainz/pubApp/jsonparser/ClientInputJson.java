@@ -5,13 +5,13 @@ package de.hs_mainz.pubApp.jsonparser;
  */
 public class ClientInputJson {
 
-    String text;
+    private String queryString;
 
-    public String getText() {
-        return text;
+    public String getQueryString() {
+        return queryString;
     }
 
-    String locale;
+    private String locale;
 
     public String getLocale() {
         return locale;

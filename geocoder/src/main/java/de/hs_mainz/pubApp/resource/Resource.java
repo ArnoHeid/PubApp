@@ -27,10 +27,10 @@ public class Resource {
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String geoCoder(@QueryParam("text") String text){
+    public String geoCoder(@QueryParam("queryText") String queryText){
         Gson gson = new Gson();
 
-        ClientInputJson inputJson = gson.fromJson(text, ClientInputJson.class);
+        ClientInputJson inputJson = gson.fromJson(queryText, ClientInputJson.class);
 
         HttpApiRequest httpApiRequest = new HttpApiRequest();
         String out = gson.toJson(httpApiRequest.requestGraphhopperGeocoder(inputJson));

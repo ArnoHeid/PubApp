@@ -13,7 +13,8 @@ public class GeoJson {
 
     public GeoJson(HitsJson hitsJson) {
         type = "Feature";
-
+        properties = new Properties(hitsJson.getCountry(),hitsJson.getName());
+        geometry = new Geometry(hitsJson.getPoint());
 
     }
 }
