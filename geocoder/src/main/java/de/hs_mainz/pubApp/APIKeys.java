@@ -21,7 +21,7 @@ public class APIKeys {
 
     public static APIKeys readKeys() throws FileNotFoundException {
         Gson gson = new Gson();
-        File jsonFile = new File("APIKeys.txt");
+        File jsonFile = new File("APIKeys.key");
         FileReader fileReader = new FileReader(jsonFile);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         return gson.fromJson(bufferedReader, APIKeys.class);

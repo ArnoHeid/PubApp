@@ -79,4 +79,23 @@ public class HttpApiRequest {
         }
         return uri;
     }
+
+    private boolean validateInput(ClientInputJson inputJson) {
+        if (inputJson.getQueryString() == null || inputJson.getQueryString().isEmpty()) {
+            return false;
+        }
+        if (inputJson.getLocale() == null || inputJson.getLocale().isEmpty()){
+            return false;
+        }
+        if (inputJson.getLocale()!="de"||inputJson.getLocale()!="en"||inputJson.getLocale()!="fr"||inputJson.getLocale()!="it"){
+            return false;
+        }
+
+        return true;
+    }
+
+    //private boolean validateOutput(GrahhopperJson grahhopperJson){
+
+    //}
+
 }
