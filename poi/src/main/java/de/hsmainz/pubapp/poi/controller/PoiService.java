@@ -17,18 +17,18 @@ import com.google.gson.JsonObject;
 import de.hsmainz.pubapp.poi.model.Place;
 
 public class PoiService {
-	private static final String LOG_TAG = "ExampleApp";
+	private static final String LOG_TAG = "PubApp_PoiSearch";
 
 	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
 
 	// private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
-	private static final String TYPE_DETAILS = "/details";
+	//private static final String TYPE_DETAILS = "/details";
 	private static final String TYPE_SEARCH = "/search";
 
 	private static final String OUT_JSON = "/json";
 
 	// KEY!
-	private static final String API_KEY = "YOUR KEY";
+	private static final String API_KEY = "*****";
 
 	// public static ArrayList<Place> autocomplete(String input) {
 	// ArrayList<Place> resultList = null;
@@ -98,15 +98,17 @@ public class PoiService {
 			sb.append("&keyword=" + URLEncoder.encode(keyword, "utf8"));
 			sb.append("&location=" + String.valueOf(lat) + "," + String.valueOf(lng));
 			sb.append("&radius=" + String.valueOf(radius));
-
+			
+			System.out.println(sb.toString());
+			
 			URL url = new URL(sb.toString());
 			conn = (HttpURLConnection) url.openConnection();
 			InputStreamReader in = new InputStreamReader(conn.getInputStream());
-
+			System.out.println(in.toString());
 			
 			Gson gson = new GsonBuilder().create();
             Place place = gson.fromJson(in, Place.class);
-            System.out.println(place);
+            System.out.println(place.getName());
 //			JSONObject jsonObj = new JSONObject(jsonResults.toString());
 //			JSONArray predsJsonArray = jsonObj.getJSONArray("results");
 //
