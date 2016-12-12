@@ -10,6 +10,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -54,13 +55,22 @@ public class HttpApiRequest {
      * @return Uri for geocoder request on graphhopper API
      */
     private URI buildGraphhopperUri (ClientInputJson inputJson){
+
+        APIKeys apiKeys;
+        try {
+            apiKeys = APIKeys.readKeys();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            apiKeys = new APIKeys();
+        }
+
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme("http");
         uriBuilder.setHost("graphhopper.com");
         uriBuilder.setPath("/api/1/geocode");
         uriBuilder.setParameter("q", inputJson.getQueryString());
         uriBuilder.setParameter("locale", inputJson.getLocale());
-        uriBuilder.setParameter("key", "e11a85db-7ff3-48ba-b365-da3538ae534a");
+        uriBuilder.setParameter("key", apiKeys.getGraphhopperKey());
         URI uri = null;
         try {
             uri = uriBuilder.build();
@@ -69,4 +79,23 @@ public class HttpApiRequest {
         }
         return uri;
     }
+
+    private boolean validateInput(ClientInputJson inputJson) {
+        if (inputJson.getQueryString() == null || inputJson.getQueryString().isEmpty()) {
+            return false;
+        }
+        if (inputJson.getLocale() == null || inputJson.getLocale().isEmpty()){
+            return false;
+        }
+        if (inputJson.getLocale()!="de"||inputJson.getLocale()!="en"||inputJson.getLocale()!="fr"||inputJson.getLocale()!="it"){
+            return false;
+        }
+
+        return true;
+    }
+
+    //private boolean validateOutput(GrahhopperJson grahhopperJson){
+
+    //}
+
 }
