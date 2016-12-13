@@ -9,6 +9,7 @@ import com.sun.net.httpserver.HttpServer;
 
 import de.hsmainz.pubapp.poi.controller.PoiService;
 import de.hsmainz.pubapp.poi.model.Location;
+import de.hsmainz.pubapp.poi.model.Poi;
 /**
  * Hello world!
  *
@@ -22,13 +23,17 @@ public class App
         server.setExecutor(null); // creates a default executor
         server.start();
         
-        //Call Service with given parameters
-        Location location = new Location();
-        location.setLat(49.995123);
-        location.setLng(8.267426);
         
-
-        PoiService.search("bar",location, 4);
+        String sampleJson = "";
+        //Call Service with given parameters
+        Poi poi = new Poi();
+        poi.setStartLat(49.995123);
+        poi.setStartLng(8.267426);
+        poi.setEndLat(49.998219);
+        poi.setEndLng(8.267732);
+        
+        PoiService poiService = new PoiService();
+        poiService.search("bar",poi, 4);
         
     }
 
