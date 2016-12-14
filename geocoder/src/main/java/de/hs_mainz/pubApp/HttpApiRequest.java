@@ -49,6 +49,29 @@ public class HttpApiRequest {
         return geoJsonColection;
     }
 
+    public GeoJsonColection requestGraphhopperGeocoder(String queryString, String locale)
+    {
+        Gson gson = new Gson();
+        GrahhopperJson grahhopperJson;
+        GeoJsonColection geoJsonColection;
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        URI uri = buildGraphhopperUri(queryString,locale);
+
+        HttpGet httpget = new HttpGet(uri);
+
+        try(CloseableHttpResponse response = httpclient.execute(httpget)) {
+            InputStream tt = response.getEntity().getContent();
+            Reader reader = new InputStreamReader(tt, "UTF-8");
+            grahhopperJson = gson.fromJson(reader, GrahhopperJson.class);
+            geoJsonColection = new GeoJsonColection(grahhopperJson);
+        }
+        catch (Exception e){
+            geoJsonColection = new GeoJsonColection();
+        }
+        return geoJsonColection;
+    }
+
     /***
      *
      * @param inputJson Class with input parameters
@@ -79,6 +102,33 @@ public class HttpApiRequest {
         }
         return uri;
     }
+
+    private URI buildGraphhopperUri (String queryString, String locale){
+
+        APIKeys apiKeys;
+        try {
+            apiKeys = APIKeys.readKeys();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            apiKeys = new APIKeys();
+        }
+
+        URIBuilder uriBuilder = new URIBuilder();
+        uriBuilder.setScheme("http");
+        uriBuilder.setHost("graphhopper.com");
+        uriBuilder.setPath("/api/1/geocode");
+        uriBuilder.setParameter("q", queryString);
+        uriBuilder.setParameter("locale", locale);
+        uriBuilder.setParameter("key", apiKeys.getGraphhopperKey());
+        URI uri = null;
+        try {
+            uri = uriBuilder.build();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return uri;
+    }
+
 
     private boolean validateInput(ClientInputJson inputJson) {
         if (inputJson.getQueryString() == null || inputJson.getQueryString().isEmpty()) {

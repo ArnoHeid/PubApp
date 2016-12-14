@@ -25,7 +25,7 @@ public class Resource {
      *
      * @return String that will be returned as a text/plain response.
      */
-    @GET
+    /*@GET
     @Produces(MediaType.TEXT_PLAIN)
     public String geoCoder(@QueryParam("queryText") String queryText){
         Gson gson = new Gson();
@@ -37,4 +37,17 @@ public class Resource {
 
         return out;
     }
+    */
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String geoCoder(@QueryParam("queryString") String queryString, @QueryParam("locale") String locale){
+        Gson gson = new Gson();
+
+        HttpApiRequest httpApiRequest = new HttpApiRequest();
+        String out = gson.toJson(httpApiRequest.requestGraphhopperGeocoder(queryString,locale));
+
+        return out;
+    }
+
+
 }
