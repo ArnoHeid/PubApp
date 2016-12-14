@@ -8,6 +8,8 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import de.hsmainz.pubapp.poi.controller.PoiService;
+import de.hsmainz.pubapp.poi.model.Location;
+import de.hsmainz.pubapp.poi.model.Poi;
 /**
  * Hello world!
  *
@@ -20,8 +22,18 @@ public class App
         server.createContext("/test", new MyHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
+        
+        
+        String sampleJson = "";
+        //Call Service with given parameters
+        Poi poi = new Poi();
+        poi.setStartLat(49.995123);
+        poi.setStartLng(8.267426);
+        poi.setEndLat(49.998219);
+        poi.setEndLng(8.267732);
+        
         PoiService poiService = new PoiService();
-        PoiService.search("bar", 49.995123, 8.267426, 4);
+        poiService.search("bar",poi, 4);
         
     }
 

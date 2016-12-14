@@ -2,218 +2,97 @@ package de.hsmainz.pubapp.poi.controller;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import de.hsmainz.pubapp.poi.model.Place;
+import de.hsmainz.pubapp.poi.model.PlacesResult;
+import de.hsmainz.pubapp.poi.model.Poi;
 
 public class PoiService {
+
 	private static final String LOG_TAG = "PubApp_PoiSearch";
 
 	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
 
-	// private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
-	//private static final String TYPE_DETAILS = "/details";
 	private static final String TYPE_SEARCH = "/search";
 
 	private static final String OUT_JSON = "/json";
 
-	// KEY!
-	private static final String API_KEY = "*****";
+	private static final String API_KEY = "AIzaSyDaqvFY5-JfIFPK1e7HdjVi-OYmuc2QPE8";
 
-	// public static ArrayList<Place> autocomplete(String input) {
-	// ArrayList<Place> resultList = null;
-	//
-	// HttpURLConnection conn = null;
-	// StringBuilder jsonResults = new StringBuilder();
-	// try {
-	// StringBuilder sb = new StringBuilder(PLACES_API_BASE);
-	// sb.append(TYPE_AUTOCOMPLETE);
-	// sb.append(OUT_JSON);
-	// sb.append("?sensor=false");
-	// sb.append("&key=" + API_KEY);
-	// sb.append("&input=" + URLEncoder.encode(input, "utf8"));
-	//
-	// URL url = new URL(sb.toString());
-	// conn = (HttpURLConnection) url.openConnection();
-	// InputStreamReader in = new InputStreamReader(conn.getInputStream());
-	//
-	// int read;
-	// char[] buff = new char[1024];
-	// while ((read = in.read(buff)) != -1) {
-	// jsonResults.append(buff, 0, read);
-	// }
-	// } catch (MalformedURLException e) {
-	// System.out.print(LOG_TAG + "Error processing Places API URL" + e);
-	// return resultList;
-	// } catch (IOException e) {
-	// System.out.print(LOG_TAG + "Error connecting to Places API" + e);
-	// return resultList;
-	// } finally {
-	// if (conn != null) {
-	// conn.disconnect();
-	// }
-	// }
-	//
-	// try {
-	// // Create a JSON object hierarchy from the results
-	// JsonObject jsonObj = new JsonObject(jsonResults.toString());
-	// JsonArray predsJsonArray = jsonObj.getAsJsonArray("predictions");
-	//
-	// // Extract the Place descriptions from the results
-	// resultList = new ArrayList<Place>(predsJsonArray.length());
-	// for (int i = 0; i < predsJsonArray.length(); i++) {
-	// Place place = new Place();
-	// place.reference = predsJsonArray.getJSONObject(i).getString("reference");
-	// place.name = predsJsonArray.getJSONObject(i).getString("description");
-	// resultList.add(place);
-	// }
-	// } catch (JSONException e) {
-	// Log.e(LOG_TAG, "Error processing JSON results", e);
-	// }
-	//
-	// return resultList;
-	// }
+	
 
-	public static ArrayList<Place> search(String keyword, double lat, double lng, int radius) {
+	public ArrayList<Place> search(String interest, Poi poi, int radius) {
 		ArrayList<Place> resultList = null;
+		//String requestStart = buildRequest(interest, poi.getStartLat(), poi.getStartLng(), radius);
+		String requestStart = buildRequest(interest, poi.getEndLat(), poi.getEndLng(), radius);
+		
+		InputStreamReader in = null;
+		in = postQuery(requestStart, in);
 
-		HttpURLConnection conn = null;
-		//StringBuilder jsonResults = new StringBuilder();
+		PlacesResult placesResult = new Gson().fromJson(in, PlacesResult.class);
+		List<Place> places = placesResult.getList();
+		
+		if (places.isEmpty()) {
+			System.out.println("No POIs found");
+		} else {
+			for (Place place : places) {
+				System.out.println(place.getName());
+			}
+		}
+
+		return resultList;
+
+	}
+
+	public void returnSearchResult(List<Place> relevantPois) {
+		// POIS in JSON and send to Client
+	}
+	
+	public String buildRequest(String interest, double lat, double lng, int radius) {
+		String requestUri = "";
 		try {
 			StringBuilder sb = new StringBuilder(PLACES_API_BASE);
 			sb.append(TYPE_SEARCH);
 			sb.append(OUT_JSON);
 			sb.append("?sensor=false");
 			sb.append("&key=" + API_KEY);
-			sb.append("&keyword=" + URLEncoder.encode(keyword, "utf8"));
-			sb.append("&location=" + String.valueOf(lat) + "," + String.valueOf(lng));
+			sb.append("&keyword=" + URLEncoder.encode(interest, "utf8"));
+			sb.append("&location=" + Double.toString(lat) + "," + Double.toString(lng));
 			sb.append("&radius=" + String.valueOf(radius));
-			
-			System.out.println(sb.toString());
-			
-			URL url = new URL(sb.toString());
-			conn = (HttpURLConnection) url.openConnection();
-			InputStreamReader in = new InputStreamReader(conn.getInputStream());
-			System.out.println(in.toString());
-			
-			Gson gson = new GsonBuilder().create();
-            Place place = gson.fromJson(in, Place.class);
-            System.out.println(place.getName());
-//			JSONObject jsonObj = new JSONObject(jsonResults.toString());
-//			JSONArray predsJsonArray = jsonObj.getJSONArray("results");
-//
-//			// Extract the Place descriptions from the results
-//			resultList = new ArrayList<Place>(predsJsonArray.length());
-//			for (int i = 0; i < predsJsonArray.length(); i++) {
-//				Place place = new Place();
-//				place.reference = predsJsonArray.getJSONObject(i).getString("reference");
-//				place.name = predsJsonArray.getJSONObject(i).getString("name");
-//				resultList.add(place);
-//			}
-
-		return resultList;
-		
-//			int read;
-//			char[] buff = new char[1024];
-//			while ((read = in.read(buff)) != -1) {
-//				jsonResults.append(buff, 0, read);
-//			}
-		} catch (MalformedURLException e) {
-			System.out.println(LOG_TAG + "Error processing Places API URL" + e);
-			return resultList;
-		} catch (IOException e) {
-			System.out.println(LOG_TAG + "Error connecting to Places API" + e);
-			return resultList;
-		} finally {
-			if (conn != null) {
-				conn.disconnect();
-			}
+			requestUri = sb.toString();
+			System.out.println(requestUri);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-//		try {
-//			Gson gson = new GsonBuilder().create();
-//            Place place = gson.fromJson(in, Place.class);
-//            System.out.println(p);
-//			// Create a JSON object hierarchy from the results
-//			JSONObject jsonObj = new JSONObject(jsonResults.toString());
-//			JSONArray predsJsonArray = jsonObj.getJSONArray("results");
-//
-//			// Extract the Place descriptions from the results
-//			resultList = new ArrayList<Place>(predsJsonArray.length());
-//			for (int i = 0; i < predsJsonArray.length(); i++) {
-//				Place place = new Place();
-//				place.reference = predsJsonArray.getJSONObject(i).getString("reference");
-//				place.name = predsJsonArray.getJSONObject(i).getString("name");
-//				resultList.add(place);
-//			}
-//		} catch (JSONException e) {
-//			Log.e(LOG_TAG, "Error processing JSON results", e);
-//		}
-//
-//		return resultList;
+		return requestUri;
 	}
 
-	// public static Place details(String reference) {
-	// HttpURLConnection conn = null;
-	// StringBuilder jsonResults = new StringBuilder();
-	// try {
-	// StringBuilder sb = new StringBuilder(PLACES_API_BASE);
-	// sb.append(TYPE_DETAILS);
-	// sb.append(OUT_JSON);
-	// sb.append("?sensor=false");
-	// sb.append("&key=" + API_KEY);
-	// sb.append("&reference=" + URLEncoder.encode(reference, "utf8"));
-	//
-	// URL url = new URL(sb.toString());
-	// conn = (HttpURLConnection) url.openConnection();
-	// InputStreamReader in = new InputStreamReader(conn.getInputStream());
-	//
-	// // Load the results into a StringBuilder
-	// int read;
-	// char[] buff = new char[1024];
-	// while ((read = in.read(buff)) != -1) {
-	// jsonResults.append(buff, 0, read);
-	// }
-	// } catch (MalformedURLException e) {
-	// Log.e(LOG_TAG, "Error processing Places API URL", e);
-	// return null;
-	// } catch (IOException e) {
-	// Log.e(LOG_TAG, "Error connecting to Places API", e);
-	// return null;
-	// } finally {
-	// if (conn != null) {
-	// conn.disconnect();
-	// }
-	// }
-	//
-	// Place place = null;
-	// try {
-	// // Create a JSON object hierarchy from the results
-	// JSONObject jsonObj = new
-	// JSONObject(jsonResults.toString()).getJSONObject("result");
-	//
-	// place = new Place();
-	// place.icon = jsonObj.getString("icon");
-	// place.name = jsonObj.getString("name");
-	// place.formatted_address = jsonObj.getString("formatted_address");
-	// if (jsonObj.has("formatted_phone_number")) {
-	// place.formatted_phone_number =
-	// jsonObj.getString("formatted_phone_number");
-	// }
-	// } catch (JSONException e) {
-	// Log.e(LOG_TAG, "Error processing JSON results", e);
-	// }
-	//
-	// return place;
-	// }
+	public InputStreamReader postQuery(String request, InputStreamReader in) {
+		URL url = null;
+		HttpURLConnection conn;
+		try {
+			url = new URL(request);
+			conn = (HttpURLConnection) url.openConnection();
+			in = new InputStreamReader(conn.getInputStream());
+		} catch (MalformedURLException e) {
+			System.out.println(LOG_TAG + "Error processing Places API URL" + e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(LOG_TAG + "Error connecting to Places API" + e);
+			e.printStackTrace();
+		}
+		System.out.println(in.toString());
+		return in;
+	}
 }
