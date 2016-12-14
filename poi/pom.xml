@@ -52,7 +52,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>de.hs_mainz.pubApp.Main</mainClass>
+					<mainClass>de.hsmainz.pubApp.poi.App</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
