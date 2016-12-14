@@ -1,7 +1,7 @@
-package de.hs_mainz.pubApp.jsonparser.geoJson;
+package de.hsmainz.pubApp.geocoder.jsonparser.geoJson;
 
-import de.hs_mainz.pubApp.jsonparser.graphhopperJson.GrahhopperJson;
-import de.hs_mainz.pubApp.jsonparser.graphhopperJson.HitsJson;
+import de.hsmainz.pubApp.geocoder.jsonparser.graphhopperJson.GrahhopperJson;
+import de.hsmainz.pubApp.geocoder.jsonparser.graphhopperJson.HitsJson;
 
 import java.util.ArrayList;
 import java.util.List;

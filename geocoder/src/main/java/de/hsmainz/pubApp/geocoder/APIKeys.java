@@ -1,4 +1,4 @@
-package de.hs_mainz.pubApp;
+package de.hsmainz.pubApp.geocoder;
 
 import com.google.gson.Gson;
 

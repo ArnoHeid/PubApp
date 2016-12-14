@@ -1,4 +1,4 @@
-package de.hs_mainz.pubApp.jsonparser.graphhopperJson;
+package de.hsmainz.pubApp.geocoder.jsonparser.graphhopperJson;
 
 import java.util.List;
 

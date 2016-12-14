@@ -1,4 +1,4 @@
-package de.hs_mainz.pubApp.jsonparser.geoJson;
+package de.hsmainz.pubApp.geocoder.jsonparser.geoJson;
 
 /**
  * Created by Arno on 07.12.2016.

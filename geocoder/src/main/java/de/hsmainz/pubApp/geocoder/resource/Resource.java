@@ -1,10 +1,10 @@
-package de.hs_mainz.pubApp.resource;
+package de.hsmainz.pubApp.geocoder.resource;
 
 
 import com.google.gson.Gson;
-import de.hs_mainz.pubApp.HttpApiRequest;
-import de.hs_mainz.pubApp.jsonparser.ClientInputJson;
-import de.hs_mainz.pubApp.jsonparser.geoJson.GeoJsonColection;
+import de.hsmainz.pubApp.geocoder.HttpApiRequest;
+import de.hsmainz.pubApp.geocoder.jsonparser.geoJson.GeoJsonColection;
+
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,8 +16,8 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by Arno on 03.12.2016.
  */
-@Path("geocoder/json")
-public class ResourceJson {
+@Path("geocoder")
+public class Resource {
 
     /**
      * Method handling HTTP GET requests. The returned object will be sent
@@ -27,15 +27,15 @@ public class ResourceJson {
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String geoCoder(@QueryParam("queryText") String queryText){
+    public String geoCoder(@QueryParam("queryString") String queryString, @QueryParam("locale") String locale){
         Gson gson = new Gson();
 
-        ClientInputJson inputJson = gson.fromJson(queryText, ClientInputJson.class);
-
         HttpApiRequest httpApiRequest = new HttpApiRequest();
-        GeoJsonColection geoJsonResponse = httpApiRequest.requestGraphhopperGeocoder(inputJson);
 
-        return gson.toJson(geoJsonResponse);
+        GeoJsonColection geoJsonColection = httpApiRequest.requestGraphhopperGeocoder(queryString,locale);
+
+        return gson.toJson(geoJsonColection);
     }
+
 
 }
