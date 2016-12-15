@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Arno on 04.12.2016.
  */
-public class HttpApiRequestTest {
+public class HttpGraphhopperRequestTest {
     @Test
     public void requestGraphhopperGeocoder() throws Exception {
 

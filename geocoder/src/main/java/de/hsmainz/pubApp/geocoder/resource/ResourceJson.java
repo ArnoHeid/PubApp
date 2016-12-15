@@ -2,7 +2,8 @@ package de.hsmainz.pubApp.geocoder.resource;
 
 
 import com.google.gson.Gson;
-import de.hsmainz.pubApp.geocoder.HttpApiRequest;
+import de.hsmainz.pubApp.geocoder.httpApiRequest.HttpAPIRequest;
+import de.hsmainz.pubApp.geocoder.httpApiRequest.HttpGraphhopperRequest;
 import de.hsmainz.pubApp.geocoder.jsonparser.ClientInputJson;
 import de.hsmainz.pubApp.geocoder.jsonparser.geoJson.GeoJsonColection;
 
@@ -32,8 +33,8 @@ public class ResourceJson {
 
         ClientInputJson inputJson = gson.fromJson(queryText, ClientInputJson.class);
 
-        HttpApiRequest httpApiRequest = new HttpApiRequest();
-        GeoJsonColection geoJsonResponse = httpApiRequest.requestGraphhopperGeocoder(inputJson);
+        HttpAPIRequest httpAPIRequest = new HttpGraphhopperRequest();
+        GeoJsonColection geoJsonResponse = httpAPIRequest.requestGeocoder(inputJson);
 
         return gson.toJson(geoJsonResponse);
     }

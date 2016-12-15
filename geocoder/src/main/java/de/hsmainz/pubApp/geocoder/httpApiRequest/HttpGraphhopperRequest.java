@@ -1,6 +1,7 @@
-package de.hsmainz.pubApp.geocoder;
+package de.hsmainz.pubApp.geocoder.httpApiRequest;
 
 import com.google.gson.Gson;
+import de.hsmainz.pubApp.geocoder.APIKeys;
 import de.hsmainz.pubApp.geocoder.jsonparser.ClientInputJson;
 import de.hsmainz.pubApp.geocoder.jsonparser.geoJson.GeoJsonColection;
 import de.hsmainz.pubApp.geocoder.jsonparser.graphhopperJson.GrahhopperJson;
@@ -20,9 +21,10 @@ import java.net.URISyntaxException;
 /**
  * Created by Arno on 04.12.2016.
  */
-public class HttpApiRequest {
+public class HttpGraphhopperRequest implements HttpAPIRequest {
 
-    public GeoJsonColection requestGraphhopperGeocoder(ClientInputJson inputJson)
+    @Override
+    public GeoJsonColection requestGeocoder(ClientInputJson inputJson)
     {
 
         URI uri = buildGraphhopperUri(inputJson);
@@ -31,7 +33,8 @@ public class HttpApiRequest {
 
     }
 
-    public GeoJsonColection requestGraphhopperGeocoder(String queryString, String locale)
+    @Override
+    public GeoJsonColection requestGeocoder(String queryString, String locale)
     {
 
         URI uri = buildGraphhopperUri(queryString,locale);

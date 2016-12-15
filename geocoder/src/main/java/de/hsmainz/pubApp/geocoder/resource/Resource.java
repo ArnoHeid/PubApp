@@ -2,7 +2,8 @@ package de.hsmainz.pubApp.geocoder.resource;
 
 
 import com.google.gson.Gson;
-import de.hsmainz.pubApp.geocoder.HttpApiRequest;
+import de.hsmainz.pubApp.geocoder.httpApiRequest.HttpAPIRequest;
+import de.hsmainz.pubApp.geocoder.httpApiRequest.HttpGraphhopperRequest;
 import de.hsmainz.pubApp.geocoder.jsonparser.geoJson.GeoJsonColection;
 
 
@@ -30,9 +31,9 @@ public class Resource {
     public String geoCoder(@QueryParam("queryString") String queryString, @QueryParam("locale") String locale){
         Gson gson = new Gson();
 
-        HttpApiRequest httpApiRequest = new HttpApiRequest();
+        HttpAPIRequest httpAPIRequest = new HttpGraphhopperRequest();
 
-        GeoJsonColection geoJsonColection = httpApiRequest.requestGraphhopperGeocoder(queryString,locale);
+        GeoJsonColection geoJsonColection = httpAPIRequest.requestGeocoder(queryString,locale);
 
         return gson.toJson(geoJsonColection);
     }
