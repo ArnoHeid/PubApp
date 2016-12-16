@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
  * Created by Arno on 03.12.2016.
  */
 @Path("geocoder")
-public class Resource {
+public class Resource extends ResourceTemplate {
 
     /**
      * Method handling HTTP GET requests. The returned object will be sent
@@ -35,7 +35,7 @@ public class Resource {
 
         GeoJsonColection geoJsonColection = httpAPIRequest.requestGeocoder(queryString,locale);
 
-        return callback + '(' + gson.toJson(geoJsonColection) + ')';
+        return jsonCallbackWraper(callback, gson.toJson(geoJsonColection));
     }
 
 
