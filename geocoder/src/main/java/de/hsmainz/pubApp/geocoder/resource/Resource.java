@@ -28,14 +28,14 @@ public class Resource {
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String geoCoder(@QueryParam("queryString") String queryString, @QueryParam("locale") String locale){
+    public String geoCoder(@QueryParam("callback") String callback,@QueryParam("queryString") String queryString, @QueryParam("locale") String locale){
         Gson gson = new Gson();
 
         HttpAPIRequest httpAPIRequest = new HttpGraphhopperRequest();
 
         GeoJsonColection geoJsonColection = httpAPIRequest.requestGeocoder(queryString,locale);
 
-        return gson.toJson(geoJsonColection);
+        return callback + '(' + gson.toJson(geoJsonColection) + ')';
     }
 
 
