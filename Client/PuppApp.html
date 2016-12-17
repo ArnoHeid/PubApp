@@ -6,30 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Pupp App</title>
 	<link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
+	<script src="bootstrap/js/jquery-3.1.1.min.js"></script>
 	<script type="text/javascript" src="leaflet/leaflet.js"></script>
-	<script typ="text/javascript" src="leaflet/leafletembed.js"></script>
-	<link rel="stylesheet"  href="bootstrap/css/bootstrap.min.css" />
-	<script src="bootstrap/js/bootstrap.min.js"></script>
-	<script src="leaflet/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="leaflet/main.js"></script>
+	<link rel="stylesheet" type="text/css" href="leaflet/ownstyle.css" />
 	
-	<style>
-	#mapid { height: 1000px; max-width: 100%;}
-	div { background-color: #91A437; border: 3px #697B15;}
-	body { background-color: #445200;}
-	h1 { position: relative; text-align: center; color: #E8F6A4; }
-	table, th, td { border: 1px solid #E8F6A4; }
-	.clearfix { overflow: auto; }
-	nav { float: left; width: 200px; border: 1px solid #E8F6A4; }
-	.section2 { margin-left: 206px; border: 1px solid #E8F6A4;}
-	.section1 { margin-left: 5px; float:left; width: 207px; height: auto;}
-	</style>
+	
 	</head>
 
 <body onload="init()">
 	
 	<header>
 	
-	<h1><b>Pupp App</b></h1>
+	<h1><b>Pupp Life</b></h1>
 	
 	</header>
 	
@@ -43,34 +32,21 @@
 		
 		</header>
 		
-		<script type="text/javascript">
-
-		function JSONTest() {
+		<section class="section1">
 		
-		document.getElementbyId("resultDivContainer").innerHTML=4;
+		Startpunkt: <br><input class="input" type="text" id="startpunkt"><br>
+		Endpunkt: <br><input class="input" type="text" id="endpunkt"><br>
+		<button class="button1" type="button" id="jsontest" onclick="JSONTest()">Route berechnen</button>
 		
-		}
-
-		</script>
-
-		<input type="text" id="button1">
-		<button type="button" onclick="JSONTest()">JSON</button>
-		
-		<div id="resultDivContainer"></div>
+		</section>
 	
 	</section>
 	
 	<section class="section2">
 	
-	<span><div id="mapid"></div></span>
+	<div id="mapid"></div>
 	
 	</section>
-	
-	<footer>
-	
-	Copyright by Donger
-	
-	</footer>
 
 	</div>
 </body>
