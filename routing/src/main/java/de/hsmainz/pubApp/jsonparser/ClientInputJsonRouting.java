@@ -1,4 +1,4 @@
-package de.hs_mainz.pubApp.jsonparser;
+package de.hsmainz.pubApp.jsonparser;
 
 /**
  * Created by Sarah.

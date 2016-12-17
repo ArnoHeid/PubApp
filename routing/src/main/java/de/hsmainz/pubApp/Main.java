@@ -1,4 +1,4 @@
-package de.hs_mainz.pubApp;
+package de.hsmainz.pubApp;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -21,7 +21,7 @@ public class Main {
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
         // in com.example package
-        final ResourceConfig rc = new ResourceConfig().packages("de.hs_mainz.pubApp.resourceRouting");
+        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubApp.resourceRouting");
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
