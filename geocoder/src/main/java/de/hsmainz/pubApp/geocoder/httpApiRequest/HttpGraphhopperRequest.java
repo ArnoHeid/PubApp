@@ -27,6 +27,9 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     public GeoJsonColection requestGeocoder(ClientInputJson inputJson)
     {
 
+        if (validateInput(inputJson))
+            return new GeoJsonColection();
+
         URI uri = buildGraphhopperUri(inputJson);
 
         return doHttpGet(uri);

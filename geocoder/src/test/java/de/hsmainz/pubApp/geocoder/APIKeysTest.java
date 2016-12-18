@@ -10,11 +10,16 @@ import static org.junit.Assert.*;
 public class APIKeysTest {
     @Test
     public void getGoogleKey() throws Exception {
-
+        APIKeys apiKeys = APIKeys.readKeys();
+        String googleKey = apiKeys.getGoogleKey();
+        assertTrue(!googleKey.isEmpty()||googleKey !="");
     }
 
     @Test
     public void getGraphhopperKey() throws Exception {
+        APIKeys apiKeys = APIKeys.readKeys();
+        String graphhopperKey = apiKeys.getGraphhopperKey();
+        assertTrue(!graphhopperKey.isEmpty()||graphhopperKey !="");
 
     }
 
