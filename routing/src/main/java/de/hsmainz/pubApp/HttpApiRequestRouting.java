@@ -19,13 +19,24 @@ import java.net.URISyntaxException;
  */
 public class HttpApiRequestRouting {
 
-    public String requestGraphhopperRouting(ClientInputJsonRouting inputJson) {
+    /**
+     *
+     * @param startPoint
+     * @param endPoint
+     * @param locale
+     * @param pointsEncoded
+     * @return
+     */
+    public String requestGraphhopperRouting(String startPoint,
+                                            String endPoint,
+                                            String locale,
+                                            String pointsEncoded) {
         Gson gson = new Gson();
         String json = "";
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        if (validateInput(inputJson)) {
-            URI uri = buildGraphhopperUri(inputJson);
+        if (validateInput(startPoint, endPoint, locale, pointsEncoded)) {
+            URI uri = buildGraphhopperUri(startPoint, endPoint, locale, pointsEncoded);
 
             HttpGet httpget = new HttpGet(uri);
 
@@ -45,12 +56,18 @@ public class HttpApiRequestRouting {
         return json;
     }
 
-    /***
+    /**
      *
-     * @param inputJson Class with input parameters
-     * @return Uri for routing request on graphhopper API
+     * @param startPoint
+     * @param endPoint
+     * @param locale
+     * @param pointsEncoded
+     * @return
      */
-    private URI buildGraphhopperUri (ClientInputJsonRouting inputJson){
+    private URI buildGraphhopperUri (String startPoint,
+                                     String endPoint,
+                                     String locale,
+                                     String pointsEncoded){
 
         APIKeys apiKeys;
         try {
@@ -64,10 +81,10 @@ public class HttpApiRequestRouting {
         uriBuilder.setScheme("https"); // always use HTTPS if available ;)
         uriBuilder.setHost("graphhopper.com");
         uriBuilder.setPath("/api/1/route");
-        uriBuilder.addParameter("point", inputJson.getStartPoint());
-        uriBuilder.addParameter("point", inputJson.getEndPoint());
-        uriBuilder.setParameter("locale", inputJson.getLocale());
-        uriBuilder.setParameter("points_encoded", inputJson.getPointsEncoded());
+        uriBuilder.addParameter("point", startPoint);
+        uriBuilder.addParameter("point", endPoint);
+        uriBuilder.setParameter("locale", locale);
+        uriBuilder.setParameter("points_encoded", pointsEncoded);
 //        uriBuilder.setParameter("vehicle", inputJson.getVehicle()); TODO
         uriBuilder.setParameter("key", apiKeys.getGraphhopperKey());
         URI uri = null;
@@ -82,13 +99,19 @@ public class HttpApiRequestRouting {
 
     /**
      *
-     * @param inputJson
+     * @param startPoint
+     * @param endPoint
+     * @param locale
+     * @param pointsEncoded
      * @return
      */
-    private boolean validateInput(ClientInputJsonRouting inputJson) {
+    private boolean validateInput(String startPoint,
+                                  String endPoint,
+                                  String locale,
+                                  String pointsEncoded) {
         // locale could be null/empty/something else, since graphhopper defaults to "en"
         // https://graphhopper.com/api/1/docs/routing/
-        if (inputJson.getLocale() == null || inputJson.getLocale().isEmpty()){
+        if (locale == null || locale.isEmpty()){
             System.out.println("locale null or empty");
             return false;
         }
@@ -97,7 +120,7 @@ public class HttpApiRequestRouting {
 //            return false;
 //        }
 
-        if (inputJson.getStartPoint() == null || inputJson.getStartPoint().isEmpty() || inputJson.getEndPoint() == null || inputJson.getEndPoint().isEmpty()) {
+        if (startPoint == null || startPoint.isEmpty() || endPoint == null || endPoint.isEmpty()) {
             System.out.println("start- and/or endpoint null or empty");
             return false;
         }
