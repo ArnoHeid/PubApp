@@ -1,4 +1,4 @@
-package de.hsmainz.pubApp.geocoder;
+package de.hsmainz.pubApp.geocoder.jsonparser;
 
 import com.google.gson.Gson;
 

@@ -1,7 +1,7 @@
 package de.hsmainz.pubApp.geocoder.httpApiRequest;
 
 import com.google.gson.Gson;
-import de.hsmainz.pubApp.geocoder.APIKeys;
+import de.hsmainz.pubApp.geocoder.jsonparser.APIKeys;
 import de.hsmainz.pubApp.geocoder.jsonparser.ClientInputJson;
 import de.hsmainz.pubApp.geocoder.jsonparser.geoJson.GeoJsonColection;
 import de.hsmainz.pubApp.geocoder.jsonparser.graphhopperJson.GrahhopperJson;
