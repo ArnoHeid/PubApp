@@ -9,9 +9,4 @@ public class Geometry {
 		return this.location;
 	}
 
-	@Override
-	public String toString() {
-		return this.getLocation().toString();
-	}
-
 }
