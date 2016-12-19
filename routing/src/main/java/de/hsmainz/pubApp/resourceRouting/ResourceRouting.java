@@ -23,16 +23,15 @@ public class ResourceRouting extends ResourceRoutingTemplate {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String queryText(
-            @QueryParam("queryText") String queryText,
+            @QueryParam("startPoint") String startPoint,
+            @QueryParam("endPoint") String endPoint,
+            @DefaultValue("de") @QueryParam("locale") String locale,
+            @DefaultValue("false") @QueryParam("pointsEncoded") String pointsEncoded,
             @DefaultValue("") @QueryParam("callback") String callback){
         Gson gson = new Gson();
 
-        ClientInputJsonRouting inputJson = gson.fromJson(queryText, ClientInputJsonRouting.class);
-
         HttpApiRequestRouting httpApiRequest = new HttpApiRequestRouting();
-//        String out = gson.toJson(httpApiRequest.requestGraphhopperGeocoder(inputJson));
-//        String out = gson.toJson(new JsonParser().parse(httpApiRequest.requestGraphhopperRouting(inputJson)).getAsJsonObject());
 
-        return jsonCallbackWrapper(callback, httpApiRequest.requestGraphhopperRouting(inputJson));
+        return jsonCallbackWrapper(callback, httpApiRequest.requestGraphhopperRouting(startPoint, endPoint, locale, pointsEncoded));
     }
 }
