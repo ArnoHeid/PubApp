@@ -17,7 +17,6 @@ public class ResponseHandler {
 		
 		List<GeoJsonFeature> features = new ArrayList<GeoJsonFeature>();
 		for (Place place : allPois) {
-			
 			//set coordinates for GeoJsonGeometry
 			double[] coordinates = new double[2];
 	        coordinates[1] = place.getGeometry().getLocation().getLat();

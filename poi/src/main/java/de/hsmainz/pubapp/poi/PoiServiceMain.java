@@ -1,40 +1,27 @@
 package de.hsmainz.pubapp.poi;
+
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
+import java.net.URI;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-import de.hsmainz.pubapp.poi.model.Place;
+public class PoiServiceMain {
 
-@SuppressWarnings("restriction")
-public class PoiServiceMain 
-{
-	public static void main(String[] args) throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
-        server.createContext("/poi", new MyHandler());
-        server.setExecutor(null); // creates a default executor
-        server.start();
-        
+    public static final String BASE_URI = "http://localhost:8000/pubapp/";
+    
+    @SuppressWarnings("deprecation")
+	public static void main(String[] args) throws IOException {
+        final HttpServer server = startServer();
+        System.out.println(String.format("Jersey app started with WADL available at "
+                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+        System.in.read();
+        server.stop();
     }
-
-    static class MyHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange t) throws IOException {
-            //TODO get all parameters the Client gives (Start, End, Poi)
-            RequestHandler requestHandler = new RequestHandler ();
-            ArrayList<Place> allPois = requestHandler.getRelevantPois();
-        	ResponseHandler responseHandler = new ResponseHandler();
-        	String response  = responseHandler.getResponse(allPois);
-            t.sendResponseHeaders(200, response.length());
-            int statusCode = t.getResponseCode();
-            System.out.print(statusCode);
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-        }
+    public static HttpServer startServer() {
+        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.poi");
+        return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
-
+    //beispiel aufruf
+    //localhost:8000/pubapp/poi?callback=xxx&interest=bar&startLat=48.88&startLng=8.347&endLat=49.998765&endLng=8.269193
 }
