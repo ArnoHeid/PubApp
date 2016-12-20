@@ -1,9 +1,10 @@
-package de.hsmainz.pubApp.jsonparser;
+// TODO remove, because never used!?
+package de.hsmainz.pubApp.routing.jsonparser;
 
 /**
  * Created by Sarah.
  */
-public class ClientInputJsonRouting {
+public class ClientInputJson {
 
     private String startPoint;
 

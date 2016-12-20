@@ -82,7 +82,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>de.hsmainz.pubApp.Main</mainClass>
+                    <mainClass>de.hsmainz.pubApp.routing.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>
