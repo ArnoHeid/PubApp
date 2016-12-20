@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -28,19 +27,16 @@ public class PoiService {
 
 	private static final String API_KEY = "AIzaSyDaqvFY5-JfIFPK1e7HdjVi-OYmuc2QPE8";
 
-	
-
-	public ArrayList<Place> search(String interest, Poi poi, int radius) {
-		ArrayList<Place> resultList = null;
+	public ArrayList<Place> searchForPoiWithRadius(String interest, Poi poi, int radius) {
 		//String requestStart = buildRequest(interest, poi.getStartLat(), poi.getStartLng(), radius);
-		String requestStart = buildRequest(interest, poi.getEndLat(), poi.getEndLng(), radius);
+		String requestStart = buildRequest(interest, poi.getEndLat(), poi.getEndLng(), 1000);
 		
 		InputStreamReader in = null;
 		in = postQuery(requestStart, in);
 
 		PlacesResult placesResult = new Gson().fromJson(in, PlacesResult.class);
-		List<Place> places = placesResult.getList();
-		
+		ArrayList<Place> places = (ArrayList<Place>) placesResult.getList();
+		//ArrayList<Place> placesWithRelevantInfo = null;
 		if (places.isEmpty()) {
 			System.out.println("No POIs found");
 		} else {
@@ -49,12 +45,8 @@ public class PoiService {
 			}
 		}
 
-		return resultList;
+		return places;
 
-	}
-
-	public void returnSearchResult(List<Place> relevantPois) {
-		// POIS in JSON and send to Client
 	}
 	
 	public String buildRequest(String interest, double lat, double lng, int radius) {
@@ -85,6 +77,7 @@ public class PoiService {
 			url = new URL(request);
 			conn = (HttpURLConnection) url.openConnection();
 			in = new InputStreamReader(conn.getInputStream());
+			
 		} catch (MalformedURLException e) {
 			System.out.println(LOG_TAG + "Error processing Places API URL" + e);
 			e.printStackTrace();
