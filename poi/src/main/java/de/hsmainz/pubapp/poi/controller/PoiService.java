@@ -28,7 +28,6 @@ public class PoiService {
 	private static final String API_KEY = "AIzaSyDaqvFY5-JfIFPK1e7HdjVi-OYmuc2QPE8";
 
 	public ArrayList<Place> searchForPoiWithRadius(String interest, Poi poi, int radius) {
-		//String requestStart = buildRequest(interest, poi.getStartLat(), poi.getStartLng(), radius);
 		String requestStart = buildRequest(interest, poi.getEndLat(), poi.getEndLng(), 1000);
 		
 		InputStreamReader in = null;
@@ -36,7 +35,7 @@ public class PoiService {
 
 		PlacesResult placesResult = new Gson().fromJson(in, PlacesResult.class);
 		ArrayList<Place> places = (ArrayList<Place>) placesResult.getList();
-		//ArrayList<Place> placesWithRelevantInfo = null;
+
 		if (places.isEmpty()) {
 			System.out.println("No POIs found");
 		} else {
