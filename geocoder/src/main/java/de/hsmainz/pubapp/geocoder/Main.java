@@ -1,4 +1,4 @@
-package de.hsmainz.pubApp.geocoder;
+package de.hsmainz.pubapp.geocoder;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;

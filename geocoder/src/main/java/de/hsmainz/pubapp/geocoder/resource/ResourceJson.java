@@ -1,11 +1,11 @@
-package de.hsmainz.pubApp.geocoder.resource;
+package de.hsmainz.pubapp.geocoder.resource;
 
 
 import com.google.gson.Gson;
-import de.hsmainz.pubApp.geocoder.httpApiRequest.HttpAPIRequest;
-import de.hsmainz.pubApp.geocoder.httpApiRequest.HttpGraphhopperRequest;
-import de.hsmainz.pubApp.geocoder.jsonparser.ClientInputJson;
-import de.hsmainz.pubApp.geocoder.jsonparser.geoJson.GeoJsonColection;
+import de.hsmainz.pubapp.geocoder.httpApiRequest.HttpAPIRequest;
+import de.hsmainz.pubapp.geocoder.httpApiRequest.HttpGraphhopperRequest;
+import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
+import de.hsmainz.pubapp.geocoder.jsonparser.geoJson.GeoJsonColection;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

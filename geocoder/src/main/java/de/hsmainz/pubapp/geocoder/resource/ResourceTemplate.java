@@ -1,4 +1,4 @@
-package de.hsmainz.pubApp.geocoder.resource;
+package de.hsmainz.pubapp.geocoder.resource;
 
 /**
  * Created by Arno on 16.12.2016.

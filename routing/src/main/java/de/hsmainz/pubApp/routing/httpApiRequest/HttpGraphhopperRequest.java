@@ -1,7 +1,7 @@
 package de.hsmainz.pubApp.routing.httpApiRequest;
 
 import com.google.gson.Gson;
-import de.hsmainz.pubApp.geocoder.jsonparser.APIKeys;
+import de.hsmainz.pubapp.geocoder.jsonparser.APIKeys;
 import de.hsmainz.pubApp.routing.jsonparser.geoJson.GeoJsonCollection;
 import de.hsmainz.pubApp.routing.jsonparser.graphhopperJson.GraphhopperJson;
 import org.apache.http.client.methods.CloseableHttpResponse;

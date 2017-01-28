@@ -1,6 +1,6 @@
-package de.hsmainz.pubApp.geocoder.jsonparser.geoJson;
+package de.hsmainz.pubapp.geocoder.jsonparser.geoJson;
 
-import de.hsmainz.pubApp.geocoder.jsonparser.graphhopperJson.PointJson;
+import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperJson.PointJson;
 
 /**
  * Created by Arno on 07.12.2016.

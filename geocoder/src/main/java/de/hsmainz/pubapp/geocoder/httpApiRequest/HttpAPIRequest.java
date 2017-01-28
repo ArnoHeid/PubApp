@@ -1,7 +1,7 @@
-package de.hsmainz.pubApp.geocoder.httpApiRequest;
+package de.hsmainz.pubapp.geocoder.httpApiRequest;
 
-import de.hsmainz.pubApp.geocoder.jsonparser.ClientInputJson;
-import de.hsmainz.pubApp.geocoder.jsonparser.geoJson.GeoJsonColection;
+import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
+import de.hsmainz.pubapp.geocoder.jsonparser.geoJson.GeoJsonColection;
 
 /**
  * Created by Arno on 15.12.2016.

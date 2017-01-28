@@ -1,4 +1,4 @@
-package de.hsmainz.pubApp.geocoder;
+package de.hsmainz.pubapp.geocoder;
 
 import org.junit.Test;
 
