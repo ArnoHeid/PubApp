@@ -36,7 +36,7 @@ public class ResourceTemplate {
      * @return the wrapped callback string
      */
     protected String jsonCallbackWraper(String callback, String json) {
-        if (callback.isEmpty() || callback == null)
+        if (callback == null || callback.isEmpty())
             return json;
         else
             return callback + '(' + json + ')';
