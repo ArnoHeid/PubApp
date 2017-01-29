@@ -1,12 +1,12 @@
-package de.hsmainz.pubapp.geocoder.jsonparser;
+package de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson;
 
 /**
- * Input JSON Class for use with GSON
+ * Additional information to expand the coordinate information
  *
  * @author Arno
  * @since 04.12.2016.
  */
-public class ClientInputJson {
+public class HitsJson {
 
     //****************************************
     // CONSTANTS
@@ -16,8 +16,9 @@ public class ClientInputJson {
     // VARIABLES
     //****************************************
 
-    private String queryString;
-    private String locale;
+    private String name;
+    private PointJson point;
+    private String country;
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -27,12 +28,16 @@ public class ClientInputJson {
     // GETTER/SETTER
     //****************************************
 
-    public String getQueryString() {
-        return queryString;
+    public String getName() {
+        return name;
     }
 
-    public String getLocale() {
-        return locale;
+    public PointJson getPoint() {
+        return point;
+    }
+
+    public String getCountry() {
+        return country;
     }
 
     //****************************************

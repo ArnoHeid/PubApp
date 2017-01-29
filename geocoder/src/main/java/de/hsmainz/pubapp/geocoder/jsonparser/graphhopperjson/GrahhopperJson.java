@@ -1,12 +1,14 @@
-package de.hsmainz.pubapp.geocoder.jsonparser;
+package de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson;
+
+import java.util.List;
 
 /**
- * Input JSON Class for use with GSON
+ * Main graphhopperJSON
  *
  * @author Arno
- * @since 04.12.2016.
+ * @since 03.12.2016.
  */
-public class ClientInputJson {
+public class GrahhopperJson {
 
     //****************************************
     // CONSTANTS
@@ -16,7 +18,7 @@ public class ClientInputJson {
     // VARIABLES
     //****************************************
 
-    private String queryString;
+    private List<HitsJson> hits;
     private String locale;
 
     //****************************************
@@ -27,12 +29,8 @@ public class ClientInputJson {
     // GETTER/SETTER
     //****************************************
 
-    public String getQueryString() {
-        return queryString;
-    }
-
-    public String getLocale() {
-        return locale;
+    public List<HitsJson> getHits() {
+        return hits;
     }
 
     //****************************************

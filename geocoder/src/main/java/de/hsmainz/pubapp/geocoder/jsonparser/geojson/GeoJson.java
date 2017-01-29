@@ -1,12 +1,14 @@
-package de.hsmainz.pubapp.geocoder.jsonparser;
+package de.hsmainz.pubapp.geocoder.jsonparser.geojson;
+
+import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.HitsJson;
 
 /**
- * Input JSON Class for use with GSON
+ * GeoJSON with Type "Feature"
  *
  * @author Arno
- * @since 04.12.2016.
+ * @since 07.12.2016.
  */
-public class ClientInputJson {
+public class GeoJson {
 
     //****************************************
     // CONSTANTS
@@ -16,24 +18,24 @@ public class ClientInputJson {
     // VARIABLES
     //****************************************
 
-    private String queryString;
-    private String locale;
+    private String type;
+    private Properties properties;
+    private Geometry geometry;
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
+    public GeoJson(HitsJson hitsJson) {
+        type = "Feature";
+        properties = new Properties(hitsJson.getCountry(), hitsJson.getName());
+        geometry = new Geometry(hitsJson.getPoint());
+
+    }
+
     //****************************************
     // GETTER/SETTER
     //****************************************
-
-    public String getQueryString() {
-        return queryString;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
 
     //****************************************
     // PUBLIC METHODS

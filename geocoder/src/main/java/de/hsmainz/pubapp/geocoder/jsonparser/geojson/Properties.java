@@ -1,12 +1,12 @@
-package de.hsmainz.pubapp.geocoder.jsonparser;
+package de.hsmainz.pubapp.geocoder.jsonparser.geojson;
 
 /**
- * Input JSON Class for use with GSON
+ * Additional information to expand the coordinate information
  *
  * @author Arno
- * @since 04.12.2016.
+ * @since 07.12.2016.
  */
-public class ClientInputJson {
+public class Properties {
 
     //****************************************
     // CONSTANTS
@@ -16,24 +16,21 @@ public class ClientInputJson {
     // VARIABLES
     //****************************************
 
-    private String queryString;
-    private String locale;
+    private String name;
+    private String country;
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
+    public Properties(String country, String name) {
+        this.name = name;
+        this.country = country;
+    }
+
     //****************************************
     // GETTER/SETTER
     //****************************************
-
-    public String getQueryString() {
-        return queryString;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
 
     //****************************************
     // PUBLIC METHODS

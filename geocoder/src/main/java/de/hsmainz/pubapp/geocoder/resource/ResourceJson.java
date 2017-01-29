@@ -2,20 +2,43 @@ package de.hsmainz.pubapp.geocoder.resource;
 
 
 import com.google.gson.Gson;
-import de.hsmainz.pubapp.geocoder.httpApiRequest.HttpAPIRequest;
-import de.hsmainz.pubapp.geocoder.httpApiRequest.HttpGraphhopperRequest;
+import de.hsmainz.pubapp.geocoder.httpapirequest.HttpAPIRequest;
+import de.hsmainz.pubapp.geocoder.httpapirequest.HttpGraphhopperRequest;
 import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
-import de.hsmainz.pubapp.geocoder.jsonparser.geoJson.GeoJsonColection;
+import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonColection;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 
 /**
- * Created by Arno on 03.12.2016.
+ * Resource for use with query JSON
+ *
+ * @author Arno
+ * @since 03.12.2016.
  */
 @Path("geocoder/json")
-public class ResourceJson extends ResourceTemplate{
+public class ResourceJson extends ResourceTemplate {
+
+    //****************************************
+    // CONSTANTS
+    //****************************************
+
+    //****************************************
+    // VARIABLES
+    //****************************************
+
+    //****************************************
+    // INIT/CONSTRUCTOR
+    //****************************************
+
+    //****************************************
+    // GETTER/SETTER
+    //****************************************
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
 
     /**
      * Method handling HTTP GET requests. The returned object will be sent
@@ -25,7 +48,7 @@ public class ResourceJson extends ResourceTemplate{
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String geoCoder(@QueryParam("callback") String callback, @QueryParam("queryText") @DefaultValue("de") String queryText){
+    public String geoCoder(@QueryParam("callback") String callback, @QueryParam("queryText") @DefaultValue("de") String queryText) {
         Gson gson = new Gson();
 
         ClientInputJson inputJson = gson.fromJson(queryText, ClientInputJson.class);
@@ -35,5 +58,13 @@ public class ResourceJson extends ResourceTemplate{
 
         return jsonCallbackWraper(callback, gson.toJson(geoJsonColection));
     }
+
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    //****************************************
+    // INNER CLASSES
+    //****************************************
 
 }

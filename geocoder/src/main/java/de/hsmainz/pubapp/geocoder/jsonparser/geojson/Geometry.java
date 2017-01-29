@@ -1,12 +1,14 @@
-package de.hsmainz.pubapp.geocoder.jsonparser;
+package de.hsmainz.pubapp.geocoder.jsonparser.geojson;
+
+import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.PointJson;
 
 /**
- * Input JSON Class for use with GSON
+ * Geometry part of the GeoJSON with the lat-long Coordinates
  *
  * @author Arno
- * @since 04.12.2016.
+ * @since 07.12.2016.
  */
-public class ClientInputJson {
+public class Geometry {
 
     //****************************************
     // CONSTANTS
@@ -16,24 +18,23 @@ public class ClientInputJson {
     // VARIABLES
     //****************************************
 
-    private String queryString;
-    private String locale;
+    private String type;
+    private double[] coordinates;
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
+    public Geometry(PointJson point) {
+        type = "Point";
+        coordinates = new double[2];
+        coordinates[1] = point.getLat();
+        coordinates[0] = point.getLng();
+    }
+
     //****************************************
     // GETTER/SETTER
     //****************************************
-
-    public String getQueryString() {
-        return queryString;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
 
     //****************************************
     // PUBLIC METHODS

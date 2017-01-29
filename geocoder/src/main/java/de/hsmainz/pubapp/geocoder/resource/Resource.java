@@ -2,9 +2,9 @@ package de.hsmainz.pubapp.geocoder.resource;
 
 
 import com.google.gson.Gson;
-import de.hsmainz.pubapp.geocoder.httpApiRequest.HttpAPIRequest;
-import de.hsmainz.pubapp.geocoder.httpApiRequest.HttpGraphhopperRequest;
-import de.hsmainz.pubapp.geocoder.jsonparser.geoJson.GeoJsonColection;
+import de.hsmainz.pubapp.geocoder.httpapirequest.HttpAPIRequest;
+import de.hsmainz.pubapp.geocoder.httpapirequest.HttpGraphhopperRequest;
+import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonColection;
 
 
 import javax.ws.rs.*;
@@ -12,10 +12,33 @@ import javax.ws.rs.core.MediaType;
 
 
 /**
- * Created by Arno on 03.12.2016.
+ * Resource for use with query strings
+ *
+ * @author Arno
+ * @since 03.12.2016.
  */
 @Path("geocoder")
 public class Resource extends ResourceTemplate {
+
+    //****************************************
+    // CONSTANTS
+    //****************************************
+
+    //****************************************
+    // VARIABLES
+    //****************************************
+
+    //****************************************
+    // INIT/CONSTRUCTOR
+    //****************************************
+
+    //****************************************
+    // GETTER/SETTER
+    //****************************************
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
 
     /**
      * Method handling HTTP GET requests. The returned object will be sent
@@ -25,15 +48,22 @@ public class Resource extends ResourceTemplate {
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String geoCoder(@QueryParam("callback") String callback,@QueryParam("queryString") String queryString, @QueryParam("locale") @DefaultValue("de") String locale){
+    public String geoCoder(@QueryParam("callback") String callback, @QueryParam("queryString") String queryString, @QueryParam("locale") @DefaultValue("de") String locale) {
         Gson gson = new Gson();
 
         HttpAPIRequest httpAPIRequest = new HttpGraphhopperRequest();
 
-        GeoJsonColection geoJsonColection = httpAPIRequest.requestGeocoder(queryString,locale);
+        GeoJsonColection geoJsonColection = httpAPIRequest.requestGeocoder(queryString, locale);
 
         return jsonCallbackWraper(callback, gson.toJson(geoJsonColection));
     }
 
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    //****************************************
+    // INNER CLASSES
+    //****************************************
 
 }
