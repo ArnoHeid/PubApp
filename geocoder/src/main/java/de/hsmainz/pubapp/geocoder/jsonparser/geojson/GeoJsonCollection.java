@@ -12,12 +12,12 @@ import java.util.List;
  * @author Arno
  * @since 07.12.2016.
  */
-public class GeoJsonColection {
+public class GeoJsonCollection {
     private String type;
     private List<GeoJson> features;
 
 
-    public GeoJsonColection(GrahhopperJson grahhopperJson) {
+    public GeoJsonCollection(GrahhopperJson grahhopperJson) {
         type = "FeatureCollection";
         features = new ArrayList<>();
         for (HitsJson hitsJson : grahhopperJson.getHits()) {
@@ -26,7 +26,7 @@ public class GeoJsonColection {
 
     }
 
-    public GeoJsonColection() {
+    public GeoJsonCollection() {
         //default Constructor for use this fail request
     }
 }

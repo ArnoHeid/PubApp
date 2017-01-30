@@ -1,5 +1,7 @@
 package de.hsmainz.pubapp.geocoder;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -19,7 +21,7 @@ public class Main {
 
     // URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:8080/pubapp/";
-
+    private static final Logger logger = LogManager.getLogger(Main.class);
     //****************************************
     // VARIABLES
     //****************************************
@@ -54,14 +56,20 @@ public class Main {
     /**
      * Main server method.
      *
-     * @param args
+     * @param args load properties file
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
         final HttpServer server = startServer();
+        logger.trace("Geocoder started");
+
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+        System.out.println(MyProperties.getInstance().getProperty("typ"));
+
+
         System.in.read();
+        logger.trace("Geocoder stoped");
         server.shutdownNow();
     }
 

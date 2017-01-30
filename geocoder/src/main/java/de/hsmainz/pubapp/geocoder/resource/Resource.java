@@ -4,7 +4,7 @@ package de.hsmainz.pubapp.geocoder.resource;
 import com.google.gson.Gson;
 import de.hsmainz.pubapp.geocoder.httpapirequest.HttpAPIRequest;
 import de.hsmainz.pubapp.geocoder.httpapirequest.HttpGraphhopperRequest;
-import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonColection;
+import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonCollection;
 
 
 import javax.ws.rs.*;
@@ -53,9 +53,9 @@ public class Resource extends ResourceTemplate {
 
         HttpAPIRequest httpAPIRequest = new HttpGraphhopperRequest();
 
-        GeoJsonColection geoJsonColection = httpAPIRequest.requestGeocoder(queryString, locale);
+        GeoJsonCollection geoJsonCollection = httpAPIRequest.requestGeocoder(queryString, locale);
 
-        return jsonCallbackWraper(callback, gson.toJson(geoJsonColection));
+        return jsonCallbackWraper(callback, gson.toJson(geoJsonCollection));
     }
 
     //****************************************

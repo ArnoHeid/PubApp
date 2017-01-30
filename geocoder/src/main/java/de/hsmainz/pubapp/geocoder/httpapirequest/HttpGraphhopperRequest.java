@@ -2,15 +2,16 @@ package de.hsmainz.pubapp.geocoder.httpapirequest;
 
 import com.google.gson.Gson;
 import de.hsmainz.pubapp.geocoder.jsonparser.APIKeys;
-import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonColection;
+import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonCollection;
 import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.GrahhopperJson;
 import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.URI;
@@ -27,6 +28,8 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     //****************************************
     // CONSTANTS
     //****************************************
+
+    private static final Logger logger = LogManager.getLogger(HttpGraphhopperRequest.class);
 
     //****************************************
     // VARIABLES
@@ -51,9 +54,9 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @return graphhopper-API response converted to GeoJSON
      */
     @Override
-    public GeoJsonColection requestGeocoder(ClientInputJson inputJson) {
+    public GeoJsonCollection requestGeocoder(ClientInputJson inputJson) {
         if (validateInput(inputJson))
-            return new GeoJsonColection();
+            return new GeoJsonCollection();
         URI uri = buildGraphhopperUri(inputJson);
         return doHttpGet(uri);
     }
@@ -66,7 +69,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @return graphhopper-API response converted to GeoJSON
      */
     @Override
-    public GeoJsonColection requestGeocoder(String queryString, String locale) {
+    public GeoJsonCollection requestGeocoder(String queryString, String locale) {
         URI uri = buildGraphhopperUri(queryString, locale);
         return doHttpGet(uri);
     }
@@ -79,26 +82,24 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * Executes the request to the API
      *
      * @param uri the URL for the request to geocoder
-     * @return
+     * @return the requested geoJSON
      */
-    private GeoJsonColection doHttpGet(URI uri) {
+    private GeoJsonCollection doHttpGet(URI uri) {
         Gson gson = new Gson();
         GrahhopperJson grahhopperJson;
-        GeoJsonColection geoJsonColection;
+        GeoJsonCollection geoJsonCollection;
         HttpGet httpget = new HttpGet(uri);
         try (CloseableHttpClient httpclient = HttpClients.createDefault(); CloseableHttpResponse response = httpclient.execute(httpget)) {
-            InputStream tt = response.getEntity().getContent();
-            Reader reader = new InputStreamReader(tt, "UTF-8");
+            InputStream inputStream = response.getEntity().getContent();
+            Reader reader = new InputStreamReader(inputStream, "UTF-8");
             grahhopperJson = gson.fromJson(reader, GrahhopperJson.class);
-            geoJsonColection = new GeoJsonColection(grahhopperJson);
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-            geoJsonColection = new GeoJsonColection();
+            geoJsonCollection = new GeoJsonCollection(grahhopperJson);
+            inputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            geoJsonColection = new GeoJsonColection();
+            logger.catching(e);
+            geoJsonCollection = new GeoJsonCollection();
         }
-        return geoJsonColection;
+        return geoJsonCollection;
         //TODO Better way to handle fail request
     }
 
@@ -124,7 +125,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         try {
             apiKeys = APIKeys.readKeys();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.catching(e);
             apiKeys = new APIKeys();
         }
         URIBuilder uriBuilder = new URIBuilder();
@@ -138,7 +139,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         try {
             uri = uriBuilder.build();
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            logger.catching(e);
         }
         return uri;
     }
@@ -157,7 +158,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         if (inputJson.getLocale() == null || inputJson.getLocale().isEmpty()) {
             returnValue = false;
         }
-        if (inputJson.getLocale() != "de" || inputJson.getLocale() != "en" || inputJson.getLocale() != "fr" || inputJson.getLocale() != "it") {
+        if ( inputJson.getLocale().matches("de|en|fr|it")) {
             returnValue = false;
         }
         return returnValue;
