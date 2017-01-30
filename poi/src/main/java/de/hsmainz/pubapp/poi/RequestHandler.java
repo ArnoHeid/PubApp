@@ -1,6 +1,5 @@
 package de.hsmainz.pubapp.poi;
-
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -9,10 +8,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import de.hsmainz.pubapp.poi.controller.PoiService;
-import de.hsmainz.pubapp.poi.model.Place;
-import de.hsmainz.pubapp.poi.model.Poi;
+import de.hsmainz.pubapp.poi.model.PoiToFind;
+import de.hsmainz.pubapp.poi.model.ResultPoi;
 
 @Path("poi")
+//Available POIs bar|cafe|biergarten|pub|car_rental|car_sharing|car_wash|dentist|dentist|pharmacy|doctors|bank|atm|fuel|ice_cream|restaurant|fast_food|brothel|stripclub|swingerclub|casino|theatre|nightclub|planetarium|gym|post_office|register_office|sauna
+//social_facility|bus_station|grit_bin|clock|hunting_stand|telephone|vending_machine|waste_disposal|fire_station|school|college|kindergarten|parking|place_of_worship|bbq|bench
 
 public class RequestHandler {
 
@@ -26,9 +27,9 @@ public class RequestHandler {
 		System.out.println(endLat);
 		System.out.println(endLng);
 
-		ArrayList<Place> allPois = getRelevantPois(interest, Double.parseDouble(startLat), Double.parseDouble(startLng), Double.parseDouble(endLat), Double.parseDouble(endLng));
+		List<ResultPoi> allPois = getRelevantPois(interest, Double.parseDouble(startLat), Double.parseDouble(startLng), Double.parseDouble(endLat), Double.parseDouble(endLng));
 		ResponseHandler responseHandler = new ResponseHandler();
-		String response = responseHandler.getResponse(allPois);
+		String response = responseHandler.getResponseOverpass(allPois);
 		
 		return response;
 	}
@@ -39,8 +40,8 @@ public class RequestHandler {
 	       else
 	           return callback + '(' + response + ')';
 	   }
-	public ArrayList<Place> getRelevantPois(String interest, Double startLat, Double startLng, Double endLat, Double endLng) {
-		Poi poi = new Poi();
+	public List<ResultPoi> getRelevantPois(String interest, Double startLat, Double startLng, Double endLat, Double endLng) {
+		PoiToFind poi = new PoiToFind();
 		poi.setStartLat(startLat);
 		poi.setStartLng(startLng);
 		poi.setEndLat(endLat);
@@ -48,7 +49,7 @@ public class RequestHandler {
 
 		PoiService poiService = new PoiService();
 
-		ArrayList<Place> allPois = poiService.searchForPoiWithRadius(interest, poi, 500);
+		List<ResultPoi> allPois = poiService.searchForPoiWithRadius(interest, poi, 500);
 		return allPois;
 	}
 }

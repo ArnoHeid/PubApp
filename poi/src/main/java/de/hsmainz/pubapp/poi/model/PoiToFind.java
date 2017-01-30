@@ -1,6 +1,6 @@
 package de.hsmainz.pubapp.poi.model;
 
-public class Poi {
+public class PoiToFind {
 	
 	private double startLat;
 

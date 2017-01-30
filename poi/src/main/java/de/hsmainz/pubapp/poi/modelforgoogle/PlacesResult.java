@@ -1,6 +1,7 @@
-package de.hsmainz.pubapp.poi.model;
+package de.hsmainz.pubapp.poi.modelforgoogle;
 
 import java.util.List;
+
 
 public class PlacesResult extends Result {
 

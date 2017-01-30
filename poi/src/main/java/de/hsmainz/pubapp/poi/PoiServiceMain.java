@@ -22,6 +22,6 @@ public class PoiServiceMain {
         final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.poi");
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
-    //beispiel aufruf
+    //beispielaufruf
     //localhost:8000/pubapp/poi?callback=xxx&interest=bar&startLat=48.88&startLng=8.347&endLat=49.998765&endLng=8.269193
 }

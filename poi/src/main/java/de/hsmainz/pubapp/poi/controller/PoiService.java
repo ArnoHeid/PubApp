@@ -7,16 +7,18 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 
-import de.hsmainz.pubapp.poi.model.Place;
-import de.hsmainz.pubapp.poi.model.PlacesResult;
-import de.hsmainz.pubapp.poi.model.Poi;
+import de.hsmainz.pubapp.poi.model.PoiToFind;
+import de.hsmainz.pubapp.poi.model.PoiSearchResult;
+import de.hsmainz.pubapp.poi.model.ResultPoi;
+
 
 public class PoiService {
 
+	private static final String BASE_API_URL = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];";
 	private static final String LOG_TAG = "PubApp_PoiSearch";
 
 	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
@@ -27,20 +29,20 @@ public class PoiService {
 
 	private static final String API_KEY = "AIzaSyDaqvFY5-JfIFPK1e7HdjVi-OYmuc2QPE8";
 
-	public ArrayList<Place> searchForPoiWithRadius(String interest, Poi poi, int radius) {
-		String requestStart = buildRequest(interest, poi.getEndLat(), poi.getEndLng(), 1000);
+	public List<ResultPoi> searchForPoiWithRadius(String interest, PoiToFind poi, int radius) {
+		String requestStart = buildRequestOverpass(interest, poi.getEndLat(), poi.getEndLng(), 1000);
 		
 		InputStreamReader in = null;
 		in = postQuery(requestStart, in);
 
-		PlacesResult placesResult = new Gson().fromJson(in, PlacesResult.class);
-		ArrayList<Place> places = (ArrayList<Place>) placesResult.getList();
+		PoiSearchResult placesResult = new Gson().fromJson(in, PoiSearchResult.class);
+		List<ResultPoi> places = placesResult.getList();
 
 		if (places.isEmpty()) {
 			System.out.println("No POIs found");
 		} else {
-			for (Place place : places) {
-				System.out.println(place.getName());
+			for (ResultPoi place : places) {
+				System.out.println(place.getTags().getName());
 			}
 		}
 
@@ -48,7 +50,7 @@ public class PoiService {
 
 	}
 	
-	public String buildRequest(String interest, double lat, double lng, int radius) {
+	public String buildRequestGooglePlaces(String interest, double lat, double lng, int radius) {
 		String requestUri = "";
 		try {
 			StringBuilder sb = new StringBuilder(PLACES_API_BASE);
@@ -68,6 +70,24 @@ public class PoiService {
 
 		return requestUri;
 	}
+	
+	public String buildRequestOverpass(String interest, double lat, double lng, int radius) {
+		String requestUri = "";
+		String amenityQueryString = "[amenity=" + interest + "]";
+		String coordWithRadiusQueryString = "(around:" + radius + "," + lat + "," + lng + ");";
+		StringBuilder sb = new StringBuilder(BASE_API_URL);
+		sb.append("(node" + amenityQueryString);
+		sb.append(coordWithRadiusQueryString);
+		sb.append("way" + amenityQueryString);
+		sb.append(coordWithRadiusQueryString);
+		sb.append("relation" + amenityQueryString);
+		sb.append(coordWithRadiusQueryString);
+		sb.append(");out;");
+		requestUri = sb.toString();
+		System.out.println(requestUri);
+
+		return requestUri;
+	}
 
 	public InputStreamReader postQuery(String request, InputStreamReader in) {
 		URL url = null;
@@ -78,10 +98,10 @@ public class PoiService {
 			in = new InputStreamReader(conn.getInputStream());
 			
 		} catch (MalformedURLException e) {
-			System.out.println(LOG_TAG + "Error processing Places API URL" + e);
+			System.out.println(LOG_TAG + "Error processing API URL" + e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println(LOG_TAG + "Error connecting to Places API" + e);
+			System.out.println(LOG_TAG + "Error connecting API" + e);
 			e.printStackTrace();
 		}
 		System.out.println(in.toString());
