@@ -1,13 +1,13 @@
-package de.hsmainz.pubapp.poi.modelforgoogle;
+package de.hsmainz.pubapp.poi.model;
 
 import java.util.List;
 
 
-public class PlacesResult extends Result {
+public class GooglePoiSearchResult extends GoogleResult {
 
-	private List<Place> results;
+	private List<GoogleResultPoi> results;
 
-	public List<Place> getList() {
+	public List<GoogleResultPoi> getList() {
 		return this.results;
 	}
 }

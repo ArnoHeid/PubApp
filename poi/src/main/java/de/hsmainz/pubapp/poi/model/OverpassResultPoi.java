@@ -1,6 +1,6 @@
 package de.hsmainz.pubapp.poi.model;
 
-public class ResultPoi {
+public class OverpassResultPoi {
 		
 		private String type;
 		
@@ -10,7 +10,7 @@ public class ResultPoi {
 		
 		private double lon;
 		
-		private Tags tags;
+		private OverpassTags tags;
 		
 		public String getType() {
 			return type;
@@ -36,10 +36,10 @@ public class ResultPoi {
 		public void setLon(double lon) {
 			this.lon = lon;
 		}
-		public Tags getTags() {
+		public OverpassTags getTags() {
 			return tags;
 		}
-		public void setTags(Tags tags) {
+		public void setTags(OverpassTags tags) {
 			this.tags = tags;
 		}	
 

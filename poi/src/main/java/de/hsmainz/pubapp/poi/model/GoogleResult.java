@@ -1,6 +1,6 @@
-package de.hsmainz.pubapp.poi.modelforgoogle;
+package de.hsmainz.pubapp.poi.model;
 
-public class Result {
+public class GoogleResult {
 	
 	private String status;
 

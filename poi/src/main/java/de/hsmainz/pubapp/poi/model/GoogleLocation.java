@@ -1,6 +1,6 @@
-package de.hsmainz.pubapp.poi.modelforgoogle;
+package de.hsmainz.pubapp.poi.model;
 
-public class Location {
+public class GoogleLocation {
 	
 	private double lat;
 

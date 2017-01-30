@@ -1,11 +1,11 @@
-package de.hsmainz.pubapp.poi.modelforgoogle;
+package de.hsmainz.pubapp.poi.model;
 
 
-public class Geometry {
+public class GoogleGeometry {
 
-	private Location location;
+	private GoogleLocation location;
 
-	public Location getLocation() {
+	public GoogleLocation getLocation() {
 		return this.location;
 	}
 

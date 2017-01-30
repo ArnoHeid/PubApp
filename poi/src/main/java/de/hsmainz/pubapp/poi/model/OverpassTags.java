@@ -1,6 +1,6 @@
 package de.hsmainz.pubapp.poi.model;
 
-public class Tags {
+public class OverpassTags {
 	
 	private String amenity;
 	

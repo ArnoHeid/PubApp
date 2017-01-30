@@ -7,9 +7,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import de.hsmainz.pubapp.poi.controller.PoiService;
+import de.hsmainz.pubapp.poi.controller.PoiSearchService;
+import de.hsmainz.pubapp.poi.controller.PoiSearchWithGooglePlaces;
+import de.hsmainz.pubapp.poi.controller.PoiSearchWithOverpass;
 import de.hsmainz.pubapp.poi.model.PoiToFind;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
+import de.hsmainz.pubapp.poi.model.OverpassResultPoi;
 
 @Path("poi")
 //Available POIs bar|cafe|biergarten|pub|car_rental|car_sharing|car_wash|dentist|dentist|pharmacy|doctors|bank|atm|fuel|ice_cream|restaurant|fast_food|brothel|stripclub|swingerclub|casino|theatre|nightclub|planetarium|gym|post_office|register_office|sauna
@@ -29,7 +32,8 @@ public class RequestHandler {
 
 		List<ResultPoi> allPois = getRelevantPois(interest, Double.parseDouble(startLat), Double.parseDouble(startLng), Double.parseDouble(endLat), Double.parseDouble(endLng));
 		ResponseHandler responseHandler = new ResponseHandler();
-		String response = responseHandler.getResponseOverpass(allPois);
+		
+		String response = responseHandler.getResponse(allPois);
 		
 		return response;
 	}
@@ -46,10 +50,12 @@ public class RequestHandler {
 		poi.setStartLng(startLng);
 		poi.setEndLat(endLat);
 		poi.setEndLng(endLng);
+		
+		//Switch between Google and Overpass possible through Interface
+		//PoiSearchService poiSearchService = new PoiSearchWithGooglePlaces();
+		PoiSearchService poiSearchService = new PoiSearchWithOverpass();
 
-		PoiService poiService = new PoiService();
-
-		List<ResultPoi> allPois = poiService.searchForPoiWithRadius(interest, poi, 500);
+		List<ResultPoi> allPois = poiSearchService.getPoisWithinRadius(interest, poi, 500);
 		return allPois;
 	}
 }

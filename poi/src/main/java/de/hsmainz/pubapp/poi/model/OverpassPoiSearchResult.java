@@ -2,11 +2,11 @@ package de.hsmainz.pubapp.poi.model;
 
 import java.util.List;
 
-public class PoiSearchResult {
+public class OverpassPoiSearchResult {
 
-	private List<ResultPoi> elements;
+	private List<OverpassResultPoi> elements;
 
-	public List<ResultPoi> getList() {
+	public List<OverpassResultPoi> getList() {
 		return this.elements;
 	}
 }
