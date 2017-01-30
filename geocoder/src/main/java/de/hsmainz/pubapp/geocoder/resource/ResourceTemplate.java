@@ -31,8 +31,8 @@ public class ResourceTemplate {
     /**
      * wraps JSON string with callback string
      *
-     * @param callback
-     * @param json
+     * @param callback the callback string
+     * @param json the json wrapped with the callback string
      * @return the wrapped callback string
      */
     protected String jsonCallbackWraper(String callback, String json) {
