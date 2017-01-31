@@ -13,10 +13,9 @@ import java.util.List;
 import com.google.gson.Gson;
 
 import de.hsmainz.pubapp.poi.model.GooglePoiSearchResult;
+import de.hsmainz.pubapp.poi.model.GoogleResultPoi;
 import de.hsmainz.pubapp.poi.model.PoiToFind;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
-import de.hsmainz.pubapp.poi.model.GoogleResultPoi;
-
 
 public class PoiSearchWithGooglePlaces implements PoiSearchService {
 
@@ -25,10 +24,11 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	private static final String TYPE_SEARCH = "/search";
 	private static final String OUT_JSON = "/json";
 	private static final String API_KEY = "AIzaSyDaqvFY5-JfIFPK1e7HdjVi-OYmuc2QPE8";
-	
+
+	@Override
 	public List<ResultPoi> getPoisWithinRadius(String interest, PoiToFind poi, int radius) {
-		String requestStart = buildRequest(interest, poi.getEndLat(), poi.getEndLng(), 1000);
-		
+		String requestStart = buildRequest(interest, poi.getStartLat(), poi.getStartLng(), 1000);
+
 		InputStreamReader in = null;
 		in = postQuery(requestStart, in);
 
@@ -37,12 +37,12 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 
 		if (places.isEmpty()) {
 			System.out.println("No POIs found");
-		} 
+		}
 
 		return transformApiResultsToResultPoi(places, interest);
 
 	}
-	
+
 	@Override
 	public String buildRequest(String interest, double lat, double lng, int radius) {
 		String requestUri = "";
@@ -63,7 +63,7 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 
 		return requestUri;
 	}
-	
+
 	@Override
 	public InputStreamReader postQuery(String request, InputStreamReader in) {
 		URL url = null;
@@ -72,7 +72,7 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 			url = new URL(request);
 			conn = (HttpURLConnection) url.openConnection();
 			in = new InputStreamReader(conn.getInputStream());
-			
+
 		} catch (MalformedURLException e) {
 			System.out.println(LOG_TAG + "Error processing API URL" + e);
 			e.printStackTrace();
@@ -83,12 +83,12 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 		System.out.println(in.toString());
 		return in;
 	}
-	
+
 	public List<ResultPoi> transformApiResultsToResultPoi(List<GoogleResultPoi> places, String interest) {
-		
+
 		List<ResultPoi> results = new ArrayList<ResultPoi>();
-		
-		for(GoogleResultPoi googlePoi: places) {
+
+		for (GoogleResultPoi googlePoi : places) {
 			ResultPoi resultPoi = new ResultPoi();
 			resultPoi.setName(googlePoi.getName());
 			resultPoi.setInterest(interest);
@@ -97,6 +97,6 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 			results.add(resultPoi);
 		}
 		return results;
-		
+
 	}
 }

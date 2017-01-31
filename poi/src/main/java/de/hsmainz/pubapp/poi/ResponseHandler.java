@@ -12,24 +12,25 @@ import de.hsmainz.pubapp.poi.model.GeoJsonFeatureCollection;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
 
 public class ResponseHandler {
-	
+
 	public String getResponse(List<ResultPoi> allPois) {
-		
+
 		List<GeoJsonFeature> features = new ArrayList<GeoJsonFeature>();
 		for (ResultPoi place : allPois) {
-			//set coordinates for GeoJsonGeometry
+			// set coordinates for GeoJsonGeometry
 			double[] coordinates = new double[2];
-	        coordinates[1] = place.getLat();
-	        coordinates[0] = place.getLon();
-			GeoJsonFeature currentFeature = new GeoJsonFeature("Feature", new GeoJsonProperties(place.getName()), new GeoJsonGeometry("Point", coordinates));
+			coordinates[1] = place.getLat();
+			coordinates[0] = place.getLon();
+			GeoJsonFeature currentFeature = new GeoJsonFeature("Feature", new GeoJsonProperties(place.getName()),
+					new GeoJsonGeometry("Point", coordinates));
 			features.add(currentFeature);
 		}
-		
-		GeoJsonFeatureCollection featureCollection = new GeoJsonFeatureCollection("FeatureCollection", features);		
+
+		GeoJsonFeatureCollection featureCollection = new GeoJsonFeatureCollection("FeatureCollection", features);
 		Gson gson = new Gson();
 		String jsonInString = gson.toJson(featureCollection);
-		
+
 		return jsonInString;
 	}
-	
+
 }

@@ -1,6 +1,5 @@
 package de.hsmainz.pubapp.poi.model;
 
-
 public class GoogleGeometry {
 
 	private GoogleLocation location;

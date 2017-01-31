@@ -1,9 +1,9 @@
 package de.hsmainz.pubapp.poi.model;
 
 public class OverpassTags {
-	
+
 	private String amenity;
-	
+
 	private String name;
 
 	public String getAmenity() {
@@ -21,6 +21,5 @@ public class OverpassTags {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
 }
