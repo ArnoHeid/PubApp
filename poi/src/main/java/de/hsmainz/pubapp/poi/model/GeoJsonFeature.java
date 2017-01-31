@@ -7,10 +7,12 @@ public class GeoJsonFeature {
 
 		private String type;
 		private double[] coordinates;
-		public GeoJsonGeometry (String type, double[] coordinates) {
+
+		public GeoJsonGeometry(String type, double[] coordinates) {
 			this.type = type;
 			this.coordinates = coordinates;
 		}
+
 		public String getType() {
 			return this.type;
 		}
@@ -23,10 +25,10 @@ public class GeoJsonFeature {
 
 	public static class GeoJsonProperties {
 		private String name;
-		
+
 		public GeoJsonProperties(String name) {
 			this.name = name;
-		} 	 
+		}
 
 		public String getName() {
 			return this.name;
@@ -36,12 +38,12 @@ public class GeoJsonFeature {
 
 	private GeoJsonProperties properties;
 	private GeoJsonGeometry geometry;
-	
+
 	public GeoJsonFeature(String type, GeoJsonProperties geoJsonProperties, GeoJsonGeometry geometry) {
-		      this.type = type;
-		      this.properties = geoJsonProperties;
-		      this.geometry = geometry;
-		   }
+		this.type = type;
+		this.properties = geoJsonProperties;
+		this.geometry = geometry;
+	}
 
 	public String getType() {
 		return type;
@@ -51,11 +53,9 @@ public class GeoJsonFeature {
 		return properties;
 	}
 
-
 	public GeoJsonGeometry getGeoJsonGeometry() {
 		return geometry;
 	}
-
 
 	/*
 	 * ({"type":"FeatureCollection", "features": [
