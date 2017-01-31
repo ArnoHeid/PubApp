@@ -12,10 +12,10 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import de.hsmainz.pubapp.poi.model.GooglePoiSearchResult;
-import de.hsmainz.pubapp.poi.model.GoogleResultPoi;
-import de.hsmainz.pubapp.poi.model.PoiToFind;
+import de.hsmainz.pubapp.poi.model.PoiBoundingBox;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
+import de.hsmainz.pubapp.poi.model.googleapi.GooglePoiSearchResult;
+import de.hsmainz.pubapp.poi.model.googleapi.GoogleResultPoi;
 
 public class PoiSearchWithGooglePlaces implements PoiSearchService {
 
@@ -26,8 +26,8 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	private static final String API_KEY = "AIzaSyDaqvFY5-JfIFPK1e7HdjVi-OYmuc2QPE8";
 
 	@Override
-	public List<ResultPoi> getPoisWithinRadius(String interest, PoiToFind poi, int radius) {
-		String requestStart = buildRequest(interest, poi.getStartLat(), poi.getStartLng(), 1000);
+	public List<ResultPoi> getPoisWithinRadius(String interest, PoiBoundingBox poi, int radius) {
+		String requestStart = buildRequestRadius(interest, poi.getStartLat(), poi.getStartLng(), 1000);
 
 		InputStreamReader in = null;
 		in = postQuery(requestStart, in);
@@ -44,7 +44,13 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	}
 
 	@Override
-	public String buildRequest(String interest, double lat, double lng, int radius) {
+	public List<ResultPoi> getPoisWithinBBox(String interest, PoiBoundingBox poi) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String buildRequestRadius(String interest, double lat, double lng, int radius) {
 		String requestUri = "";
 		try {
 			StringBuilder sb = new StringBuilder(PLACES_API_BASE);
@@ -99,4 +105,5 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 		return results;
 
 	}
+
 }

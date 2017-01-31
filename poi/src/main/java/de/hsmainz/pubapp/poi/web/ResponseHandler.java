@@ -1,4 +1,4 @@
-package de.hsmainz.pubapp.poi;
+package de.hsmainz.pubapp.poi.web;
 
 import java.util.ArrayList;
 import java.util.List;

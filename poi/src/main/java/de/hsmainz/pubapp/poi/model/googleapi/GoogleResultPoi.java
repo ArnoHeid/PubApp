@@ -1,4 +1,4 @@
-package de.hsmainz.pubapp.poi.model;
+package de.hsmainz.pubapp.poi.model.googleapi;
 
 public class GoogleResultPoi {
 

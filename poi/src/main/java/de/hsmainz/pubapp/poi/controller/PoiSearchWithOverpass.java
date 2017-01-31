@@ -10,10 +10,10 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import de.hsmainz.pubapp.poi.model.OverpassPoiSearchResult;
-import de.hsmainz.pubapp.poi.model.OverpassResultPoi;
-import de.hsmainz.pubapp.poi.model.PoiToFind;
+import de.hsmainz.pubapp.poi.model.PoiBoundingBox;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
+import de.hsmainz.pubapp.poi.model.overpass.OverpassPoiSearchResult;
+import de.hsmainz.pubapp.poi.model.overpass.OverpassResultPoi;
 
 public class PoiSearchWithOverpass implements PoiSearchService {
 
@@ -21,8 +21,8 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	private static final String LOG_TAG = "PubApp_PoiSearchWithOverpass";
 
 	@Override
-	public List<ResultPoi> getPoisWithinRadius(String interest, PoiToFind poi, int radius) {
-		String requestStart = buildRequest(interest, poi.getStartLat(), poi.getStartLng(), 1000);
+	public List<ResultPoi> getPoisWithinRadius(String interest, PoiBoundingBox poi, int radius) {
+		String requestStart = buildRequestRadius(interest, poi.getStartLat(), poi.getStartLng(), 1000);
 
 		InputStreamReader in = null;
 		in = postQuery(requestStart, in);
@@ -35,7 +35,40 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	}
 
 	@Override
-	public String buildRequest(String interest, double lat, double lng, int radius) {
+	public List<ResultPoi> getPoisWithinBBox(String interest, PoiBoundingBox poi) {
+
+		String requestStart = buildRequestBBox(interest, poi);
+
+		InputStreamReader in = null;
+		in = postQuery(requestStart, in);
+
+		OverpassPoiSearchResult placesResult = new Gson().fromJson(in, OverpassPoiSearchResult.class);
+		List<OverpassResultPoi> places = placesResult.getList();
+
+		return transformApiResultsToResultPoi(places);
+	}
+
+	public String buildRequestBBox(String interest, PoiBoundingBox poi) {
+		String requestUri = "";
+		String amenityQueryString = "[amenity=" + interest + "]";
+		String bBoxQueryString = "(" + poi.getStartLat() + "," + poi.getStartLng() + "," + poi.getEndLat() + ","
+				+ poi.getEndLng() + ");";
+		StringBuilder sb = new StringBuilder(BASE_API_URL);
+		sb.append("(node" + amenityQueryString);
+		sb.append(bBoxQueryString);
+		sb.append("way" + amenityQueryString);
+		sb.append(bBoxQueryString);
+		sb.append("relation" + amenityQueryString);
+		sb.append(bBoxQueryString);
+		sb.append(");out;");
+		requestUri = sb.toString();
+		System.out.println(requestUri);
+
+		return requestUri;
+	}
+
+	@Override
+	public String buildRequestRadius(String interest, double lat, double lng, int radius) {
 		String requestUri = "";
 		String amenityQueryString = "[amenity=" + interest + "]";
 		String coordWithRadiusQueryString = "(around:" + radius + "," + lat + "," + lng + ");";
