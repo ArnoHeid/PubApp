@@ -15,6 +15,13 @@ import de.hsmainz.pubapp.poi.controller.PoiSearchWithOverpass;
 import de.hsmainz.pubapp.poi.model.PoiBoundingBox;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
 
+/**
+ * This Class Handles Request sent to API Given routing Coordinates will be
+ * processed and POIs according to data are generated
+ * 
+ * @author caro
+ *
+ */
 @Path("poi")
 public class RequestHandler {
 
@@ -30,14 +37,16 @@ public class RequestHandler {
 
 		String response = responseHandler.getResponse(allPois);
 
-		return response;
+		return addCallback(callback, response);
 	}
 
 	public String addCallback(String callback, String response) {
-		if (callback.isEmpty() || callback == null)
+		if (callback.isEmpty() || callback == null) {
 			return response;
-		else
-			return callback + '(' + response + ')';
+		} else {
+			return callback + "'('" + response + "')'";
+		}
+
 	}
 
 	public List<ResultPoi> getRelevantPois(String interest, Double startLat, Double startLng, Double endLat,
