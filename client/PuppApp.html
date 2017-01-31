@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Pupp App</title>
+	<link rel="stylesheet" type="text/css" href="leaflet/leaflet.css" />
+	<script src="bootstrap/js/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="leaflet/leaflet.js"></script>
+	<script type="text/javascript" src="leaflet/main.js"></script>
+	<link rel="stylesheet" type="text/css" href="leaflet/ownstyle.css" />
+	
+	
+	</head>
+
+<body onload="init()">
+	
+	<header>
+	
+	<h1><b>Pupp Life</b></h1>
+	
+	</header>
+	
+	<div>
+	
+	<section class="section1">
+	
+		<header>
+		
+		<h3>Adresseingabe</h3>
+		
+		</header>
+		
+		<section class="section1" id="Formular">
+		
+		Startpunkt: <br><input class="input" type="text" id="startpunkt_button"><br>
+		<div id="Endpunkt">Endpunkt: <input class="input" type="text" id="endpunkt_button"></div>
+		<button class="button1" type="button" id="jsontest" onclick="JSONTest()">Orte anzeigen</button><div id="testlauf"></div>
+		<button class="button1" type="button" id="routing" onclick="routing()">Routing</button>
+		<button class="button1" type="button" id="poi" onclick="POI()">POI</button>
+		
+		</section>
+	
+	</section>
+	
+	<section class="section2">
+	
+	<div id="notification">Ich werde erst angezeigt, wenn mein Meister das möchte!</div>
+	
+	<div id="mapid"></div>
+	
+	</section>
+
+	</div>
+</body>
+
+</html>

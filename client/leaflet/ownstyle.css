@@ -1,0 +1,10 @@
+	#mapid { height: 750px; width: 100%;}
+	div { background-color: lightgrey; }
+	body { background-color: white;}
+	h1 { position: relative; text-align: center; color: lightgrey; }
+	nav { float: left; width: 200px; }
+	.clearfix { overflow: auto; }
+	.section2 { margin-left: 206px; height: 80%;}
+	.section1 { margin-left: 2px; float:left; width: 200px; height: auto; height: 80%; }
+	.input { width: 190px ;}
+	.button1 { width: 100% ;	color: crimson; }
