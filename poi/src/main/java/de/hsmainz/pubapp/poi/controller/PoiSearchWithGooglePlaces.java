@@ -8,47 +8,49 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 
-import de.hsmainz.pubapp.poi.model.Place;
-import de.hsmainz.pubapp.poi.model.PlacesResult;
-import de.hsmainz.pubapp.poi.model.Poi;
+import de.hsmainz.pubapp.poi.model.PoiBoundingBox;
+import de.hsmainz.pubapp.poi.model.ResultPoi;
+import de.hsmainz.pubapp.poi.model.googleapi.GooglePoiSearchResult;
+import de.hsmainz.pubapp.poi.model.googleapi.GoogleResultPoi;
 
-public class PoiService {
+public class PoiSearchWithGooglePlaces implements PoiSearchService {
 
-	private static final String LOG_TAG = "PubApp_PoiSearch";
-
+	private static final String LOG_TAG = "PubApp_SearchPoiWithGoogle";
 	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
-
 	private static final String TYPE_SEARCH = "/search";
-
 	private static final String OUT_JSON = "/json";
-
 	private static final String API_KEY = "AIzaSyDaqvFY5-JfIFPK1e7HdjVi-OYmuc2QPE8";
 
-	public ArrayList<Place> searchForPoiWithRadius(String interest, Poi poi, int radius) {
-		String requestStart = buildRequest(interest, poi.getEndLat(), poi.getEndLng(), 1000);
-		
+	@Override
+	public List<ResultPoi> getPoisWithinRadius(String interest, PoiBoundingBox poi, int radius) {
+		String requestStart = buildRequestRadius(interest, poi.getStartLat(), poi.getStartLng(), 1000);
+
 		InputStreamReader in = null;
 		in = postQuery(requestStart, in);
 
-		PlacesResult placesResult = new Gson().fromJson(in, PlacesResult.class);
-		ArrayList<Place> places = (ArrayList<Place>) placesResult.getList();
+		GooglePoiSearchResult placesResult = new Gson().fromJson(in, GooglePoiSearchResult.class);
+		List<GoogleResultPoi> places = placesResult.getList();
 
 		if (places.isEmpty()) {
 			System.out.println("No POIs found");
-		} else {
-			for (Place place : places) {
-				System.out.println(place.getName());
-			}
 		}
 
-		return places;
+		return transformApiResultsToResultPoi(places, interest);
 
 	}
-	
-	public String buildRequest(String interest, double lat, double lng, int radius) {
+
+	@Override
+	public List<ResultPoi> getPoisWithinBBox(String interest, PoiBoundingBox poi) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String buildRequestRadius(String interest, double lat, double lng, int radius) {
 		String requestUri = "";
 		try {
 			StringBuilder sb = new StringBuilder(PLACES_API_BASE);
@@ -62,13 +64,13 @@ public class PoiService {
 			requestUri = sb.toString();
 			System.out.println(requestUri);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return requestUri;
 	}
 
+	@Override
 	public InputStreamReader postQuery(String request, InputStreamReader in) {
 		URL url = null;
 		HttpURLConnection conn;
@@ -76,15 +78,32 @@ public class PoiService {
 			url = new URL(request);
 			conn = (HttpURLConnection) url.openConnection();
 			in = new InputStreamReader(conn.getInputStream());
-			
+
 		} catch (MalformedURLException e) {
-			System.out.println(LOG_TAG + "Error processing Places API URL" + e);
+			System.out.println(LOG_TAG + "Error processing API URL" + e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println(LOG_TAG + "Error connecting to Places API" + e);
+			System.out.println(LOG_TAG + "Error connecting API" + e);
 			e.printStackTrace();
 		}
 		System.out.println(in.toString());
 		return in;
 	}
+
+	public List<ResultPoi> transformApiResultsToResultPoi(List<GoogleResultPoi> places, String interest) {
+
+		List<ResultPoi> results = new ArrayList<ResultPoi>();
+
+		for (GoogleResultPoi googlePoi : places) {
+			ResultPoi resultPoi = new ResultPoi();
+			resultPoi.setName(googlePoi.getName());
+			resultPoi.setInterest(interest);
+			resultPoi.setLat(googlePoi.getGeometry().getLocation().getLat());
+			resultPoi.setLon(googlePoi.getGeometry().getLocation().getLng());
+			results.add(resultPoi);
+		}
+		return results;
+
+	}
+
 }
