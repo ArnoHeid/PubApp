@@ -18,11 +18,13 @@ public class MyProperties extends Properties {
     //****************************************
 
     private static final Logger logger = LogManager.getLogger(MyProperties.class);
-    private static MyProperties instance = null;
 
     //****************************************
     // VARIABLES
     //****************************************
+
+    private static MyProperties instance = null;
+    private static String propertiesFile = "config.properties";
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -36,15 +38,23 @@ public class MyProperties extends Properties {
     // GETTER/SETTER
     //****************************************
 
+    public static void setPropertiesFile(String propertiesFileName){
+        propertiesFile = propertiesFileName;
+    }
+
     //****************************************
     // PUBLIC METHODS
     //****************************************
 
+    /**
+     *
+     * @return
+     */
     public static MyProperties getInstance(){
         if(instance==null){
             try {
                 instance = new MyProperties();
-                FileInputStream in = new FileInputStream("config.properties");
+                FileInputStream in = new FileInputStream(propertiesFile);
                 instance.load(in);
                 in.close();
             } catch (IOException e) {
