@@ -2,6 +2,7 @@ package de.hsmainz.pubapp.geocoder.httpapirequest;
 
 import com.google.gson.Gson;
 import de.hsmainz.pubapp.geocoder.jsonparser.APIKeys;
+import de.hsmainz.pubapp.geocoder.jsonparser.ErrorJson;
 import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonCollection;
 import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.GrahhopperJson;
 import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
@@ -35,6 +36,8 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     // VARIABLES
     //****************************************
 
+    private Gson gson = new Gson();
+
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
@@ -54,11 +57,16 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @return graphhopper-API response converted to GeoJSON
      */
     @Override
-    public GeoJsonCollection requestGeocoder(ClientInputJson inputJson) {
-        if (validateInput(inputJson))
-            return new GeoJsonCollection();
-        URI uri = buildGraphhopperUri(inputJson);
-        return doHttpGet(uri);
+    public String requestGeocoder(ClientInputJson inputJson) {
+        String returnString;
+        if (!validateInput(inputJson)) {
+            ErrorJson returnErrorJson = new ErrorJson("Input validation failed");
+            returnString = gson.toJson(returnErrorJson);
+        } else {
+            URI uri = buildGraphhopperUri(inputJson);
+            returnString = gson.toJson(doHttpGet(uri));
+        }
+        return returnString;
     }
 
     /**
@@ -69,9 +77,16 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @return graphhopper-API response converted to GeoJSON
      */
     @Override
-    public GeoJsonCollection requestGeocoder(String queryString, String locale) {
-        URI uri = buildGraphhopperUri(queryString, locale);
-        return doHttpGet(uri);
+    public String requestGeocoder(String queryString, String locale) {
+        String returnString;
+        if (!validateInput(queryString)) {
+            ErrorJson returnErrorJson = new ErrorJson("Input empty");
+            returnString = gson.toJson(returnErrorJson);
+        } else {
+            URI uri = buildGraphhopperUri(queryString, locale);
+            returnString = gson.toJson(doHttpGet(uri));
+        }
+        return returnString;
     }
 
     //****************************************
@@ -158,11 +173,20 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         if (inputJson.getLocale() == null || inputJson.getLocale().isEmpty()) {
             returnValue = false;
         }
-        if ( inputJson.getLocale().matches("de|en|fr|it")) {
+        if (inputJson.getLocale().matches("de|en|fr|it")) {
             returnValue = false;
         }
         return returnValue;
     }
+
+    private boolean validateInput(String inputString) {
+        boolean returnValue = true;
+        if (inputString == null || inputString.isEmpty()) {
+            returnValue = false;
+        }
+        return returnValue;
+    }
+
 
     //TODO validateOutput(GrahhopperJson grahhopperJson)
 

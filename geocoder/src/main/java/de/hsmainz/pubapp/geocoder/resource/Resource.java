@@ -53,9 +53,9 @@ public class Resource extends ResourceTemplate {
 
         HttpAPIRequest httpAPIRequest = new HttpGraphhopperRequest();
 
-        GeoJsonCollection geoJsonCollection = httpAPIRequest.requestGeocoder(queryString, locale);
+        String geoJson = httpAPIRequest.requestGeocoder(queryString, locale);
 
-        return jsonCallbackWraper(callback, gson.toJson(geoJsonCollection));
+        return jsonCallbackWraper(callback, geoJson);
     }
 
     //****************************************

@@ -54,9 +54,9 @@ public class ResourceJson extends ResourceTemplate {
         ClientInputJson inputJson = gson.fromJson(queryText, ClientInputJson.class);
 
         HttpAPIRequest httpAPIRequest = new HttpGraphhopperRequest();
-        GeoJsonCollection geoJsonCollection = httpAPIRequest.requestGeocoder(inputJson);
+        String geoJson = httpAPIRequest.requestGeocoder(inputJson);
 
-        return jsonCallbackWraper(callback, gson.toJson(geoJsonCollection));
+        return jsonCallbackWraper(callback, gson.toJson(geoJson));
     }
 
     //****************************************

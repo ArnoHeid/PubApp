@@ -39,7 +39,7 @@ public interface HttpAPIRequest {
      * @param inputJson the request parameters combined in a custom ClientJson
      * @return API response converted to GeoJSON
      */
-    GeoJsonCollection requestGeocoder(ClientInputJson inputJson);
+    String requestGeocoder(ClientInputJson inputJson);
 
     /**
      * Executes request to geocoder API and creates GeoJSON
@@ -48,7 +48,7 @@ public interface HttpAPIRequest {
      * @param locale      the string defining the used language
      * @return API response converted to GeoJSON
      */
-    GeoJsonCollection requestGeocoder(String queryString, String locale);
+    String requestGeocoder(String queryString, String locale);
 
     //****************************************
     // PRIVATE METHODS
