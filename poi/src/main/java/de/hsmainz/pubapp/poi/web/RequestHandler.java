@@ -19,7 +19,7 @@ import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.SelectedSearchCriteria;
 
 /**
- * This Class handles requests sent to API Given routing Coordinates or
+ * This Class handles requests sent to API. Given routing Coordinates or
  * BoundingBox Coordinates and Interests will be processed. Data for POIs is
  * generated accordingly
  * 
@@ -28,11 +28,29 @@ import de.hsmainz.pubapp.poi.model.SelectedSearchCriteria;
  */
 @Path("poi")
 public class RequestHandler {
+	// ****************************************
+	// CONSTANTS
+	// ****************************************
 
-	PoiSearchService poiSearchService;
-	String errorMessage;
-	String standardApi = "google";
-	String standardSerachType = "radius";
+	// ****************************************
+	// VARIABLES
+	// ****************************************
+	public PoiSearchService poiSearchService;
+	public String errorMessage;
+	private String standardApi = "google";
+	private String standardSerachType = "radius";
+
+	// ****************************************
+	// INIT/CONSTRUCTOR
+	// ****************************************
+
+	// ****************************************
+	// GETTER/SETTER
+	// ****************************************
+
+	// ****************************************
+	// PUBLIC METHODS
+	// ****************************************
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -59,10 +77,11 @@ public class RequestHandler {
 		return addCallback(callback, response);
 	}
 
+	// ****************************************
+	// PRIVATE METHODS
+	// ****************************************
 	private boolean valid(SelectedSearchCriteria criteria, String api, String searchType) {
-
 		boolean valid = true;
-
 		if (searchType == null) {
 			searchType = standardSerachType;
 		}
@@ -105,4 +124,8 @@ public class RequestHandler {
 		}
 
 	}
+	// *****************************************
+	// INNER CLASSES
+	// *****************************************
+
 }

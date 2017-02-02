@@ -1,7 +1,30 @@
 package de.hsmainz.pubapp.poi.model;
 
+/**
+ * Class for generating a GeoJson-Feature for saving POIs as GeoJson
+ */
 public class GeoJsonFeature {
 	private String type;
+	private GeoJsonProperties properties;
+	private GeoJsonGeometry geometry;
+
+	public GeoJsonFeature(String type, GeoJsonProperties geoJsonProperties, GeoJsonGeometry geometry) {
+		this.type = type;
+		this.properties = geoJsonProperties;
+		this.geometry = geometry;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public GeoJsonProperties getGeoJsonProperties() {
+		return properties;
+	}
+
+	public GeoJsonGeometry getGeoJsonGeometry() {
+		return geometry;
+	}
 
 	public static class GeoJsonGeometry {
 
@@ -36,36 +59,4 @@ public class GeoJsonFeature {
 
 	}
 
-	private GeoJsonProperties properties;
-	private GeoJsonGeometry geometry;
-
-	public GeoJsonFeature(String type, GeoJsonProperties geoJsonProperties, GeoJsonGeometry geometry) {
-		this.type = type;
-		this.properties = geoJsonProperties;
-		this.geometry = geometry;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public GeoJsonProperties getGeoJsonProperties() {
-		return properties;
-	}
-
-	public GeoJsonGeometry getGeoJsonGeometry() {
-		return geometry;
-	}
-
-	/*
-	 * ({"type":"FeatureCollection", "features": [
-	 * {"type":"Feature","properties":{"name":"Mainz","country":"Deutschland"},
-	 * "geometry":{"type":"Point","coordinates":[8.2710237,49.9999952]}},
-	 * {"type":"Feature","properties":{"name":"Mainz","country":"Deutschland"},
-	 * "geometry":{"type":"Point","coordinates":[8.25769443117735,49.
-	 * 965411149999994]}},
-	 * {"type":"Feature","properties":{"name":"Mainz Hbf","country":
-	 * "Deutschland"},"geometry":{"type":"Point","coordinates":[8.2587297,50.
-	 * 0012336]}}, ]})
-	 */
 }

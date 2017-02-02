@@ -1,15 +1,16 @@
 package de.hsmainz.pubapp.poi.model;
 
+/**
+ * Class to create an Object of each POI found with all relevant Details
+ * 
+ * @author caro
+ *
+ */
 public class ResultPoi {
-
 	private String name;
-
 	private String interest;
-
 	private double lat;
-
 	private double lon;
-
 	private Details details;
 
 	public double getLat() {

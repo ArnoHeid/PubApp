@@ -13,7 +13,32 @@ import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.ReturnError;
 
 public class ResponseHandler {
+	// ****************************************
+	// CONSTANTS
+	// ****************************************
 
+	// ****************************************
+	// VARIABLES
+	// ****************************************
+
+	// ****************************************
+	// INIT/CONSTRUCTOR
+	// ****************************************
+
+	// ****************************************
+	// GETTER/SETTER
+	// ****************************************
+
+	// ****************************************
+	// PUBLIC METHODS
+	// ****************************************
+	/**
+	 * Generate successful response as GeoJSON
+	 * 
+	 * @param allPois
+	 *            List of all POIs found
+	 * @return GeoJSON as String with all POIs found
+	 */
 	public String getResponse(List<ResultPoi> allPois) {
 
 		List<GeoJsonFeature> features = new ArrayList<GeoJsonFeature>();
@@ -31,11 +56,26 @@ public class ResponseHandler {
 		return new Gson().toJson(featureCollection);
 	}
 
+	/**
+	 * Generate response for failed request
+	 * 
+	 * @param errorMessage
+	 *            gives details about what went wrong
+	 * @return JSOON String with error message
+	 */
 	public String getErrorResponse(String errorMessage) {
 		ReturnError error = new ReturnError("Error", errorMessage);
 
 		return new Gson().toJson(error);
 
 	}
+
+	// ****************************************
+	// PRIVATE METHODS
+	// ****************************************
+
+	// *****************************************
+	// INNER CLASSES
+	// *****************************************
 
 }

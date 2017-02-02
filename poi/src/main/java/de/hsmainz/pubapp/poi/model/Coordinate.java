@@ -1,5 +1,11 @@
 package de.hsmainz.pubapp.poi.model;
 
+/**
+ * Class for generating and saving Coordinates with their Longitude and Latitude
+ * 
+ * @author caro
+ *
+ */
 public class Coordinate {
 	private double lat;
 	private double lng;
