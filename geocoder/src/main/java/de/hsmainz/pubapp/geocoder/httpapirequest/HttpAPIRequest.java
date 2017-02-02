@@ -1,7 +1,7 @@
 package de.hsmainz.pubapp.geocoder.httpapirequest;
 
 import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
-import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonColection;
+import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonCollection;
 
 /**
  * Interface for all different geocoder APIs
@@ -31,13 +31,15 @@ public interface HttpAPIRequest {
     // PUBLIC METHODS
     //****************************************
 
+    //TODO Change to Return String, so ErrorJSON can easy be returned
+
     /**
      * Executes request to geocoder API and creates GeoJSON. Custom ClientJson is used for the input
      *
      * @param inputJson the request parameters combined in a custom ClientJson
      * @return API response converted to GeoJSON
      */
-    GeoJsonColection requestGeocoder(ClientInputJson inputJson);
+    String requestGeocoder(ClientInputJson inputJson);
 
     /**
      * Executes request to geocoder API and creates GeoJSON
@@ -46,7 +48,7 @@ public interface HttpAPIRequest {
      * @param locale      the string defining the used language
      * @return API response converted to GeoJSON
      */
-    GeoJsonColection requestGeocoder(String queryString, String locale);
+    String requestGeocoder(String queryString, String locale);
 
     //****************************************
     // PRIVATE METHODS

@@ -1,12 +1,12 @@
-package de.hsmainz.pubapp.geocoder.resource;
+package de.hsmainz.pubapp.geocoder.jsonparser;
 
 /**
- * father class for all resources
+ * JSON to report an error to the client
  *
  * @author Arno
- * @since 16.12.2016.
+ * @since 31.01.2017.
  */
-public class ResourceTemplate {
+public class ErrorJson {
 
     //****************************************
     // CONSTANTS
@@ -15,10 +15,19 @@ public class ResourceTemplate {
     //****************************************
     // VARIABLES
     //****************************************
-
+    private String type = "Error";
+    private String errortext;
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
+
+    public ErrorJson() {
+        errortext = "Default Error Text";
+    }
+
+    public ErrorJson(String errorText){
+        this.errortext = errorText;
+    }
 
     //****************************************
     // GETTER/SETTER
@@ -31,20 +40,6 @@ public class ResourceTemplate {
     //****************************************
     // PRIVATE METHODS
     //****************************************
-
-    /**
-     * wraps JSON string with callback string
-     *
-     * @param callback the callback string
-     * @param json the json wrapped with the callback string
-     * @return the wrapped callback string
-     */
-    protected String jsonCallbackWraper(String callback, String json) {
-        if (callback == null || callback.isEmpty())
-            return json;
-        else
-            return callback + '(' + json + ')';
-    }
 
     //****************************************
     // INNER CLASSES
