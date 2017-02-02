@@ -14,8 +14,8 @@ public class PoiSearchInputController {
 
 		if ("bbox".equals(poiSearchService.getSearchType())) {
 			Coordinate[] coords = new Coordinate[2];
-			coords[0] = criteria.getCoordinates().get(1);
-			coords[1] = criteria.getCoordinates().get(2);
+			coords[0] = criteria.getCoordinates().get(0);
+			coords[1] = criteria.getCoordinates().get(1);
 
 			for (String currentInterest : criteria.getInterests()) {
 				List<ResultPoi> poisForBBox = poiSearchService.getPoisWithinBBox(currentInterest, coords);
@@ -26,7 +26,7 @@ public class PoiSearchInputController {
 			for (Coordinate currentCoordinate : criteria.getCoordinates()) {
 				for (String currentInterest : criteria.getInterests()) {
 					List<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
-							currentCoordinate, 50);
+							currentCoordinate, 100);
 					allPois.addAll(poisForNode);
 				}
 			}

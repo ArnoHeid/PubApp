@@ -10,6 +10,7 @@ import de.hsmainz.pubapp.poi.model.GeoJsonFeature.GeoJsonGeometry;
 import de.hsmainz.pubapp.poi.model.GeoJsonFeature.GeoJsonProperties;
 import de.hsmainz.pubapp.poi.model.GeoJsonFeatureCollection;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
+import de.hsmainz.pubapp.poi.model.ReturnError;
 
 public class ResponseHandler {
 
@@ -27,15 +28,14 @@ public class ResponseHandler {
 		}
 
 		GeoJsonFeatureCollection featureCollection = new GeoJsonFeatureCollection("FeatureCollection", features);
-		Gson gson = new Gson();
-		String jsonInString = gson.toJson(featureCollection);
-
-		return jsonInString;
+		return new Gson().toJson(featureCollection);
 	}
 
 	public String getErrorResponse(String errorMessage) {
-		// TODO Auto-generated method stub
-		return null;
+		ReturnError error = new ReturnError("Error", errorMessage);
+
+		return new Gson().toJson(error);
+
 	}
 
 }

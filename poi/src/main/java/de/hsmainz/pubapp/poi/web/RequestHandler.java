@@ -23,7 +23,7 @@ import de.hsmainz.pubapp.poi.model.SelectedSearchCriteria;
  * BoundingBox Coordinates and Interests will be processed. Data for POIs is
  * generated accordingly
  * 
- * @author CarolinRottmann
+ * @author caro
  *
  */
 @Path("poi")
@@ -31,6 +31,8 @@ public class RequestHandler {
 
 	PoiSearchService poiSearchService;
 	String errorMessage;
+	String standardApi = "google";
+	String standardSerachType = "radius";
 
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -60,6 +62,14 @@ public class RequestHandler {
 	private boolean valid(SelectedSearchCriteria criteria, String api, String searchType) {
 
 		boolean valid = true;
+
+		if (searchType == null) {
+			searchType = standardSerachType;
+		}
+
+		if (api == null) {
+			api = standardApi;
+		}
 
 		if (criteria != null) {
 			if ("bbox".equals(searchType)) {
@@ -91,7 +101,7 @@ public class RequestHandler {
 		if (callback.isEmpty() || callback == null) {
 			return response;
 		} else {
-			return callback + "('" + response + "')";
+			return callback + "(" + response + ")";
 		}
 
 	}
