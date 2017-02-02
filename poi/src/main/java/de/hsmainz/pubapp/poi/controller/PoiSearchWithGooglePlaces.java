@@ -12,7 +12,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import de.hsmainz.pubapp.poi.model.PoiBoundingBox;
+import de.hsmainz.pubapp.poi.model.Coordinate;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.googleapi.GooglePoiSearchResult;
 import de.hsmainz.pubapp.poi.model.googleapi.GoogleResultPoi;
@@ -25,9 +25,11 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	private static final String OUT_JSON = "/json";
 	private static final String API_KEY = "AIzaSyDaqvFY5-JfIFPK1e7HdjVi-OYmuc2QPE8";
 
+	public String searchType;
+
 	@Override
-	public List<ResultPoi> getPoisWithinRadius(String interest, PoiBoundingBox poi, int radius) {
-		String requestStart = buildRequestRadius(interest, poi.getStartLat(), poi.getStartLng(), 1000);
+	public List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
+		String requestStart = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
 
 		InputStreamReader in = null;
 		in = postQuery(requestStart, in);
@@ -44,7 +46,7 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	}
 
 	@Override
-	public List<ResultPoi> getPoisWithinBBox(String interest, PoiBoundingBox poi) {
+	public List<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -104,6 +106,17 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 		}
 		return results;
 
+	}
+
+	@Override
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+
+	}
+
+	@Override
+	public String getSearchType() {
+		return searchType;
 	}
 
 }

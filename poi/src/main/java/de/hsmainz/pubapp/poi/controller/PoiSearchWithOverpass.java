@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import de.hsmainz.pubapp.poi.model.PoiBoundingBox;
+import de.hsmainz.pubapp.poi.model.Coordinate;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.overpass.OverpassPoiSearchResult;
 import de.hsmainz.pubapp.poi.model.overpass.OverpassResultPoi;
@@ -20,9 +20,11 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	private static final String BASE_API_URL = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];";
 	private static final String LOG_TAG = "PubApp_PoiSearchWithOverpass";
 
+	public String searchType;
+
 	@Override
-	public List<ResultPoi> getPoisWithinRadius(String interest, PoiBoundingBox poi, int radius) {
-		String requestStart = buildRequestRadius(interest, poi.getStartLat(), poi.getStartLng(), 1000);
+	public List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
+		String requestStart = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
 
 		InputStreamReader in = null;
 		in = postQuery(requestStart, in);
@@ -35,9 +37,9 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	}
 
 	@Override
-	public List<ResultPoi> getPoisWithinBBox(String interest, PoiBoundingBox poi) {
+	public List<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords) {
 
-		String requestStart = buildRequestBBox(interest, poi);
+		String requestStart = buildRequestBBox(interest, coords);
 
 		InputStreamReader in = null;
 		in = postQuery(requestStart, in);
@@ -48,11 +50,11 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 		return transformApiResultsToResultPoi(places);
 	}
 
-	public String buildRequestBBox(String interest, PoiBoundingBox poi) {
+	public String buildRequestBBox(String interest, Coordinate[] coords) {
 		String requestUri = "";
 		String amenityQueryString = "[amenity=" + interest + "]";
-		String bBoxQueryString = "(" + poi.getStartLat() + "," + poi.getStartLng() + "," + poi.getEndLat() + ","
-				+ poi.getEndLng() + ");";
+		String bBoxQueryString = "(" + coords[0].getLat() + "," + coords[0].getLng() + "," + coords[1].getLat() + ","
+				+ coords[1].getLng() + ");";
 		StringBuilder sb = new StringBuilder(BASE_API_URL);
 		sb.append("(node" + amenityQueryString);
 		sb.append(bBoxQueryString);
@@ -120,6 +122,17 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 		}
 		return results;
 
+	}
+
+	@Override
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+
+	}
+
+	@Override
+	public String getSearchType() {
+		return searchType;
 	}
 
 }

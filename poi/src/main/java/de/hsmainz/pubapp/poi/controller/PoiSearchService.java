@@ -3,7 +3,7 @@ package de.hsmainz.pubapp.poi.controller;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import de.hsmainz.pubapp.poi.model.PoiBoundingBox;
+import de.hsmainz.pubapp.poi.model.Coordinate;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
 
 public interface PoiSearchService {
@@ -12,8 +12,12 @@ public interface PoiSearchService {
 
 	InputStreamReader postQuery(String request, InputStreamReader in);
 
-	List<ResultPoi> getPoisWithinRadius(String interest, PoiBoundingBox poi, int radius);
+	void setSearchType(String searchType);
 
-	List<ResultPoi> getPoisWithinBBox(String interest, PoiBoundingBox poi);
+	String getSearchType();
+
+	List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius);
+
+	List<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords);
 
 }

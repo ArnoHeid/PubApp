@@ -33,4 +33,9 @@ public class ResponseHandler {
 		return jsonInString;
 	}
 
+	public String getErrorResponse(String errorMessage) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

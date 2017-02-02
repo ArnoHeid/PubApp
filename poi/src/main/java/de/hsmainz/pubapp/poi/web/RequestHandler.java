@@ -9,89 +9,90 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.google.gson.Gson;
+
+import de.hsmainz.pubapp.poi.controller.PoiSearchInputController;
 import de.hsmainz.pubapp.poi.controller.PoiSearchService;
 import de.hsmainz.pubapp.poi.controller.PoiSearchWithGooglePlaces;
 import de.hsmainz.pubapp.poi.controller.PoiSearchWithOverpass;
-import de.hsmainz.pubapp.poi.model.PoiBoundingBox;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
+import de.hsmainz.pubapp.poi.model.SelectedSearchCriteria;
 
 /**
- * This Class Handles Request sent to API Given routing Coordinates will be
- * processed and POIs according to data are generated
+ * This Class handles requests sent to API Given routing Coordinates or
+ * BoundingBox Coordinates and Interests will be processed. Data for POIs is
+ * generated accordingly
  * 
- * @author caro
+ * @author CarolinRottmann
  *
  */
 @Path("poi")
 public class RequestHandler {
 
+	PoiSearchService poiSearchService;
+	String errorMessage;
+
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
-	public String get(@QueryParam("callback") String callback, @QueryParam("interest") String interest,
-			@QueryParam("startLat") String startLat, @QueryParam("startLng") String startLng,
-			@QueryParam("endLat") String endLat, @QueryParam("endLng") String endLng, @QueryParam("api") String api) {
+	public String get(@QueryParam("callback") String callback, @QueryParam("criteria") String selectedSearchCriteria,
+			@QueryParam("api") String api, @QueryParam("searchtype") String searchType) {
 
-		List<ResultPoi> allPois = getRelevantPois(interest, Double.parseDouble(startLat), Double.parseDouble(startLng),
-				Double.parseDouble(endLat), Double.parseDouble(endLng), api);
+		// Define needed Parameters for Response
 		ResponseHandler responseHandler = new ResponseHandler();
+		String response = "";
+		List<ResultPoi> allPois = new ArrayList<ResultPoi>();
+		PoiSearchInputController poiInputController = new PoiSearchInputController();
 
-		String response = responseHandler.getResponse(allPois);
+		// Transform Criteria JSON to Criteria Object
+		SelectedSearchCriteria criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
+
+		// Validate input parameters and handle request
+		if (!valid(criteria, api, searchType)) {
+			response = responseHandler.getErrorResponse(errorMessage);
+		} else {
+			allPois = poiInputController.getPoisForCriteria(criteria, poiSearchService);
+			response = responseHandler.getResponse(allPois);
+		}
 
 		return addCallback(callback, response);
+	}
+
+	private boolean valid(SelectedSearchCriteria criteria, String api, String searchType) {
+
+		boolean valid = true;
+
+		if (criteria != null) {
+			if ("bbox".equals(searchType)) {
+				if (criteria.getCoordinates().size() != 2) {
+					errorMessage = "Not enough coordinates selected for Bounding Box Search";
+					valid = false;
+				}
+				poiSearchService = new PoiSearchWithOverpass();
+				poiSearchService.setSearchType(searchType);
+			} else if ("radius".equals(searchType)) {
+				if ("google".equals(api)) {
+					poiSearchService = new PoiSearchWithGooglePlaces();
+				} else {
+					poiSearchService = new PoiSearchWithOverpass();
+				}
+				poiSearchService.setSearchType(searchType);
+			} else if (criteria.getInterests().size() < 1) {
+				errorMessage = "No Interest Selected";
+				valid = false;
+			}
+		} else {
+			errorMessage = "No search criteria could be proccesed";
+			valid = false;
+		}
+		return valid;
 	}
 
 	public String addCallback(String callback, String response) {
 		if (callback.isEmpty() || callback == null) {
 			return response;
 		} else {
-			return callback + "'('" + response + "')'";
+			return callback + "('" + response + "')";
 		}
 
-	}
-
-	public List<ResultPoi> getRelevantPois(String interest, Double startLat, Double startLng, Double endLat,
-			Double endLng, String api) {
-		api = "overpass";
-		String searchType = "bbox"; // should be in properties file
-		PoiSearchService poiSearchService = null;
-		List<PoiBoundingBox> poisToFind = new ArrayList<PoiBoundingBox>();
-		List<ResultPoi> allPois = new ArrayList<>();
-
-		// Save Given Data in PoiBoundingBoxObject
-		PoiBoundingBox poiSearch = new PoiBoundingBox();
-		poiSearch.setStartLat(startLat);
-		poiSearch.setStartLng(startLng);
-		poiSearch.setEndLat(endLat);
-		poiSearch.setEndLng(endLng);
-
-		poisToFind.add(poiSearch);
-
-		// check if search should contact googlePlacesAPI or overpassAPI
-		if ("google".equals(api)) {
-			System.out.println("Use Google Places API");
-			poiSearchService = new PoiSearchWithGooglePlaces();
-		} else if ("overpass".equals(api)) {
-			System.out.println("Use Overpass API");
-			poiSearchService = new PoiSearchWithOverpass();
-		}
-
-		// check if search should be within BoundingBox or Radius of all Nodes
-		if (poiSearchService != null) {
-			if ("bbox".equals(searchType)) {
-				System.out.println("bbox search");
-				List<ResultPoi> poisForNode = poiSearchService.getPoisWithinBBox(interest, poiSearch);
-				allPois.addAll(poisForNode);
-			} else if ("radius".equals(searchType)) {
-				System.out.println("radius search");
-				for (PoiBoundingBox poi : poisToFind) {
-					List<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(interest, poi, 500);
-					allPois.addAll(poisForNode);
-				}
-			}
-		} else {
-			// TODO Error: Please Select API to Use either "google" or
-			// "overpass"
-		}
-		return allPois;
 	}
 }
