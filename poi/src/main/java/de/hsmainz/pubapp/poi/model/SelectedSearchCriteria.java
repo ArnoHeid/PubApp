@@ -2,6 +2,13 @@ package de.hsmainz.pubapp.poi.model;
 
 import java.util.List;
 
+/**
+ * Class to create an Object of Client Input meaning all search criteria to
+ * match POIs accordingly
+ * 
+ * @author caro
+ *
+ */
 public class SelectedSearchCriteria {
 	private List<Coordinate> coordinates;
 	private List<String> interests;

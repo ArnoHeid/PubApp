@@ -4,7 +4,6 @@ package de.hsmainz.pubapp.poi.model;
  * Error with Error message
  *
  * @author caro
- * @since 31.01.2017.
  */
 public class ReturnError {
 
