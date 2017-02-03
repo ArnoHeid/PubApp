@@ -49,7 +49,7 @@ public class Main {
      */
     private static HttpServer startServer() {
 
-        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubApp.geocoder.resource");
+        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.geocoder.resource");
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
 
