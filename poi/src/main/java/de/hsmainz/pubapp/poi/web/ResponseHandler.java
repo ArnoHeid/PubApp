@@ -47,9 +47,17 @@ public class ResponseHandler {
 			double[] coordinates = new double[2];
 			coordinates[1] = place.getLat();
 			coordinates[0] = place.getLon();
-			GeoJsonFeature currentFeature = new GeoJsonFeature("Feature", new GeoJsonProperties(place.getName()),
-					new GeoJsonGeometry("Point", coordinates));
-			features.add(currentFeature);
+			GeoJsonFeature currentFeature = null;
+
+			try { 
+				currentFeature = new GeoJsonFeature("Feature", new GeoJsonProperties(place.getName(),
+						place.getInterest(), place.getDetails().getOpeningHours(), place.getDetails().getIsOpen()),
+						new GeoJsonGeometry("Point", coordinates));
+				features.add(currentFeature);
+
+			} catch (Exception e) {
+				System.out.println(e);
+			}
 		}
 
 		GeoJsonFeatureCollection featureCollection = new GeoJsonFeatureCollection("FeatureCollection", features);

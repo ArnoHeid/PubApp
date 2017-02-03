@@ -4,7 +4,8 @@ public class GoogleResultPoi {
 
 	private GoogleGeometry geometry;
 	private String name;
-
+	private GoogleOpeningHours openingHours;
+	
 	public GoogleGeometry getGeometry() {
 		return geometry;
 	}
@@ -20,5 +21,15 @@ public class GoogleResultPoi {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public GoogleOpeningHours getOpeningHours() {
+		return openingHours;
+	}
+
+	public void setOpeningHours(GoogleOpeningHours openingHours) {
+		this.openingHours = openingHours;
+	}
+
+
 
 }

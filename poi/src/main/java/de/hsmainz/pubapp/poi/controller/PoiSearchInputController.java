@@ -65,7 +65,7 @@ public class PoiSearchInputController {
 			for (Coordinate currentCoordinate : criteria.getCoordinates()) {
 				for (String currentInterest : criteria.getInterests()) {
 					List<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
-							currentCoordinate, 100);
+							currentCoordinate, 1000);
 					allPois.addAll(poisForNode);
 				}
 			}

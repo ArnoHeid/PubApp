@@ -10,9 +10,12 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import de.hsmainz.pubapp.poi.model.Coordinate;
+import de.hsmainz.pubapp.poi.model.Details;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.googleapi.GooglePoiSearchResult;
 import de.hsmainz.pubapp.poi.model.googleapi.GoogleResultPoi;
@@ -30,7 +33,7 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	public String searchType;
+	private String searchType;
 
 	// ****************************************
 	// INIT/CONSTRUCTOR
@@ -57,17 +60,24 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	public List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
 		String requestStart = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
 
-		InputStreamReader in = null;
-		in = postQuery(requestStart, in);
-
-		GooglePoiSearchResult placesResult = new Gson().fromJson(in, GooglePoiSearchResult.class);
-		List<GoogleResultPoi> places = placesResult.getList();
-
-		if (places.isEmpty()) {
-			System.out.println("No POIs found");
+		InputStreamReader in = postQuery(requestStart);
+		List<ResultPoi> resultPois = null;
+		
+		try {
+			Gson gson = new GsonBuilder()
+		    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+		    .create();
+			GooglePoiSearchResult placesResult = gson.fromJson(in, GooglePoiSearchResult.class);
+			List<GoogleResultPoi> places = placesResult.getList();
+			if (places.isEmpty()) {
+				System.out.println("No POIs found");
+			}
+			resultPois = transformApiResultsToResultPoi(places, interest);
+		} catch (Exception e) {
+			System.out.println(e);
 		}
-
-		return transformApiResultsToResultPoi(places, interest);
+		
+		return resultPois;
 
 	}
 
@@ -78,9 +88,10 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	}
 
 	@Override
-	public InputStreamReader postQuery(String request, InputStreamReader in) {
+	public InputStreamReader postQuery(String request) {
 		URL url = null;
 		HttpURLConnection conn;
+		InputStreamReader in = null;
 		try {
 			url = new URL(request);
 			conn = (HttpURLConnection) url.openConnection();
@@ -93,7 +104,6 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 			System.out.println(LOG_TAG + "Error connecting API" + e);
 			e.printStackTrace();
 		}
-		System.out.println(in.toString());
 		return in;
 	}
 
@@ -113,7 +123,7 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	 */
 	private List<ResultPoi> transformApiResultsToResultPoi(List<GoogleResultPoi> places, String interest) {
 
-		List<ResultPoi> results = new ArrayList<ResultPoi>();
+		List<ResultPoi> results = new ArrayList<>();
 
 		for (GoogleResultPoi googlePoi : places) {
 			ResultPoi resultPoi = new ResultPoi();
@@ -121,6 +131,15 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 			resultPoi.setInterest(interest);
 			resultPoi.setLat(googlePoi.getGeometry().getLocation().getLat());
 			resultPoi.setLon(googlePoi.getGeometry().getLocation().getLng());
+			Details details = new Details();
+			try {
+				details.setIsOpen(Boolean.toString(googlePoi.getOpeningHours().getOpenNow()));
+				details.setOpeningHours("No available Information on general opening Hours");
+			} catch (NullPointerException e) {
+				details.setIsOpen("No available Information if Place is open now");
+				details.setOpeningHours("No available Information on general opening Hours");
+			}
+			resultPoi.setDetails(details);
 			results.add(resultPoi);
 		}
 		return results;
