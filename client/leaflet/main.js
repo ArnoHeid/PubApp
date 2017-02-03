@@ -100,8 +100,12 @@ geocoder = function() {
 	function (data) {
 	console.log(data);
 	GEOJSON = L.geoJSON(data, {
-		onEachFeature: onEachFeature
+		onEachFeature: onEachFeature,
+		onEachFeature: function (feature, layer) {
+        layer.bindPopup(feature.properties.name);
+		}
 	}).addTo(mymap);
+	mymap.fitBounds(GEOJSON.getBounds());
 		$('#Startpunkt').show();
 		$('#Endpunkt').show();
 		$('#notification').html("<b>Bitte wählen Sie von der Karte einen Start- und Endpunkt aus!</b>").slideDown();
