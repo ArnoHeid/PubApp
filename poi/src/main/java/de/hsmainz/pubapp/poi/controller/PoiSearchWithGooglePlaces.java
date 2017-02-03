@@ -9,6 +9,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -24,11 +26,13 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
+	private static final ResourceBundle config = ResourceBundle.getBundle("config");
+	private static final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
 	private static final String LOG_TAG = "PubApp_SearchPoiWithGoogle";
 	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
 	private static final String TYPE_SEARCH = "/search";
 	private static final String OUT_JSON = "/json";
-	private static final String API_KEY = "AIzaSyDaqvFY5-JfIFPK1e7HdjVi-OYmuc2QPE8";
+	private static final String API_KEY = config.getString("api_key_google");
 
 	// ****************************************
 	// VARIABLES
@@ -134,10 +138,10 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 			Details details = new Details();
 			try {
 				details.setIsOpen(Boolean.toString(googlePoi.getOpeningHours().getOpenNow()));
-				details.setOpeningHours("No available Information on general opening Hours");
+				details.setOpeningHours(lables.getString("message_no_opening_hours"));
 			} catch (NullPointerException e) {
-				details.setIsOpen("No available Information if Place is open now");
-				details.setOpeningHours("No available Information on general opening Hours");
+				details.setIsOpen(lables.getString("message_no_open_now"));
+				details.setOpeningHours(lables.getString("message_no_opening_hours"));
 			}
 			resultPoi.setDetails(details);
 			results.add(resultPoi);

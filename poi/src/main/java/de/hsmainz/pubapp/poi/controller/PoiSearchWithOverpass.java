@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -22,6 +24,7 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
+	private static final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
 	private static final String BASE_API_URL = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];";
 	private static final String LOG_TAG = "PubApp_PoiSearchWithOverpass";
 
@@ -190,10 +193,10 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 			Details details = new Details();
 			try {
 				details.setOpeningHours(overpassPoi.getTags().getOpeningHours());
-				details.setIsOpen("No available Information if place is open now");
+				details.setIsOpen(lables.getString("message_no_open_now"));
 			} catch (NullPointerException e) {
-				details.setIsOpen("No available Information if place is open now");
-				details.setOpeningHours("No available Information on general opening Hours");
+				details.setIsOpen(lables.getString("message_no_open_now"));
+				details.setOpeningHours(lables.getString("message_no_opening_hours"));
 			}
 			
 			resultPoi.setDetails(details);

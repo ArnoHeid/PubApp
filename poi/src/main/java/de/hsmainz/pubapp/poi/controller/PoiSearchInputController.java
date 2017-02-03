@@ -2,6 +2,7 @@ package de.hsmainz.pubapp.poi.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import de.hsmainz.pubapp.poi.model.Coordinate;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
@@ -23,7 +24,7 @@ public class PoiSearchInputController {
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-
+	private ResourceBundle config = ResourceBundle.getBundle("config");
 	// ****************************************
 	// INIT/CONSTRUCTOR
 	// ****************************************
@@ -51,7 +52,7 @@ public class PoiSearchInputController {
 	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, PoiSearchService poiSearchService) {
 		List<ResultPoi> allPois = new ArrayList<>();
 
-		if ("bbox".equals(poiSearchService.getSearchType())) {
+		if (config.getString("bounding_box_search").equals(poiSearchService.getSearchType())) {
 			Coordinate[] coords = new Coordinate[2];
 			coords[0] = criteria.getCoordinates().get(0);
 			coords[1] = criteria.getCoordinates().get(1);
@@ -65,7 +66,7 @@ public class PoiSearchInputController {
 			for (Coordinate currentCoordinate : criteria.getCoordinates()) {
 				for (String currentInterest : criteria.getInterests()) {
 					List<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
-							currentCoordinate, 1000);
+							currentCoordinate, Integer.valueOf(config.getString("radius_width")));
 					allPois.addAll(poisForNode);
 				}
 			}

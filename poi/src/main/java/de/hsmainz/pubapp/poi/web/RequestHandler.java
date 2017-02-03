@@ -1,7 +1,10 @@
 package de.hsmainz.pubapp.poi.web;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -37,8 +40,8 @@ public class RequestHandler {
 	// ****************************************
 	public PoiSearchService poiSearchService;
 	public String errorMessage;
-	private String standardApi = "google";
-	private String standardSerachType = "radius";
+	private ResourceBundle config = ResourceBundle.getBundle("config");
+	private ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
 
 	// ****************************************
 	// INIT/CONSTRUCTOR
@@ -55,7 +58,7 @@ public class RequestHandler {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String get(@QueryParam("callback") String callback, @QueryParam("criteria") String selectedSearchCriteria,
-			@QueryParam("api") String api, @QueryParam("searchtype") String searchType) {
+			@QueryParam("api") String api, @QueryParam("searchtype") String searchType) throws IOException {
 
 		// Define needed Parameters for Response
 		ResponseHandler responseHandler = new ResponseHandler();
@@ -69,7 +72,6 @@ public class RequestHandler {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-
 		// Validate input parameters and handle request
 		if (!valid(criteria, api, searchType)) {
 			response = responseHandler.getErrorResponse(errorMessage);
@@ -84,37 +86,36 @@ public class RequestHandler {
 	// ****************************************
 	// PRIVATE METHODS
 	// ****************************************
-	private boolean valid(SelectedSearchCriteria criteria, String api, String searchType) {
+	private boolean valid(SelectedSearchCriteria criteria, String api, String searchType) throws IOException {
 		boolean valid = true;
 		if (searchType == null) {
-			searchType = standardSerachType;
+			searchType = config.getString("standard_search_type");
 		}
-
 		if (api == null) {
-			api = standardApi;
-		}
-
+			api = config.getString("standard_api");
+		} 
 		if (criteria != null) {
-			if ("bbox".equals(searchType)) {
+			if (config.getString("bounding_box_search").equals(searchType)) {
 				if (criteria.getCoordinates().size() != 2) {
-					errorMessage = "Not enough coordinates selected for Bounding Box Search";
+					errorMessage = lables.getString("error_bbox_amout_coords");
 					valid = false;
 				}
 				poiSearchService = new PoiSearchWithOverpass();
 				poiSearchService.setSearchType(searchType);
-			} else if ("radius".equals(searchType)) {
-				if ("google".equals(api)) {
+			} else if (config.getString("radius_search").equals(searchType)) {
+				if (config.getString("google_places_api").equals(api)) {
 					poiSearchService = new PoiSearchWithGooglePlaces();
 				} else {
 					poiSearchService = new PoiSearchWithOverpass();
 				}
 				poiSearchService.setSearchType(searchType);
-			} else if (criteria.getInterests().size() < 1) {
-				errorMessage = "No Interest Selected";
+			}
+			if (criteria.getInterests() == null || criteria.getInterests().isEmpty()) {
+				errorMessage = lables.getString("error_no_interest");
 				valid = false;
 			}
 		} else {
-			errorMessage = "No search criteria could be proccesed";
+			errorMessage = lables.getString("error_criteria");
 			valid = false;
 		}
 		return valid;

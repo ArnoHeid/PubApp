@@ -2,6 +2,7 @@ package de.hsmainz.pubapp.poi;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ResourceBundle;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -18,13 +19,13 @@ public class PoiServiceMain {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
-
-	public static final String BASE_URI = "http://localhost:8000/pubapp/";
+	private static ResourceBundle config = ResourceBundle.getBundle("config");
+	public static final String BASE_URI = config.getString("url");
 
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-
+	
 	// ****************************************
 	// INIT/CONSTRUCTOR
 	// ****************************************
