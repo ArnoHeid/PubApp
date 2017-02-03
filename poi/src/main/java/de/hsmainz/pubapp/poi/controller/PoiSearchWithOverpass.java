@@ -8,9 +8,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import de.hsmainz.pubapp.poi.model.Coordinate;
+import de.hsmainz.pubapp.poi.model.Details;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.overpass.OverpassPoiSearchResult;
 import de.hsmainz.pubapp.poi.model.overpass.OverpassResultPoi;
@@ -25,7 +28,7 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	public String searchType;
+	private String searchType;
 
 	// ****************************************
 	// INIT/CONSTRUCTOR
@@ -52,14 +55,23 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	public List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
 		String requestStart = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
 
-		InputStreamReader in = null;
-		in = postQuery(requestStart, in);
+		InputStreamReader in = postQuery(requestStart);
+		List<ResultPoi> resultPois = null;
+		try {
+			Gson gson = new GsonBuilder()
+		    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+		    .create();
+			OverpassPoiSearchResult placesResult = gson.fromJson(in, OverpassPoiSearchResult.class);
+			List<OverpassResultPoi> places = placesResult.getList();
+			if (places.isEmpty()) {
+				System.out.println("No POIs found");
+			}
+			resultPois = transformApiResultsToResultPoi(places);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 
-		OverpassPoiSearchResult placesResult = new Gson().fromJson(in, OverpassPoiSearchResult.class);
-		List<OverpassResultPoi> places = placesResult.getList();
-
-		return transformApiResultsToResultPoi(places);
-
+		return resultPois;
 	}
 
 	@Override
@@ -67,8 +79,7 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 
 		String requestStart = buildRequestBBox(interest, coords);
 
-		InputStreamReader in = null;
-		in = postQuery(requestStart, in);
+		InputStreamReader in = postQuery(requestStart);
 
 		OverpassPoiSearchResult placesResult = new Gson().fromJson(in, OverpassPoiSearchResult.class);
 		List<OverpassResultPoi> places = placesResult.getList();
@@ -77,9 +88,10 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	}
 
 	@Override
-	public InputStreamReader postQuery(String request, InputStreamReader in) {
+	public InputStreamReader postQuery(String request) {
 		URL url = null;
 		HttpURLConnection conn;
+		InputStreamReader in = null;
 		try {
 			url = new URL(request);
 			conn = (HttpURLConnection) url.openConnection();
@@ -166,7 +178,7 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	 */
 	private List<ResultPoi> transformApiResultsToResultPoi(List<OverpassResultPoi> places) {
 
-		List<ResultPoi> results = new ArrayList<ResultPoi>();
+		List<ResultPoi> results = new ArrayList<>();
 
 		for (OverpassResultPoi overpassPoi : places) {
 			ResultPoi resultPoi = new ResultPoi();
@@ -174,6 +186,18 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 			resultPoi.setInterest(overpassPoi.getTags().getAmenity());
 			resultPoi.setLat(overpassPoi.getLat());
 			resultPoi.setLon(overpassPoi.getLon());
+			
+			Details details = new Details();
+			try {
+				details.setOpeningHours(overpassPoi.getTags().getOpeningHours());
+				details.setIsOpen("No available Information if place is open now");
+			} catch (NullPointerException e) {
+				details.setIsOpen("No available Information if place is open now");
+				details.setOpeningHours("No available Information on general opening Hours");
+			}
+			
+			resultPoi.setDetails(details);
+			
 			results.add(resultPoi);
 		}
 		return results;

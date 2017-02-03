@@ -6,6 +6,9 @@ public class OverpassTags {
 
 	private String name;
 
+	private String openingHours;
+	
+	
 	public String getAmenity() {
 		return amenity;
 	}
@@ -20,6 +23,14 @@ public class OverpassTags {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getOpeningHours() {
+		return openingHours;
+	}
+
+	public void setOpeningHours(String openingHours) {
+		this.openingHours = openingHours;
 	}
 
 }

@@ -45,11 +45,9 @@ public interface PoiSearchService {
 	 * 
 	 * @param request
 	 *            HTTP-Request String
-	 * @param in
-	 *            declared InputStramReader
 	 * @return the API-Response stored in InputStreamReader
 	 */
-	InputStreamReader postQuery(String request, InputStreamReader in);
+	InputStreamReader postQuery(String request);
 
 	/**
 	 * Set search type

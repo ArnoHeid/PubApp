@@ -2,7 +2,26 @@ package de.hsmainz.pubapp.poi.model;
 
 public class Details {
 
-	// TODO what are the Details that need to be shown on Client Map
-	// Opening Hours
+	private String openingHours;
+	private String isOpen;
+
+	public String getOpeningHours() {
+		return openingHours;
+	}
+
+	public void setOpeningHours(String openingHours) {
+		this.openingHours = openingHours;
+	}
+
+	public String getIsOpen() {
+		return isOpen;
+	}
+
+	public void setIsOpen(String isOpen) {
+		this.isOpen = isOpen;
+	}
+
+	
+	
 
 }

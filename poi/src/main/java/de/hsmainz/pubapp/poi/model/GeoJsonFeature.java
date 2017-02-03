@@ -48,14 +48,44 @@ public class GeoJsonFeature {
 
 	public static class GeoJsonProperties {
 		private String name;
+		private String interest;
+		private String openingHours;
+		private String isOpen;
 
-		public GeoJsonProperties(String name) {
+		public GeoJsonProperties(String name, String interest, String openingHours, String isOpen) {
 			this.name = name;
+			this.interest = interest;
+			this.openingHours = openingHours; 
+			this.setIsOpen(isOpen);
 		}
 
 		public String getName() {
 			return this.name;
 		}
+
+		public String getInterest() {
+			return interest;
+		}
+
+		public void setInterest(String interest) {
+			this.interest = interest;
+		}
+
+		public String getOpeningHours() {
+			return openingHours;
+		}
+
+		public void setOpeningHours(String openingHours) {
+			this.openingHours = openingHours;
+		}
+
+		public String getIsOpen() {
+			return isOpen;
+		}
+
+		public void setIsOpen(String isOpen) {
+			this.isOpen = isOpen;
+		} 
 
 	}
 

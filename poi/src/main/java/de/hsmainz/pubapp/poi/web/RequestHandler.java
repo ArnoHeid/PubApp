@@ -62,9 +62,13 @@ public class RequestHandler {
 		String response = "";
 		List<ResultPoi> allPois = new ArrayList<ResultPoi>();
 		PoiSearchInputController poiInputController = new PoiSearchInputController();
-
+		SelectedSearchCriteria criteria = null;
 		// Transform Criteria JSON to Criteria Object
-		SelectedSearchCriteria criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
+		try {
+			criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 
 		// Validate input parameters and handle request
 		if (!valid(criteria, api, searchType)) {
@@ -117,7 +121,7 @@ public class RequestHandler {
 	}
 
 	public String addCallback(String callback, String response) {
-		if (callback.isEmpty() || callback == null) {
+		if (callback == null || callback.isEmpty()) {
 			return response;
 		} else {
 			return callback + "(" + response + ")";
