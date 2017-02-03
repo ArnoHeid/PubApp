@@ -1,8 +1,10 @@
 package de.hsmainz.pubapp.poi.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -53,6 +55,7 @@ public class PoiSearchInputController {
 	 */
 	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, PoiSearchService poiSearchService) {
 		List<ResultPoi> allPois = new ArrayList<>();
+		Set<ResultPoi> foundPois = new HashSet<ResultPoi>();
 
 		if (config.getString("bounding_box_search").equals(poiSearchService.getSearchType())) {
 			Coordinate[] coords = new Coordinate[2];
@@ -60,25 +63,25 @@ public class PoiSearchInputController {
 			coords[1] = criteria.getCoordinates().get(1);
 
 			for (String currentInterest : criteria.getInterests()) {
-				List<ResultPoi> poisForBBox = poiSearchService.getPoisWithinBBox(currentInterest, coords);
-				allPois.addAll(poisForBBox);
+				Set<ResultPoi> poisForBBox = poiSearchService.getPoisWithinBBox(currentInterest, coords);
+				foundPois.addAll(poisForBBox);
 			}
 
 		} else {
 			for (Coordinate currentCoordinate : criteria.getCoordinates()) {
 				for (String currentInterest : criteria.getInterests()) {
-					List<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
+					Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
 							currentCoordinate, Integer.valueOf(config.getString("radius_width")));
-					allPois.addAll(poisForNode);
+					foundPois.addAll(poisForNode);
 				}
 			}
 
 		}
-		
-		if(logger.isDebugEnabled()){
-			logger.debug("Search used: " + poiSearchService.getSearchType() +  "Number of POIs found : " + allPois.size());
+		allPois.addAll(foundPois);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Search used: " + poiSearchService.getSearchType() + "Number of POIs found : " + "Map: "
+					+ foundPois.size() + "List: " + allPois.size());
 		}
-
 		return allPois;
 
 	}

@@ -9,9 +9,11 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -71,10 +73,10 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	// PUBLIC METHODS
 	// ****************************************
 	@Override
-	public List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
+	public Set<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
 		String request = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
-
 		InputStreamReader in = postQuery(request);
+
 		List<ResultPoi> resultPois = null;
 
 		try {
@@ -89,16 +91,16 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 			logger.error("Problem while saving POIs in List", e);
 
 		}
-
-		return resultPois;
+		Set<ResultPoi> resultPoisAsSet = new HashSet<ResultPoi>(resultPois);
+		return resultPoisAsSet;
 
 	}
 
 	@Override
-	public List<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords) {
+	public Set<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords) {
 		logger.warn("Tried to do BoundingBox Search with Google Places API with: " + interest + " and "
 				+ Arrays.toString(coords));
-		return new ArrayList<>();
+		return new HashSet<>();
 	}
 
 	@Override

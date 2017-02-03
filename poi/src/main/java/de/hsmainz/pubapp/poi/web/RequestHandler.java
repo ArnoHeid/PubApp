@@ -1,6 +1,7 @@
 package de.hsmainz.pubapp.poi.web;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -74,7 +75,8 @@ public class RequestHandler {
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String get(@QueryParam("callback") String callback, @QueryParam("criteria") String selectedSearchCriteria,
-			@QueryParam("api") String api, @QueryParam("searchtype") String searchType) throws IOException {
+			@QueryParam("api") String api, @QueryParam("searchtype") String searchType)
+			throws IOException, InvocationTargetException {
 		logger.debug("MicroService GET method called: " + "Search Criteria given: " + selectedSearchCriteria
 				+ "API to use: " + api + "Given search type: " + searchType);
 		// Define needed Parameters for Response
@@ -83,12 +85,7 @@ public class RequestHandler {
 		List<ResultPoi> allPois;
 		PoiSearchInputController poiInputController = new PoiSearchInputController();
 		SelectedSearchCriteria criteria = null;
-		// Transform Criteria JSON to Criteria Object
-		try {
-			criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
-		} catch (NullPointerException e) {
-			logger.error("Mapping JSON for search Criteria to Object failed: ", e);
-		}
+		criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
 		// Validate input parameters and handle request
 		if (!valid(criteria, api, searchType)) {
 			response = responseHandler.getErrorResponse(errorMessage);

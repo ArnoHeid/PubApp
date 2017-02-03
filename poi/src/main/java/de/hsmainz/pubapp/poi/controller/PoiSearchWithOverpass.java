@@ -6,9 +6,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -63,7 +65,7 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	// ****************************************
 
 	@Override
-	public List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
+	public Set<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
 		String request = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
 
 		InputStreamReader in = postQuery(request);
@@ -79,19 +81,21 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 		} catch (Exception e) {
 			logger.error("Problem while saving POIs in List", e);
 		}
-
-		return resultPois;
+		Set<ResultPoi> resultPoisAsSet = new HashSet<ResultPoi>(resultPois);
+		return resultPoisAsSet;
 	}
 
 	@Override
-	public List<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords) {
+	public Set<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords) {
 		String requestStart = buildRequestBBox(interest, coords);
 		InputStreamReader in = postQuery(requestStart);
 
 		OverpassPoiSearchResult placesResult = new Gson().fromJson(in, OverpassPoiSearchResult.class);
 		List<OverpassResultPoi> places = placesResult.getList();
 
-		return transformApiResultsToResultPoi(places);
+		List<ResultPoi> transformedPoiList = transformApiResultsToResultPoi(places);
+		Set<ResultPoi> result = new HashSet<ResultPoi>(transformedPoiList);
+		return result;
 	}
 
 	@Override

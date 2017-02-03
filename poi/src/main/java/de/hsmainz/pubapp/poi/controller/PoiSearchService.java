@@ -1,7 +1,7 @@
 package de.hsmainz.pubapp.poi.controller;
 
 import java.io.InputStreamReader;
-import java.util.List;
+import java.util.Set;
 
 import de.hsmainz.pubapp.poi.model.Coordinate;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
@@ -26,7 +26,7 @@ public interface PoiSearchService {
 	 *            Defines search area within a certain distance of coordinate
 	 * @return List of all matching POIs in area
 	 */
-	List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius);
+	Set<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius);
 
 	/**
 	 * Method for saving API Response for requested bounding box search of a
@@ -38,7 +38,7 @@ public interface PoiSearchService {
 	 *            Array of the two BoundoingBox Edge Coordinates
 	 * @return List of all matching POIs in area
 	 */
-	List<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords);
+	Set<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords);
 
 	/**
 	 * Actual API Request
