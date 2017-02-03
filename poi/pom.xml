@@ -4,10 +4,10 @@
 
 	<groupId>de.hsmainz.pubapp</groupId>
 	<artifactId>poi</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>poi</name>
+	<name>POISearchService</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
