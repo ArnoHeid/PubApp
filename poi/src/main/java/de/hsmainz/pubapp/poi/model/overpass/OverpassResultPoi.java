@@ -1,5 +1,11 @@
 package de.hsmainz.pubapp.poi.model.overpass;
 
+/**
+ * Represents a places returned by Overpass API
+ * 
+ * @author caro
+ *
+ */
 public class OverpassResultPoi {
 
 	private String type;

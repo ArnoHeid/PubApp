@@ -1,5 +1,11 @@
 package de.hsmainz.pubapp.poi.model.overpass;
 
+/**
+ * Represents available details for place returned by Overpass API
+ * 
+ * @author caro
+ *
+ */
 public class OverpassTags {
 
 	private String amenity;
@@ -7,8 +13,7 @@ public class OverpassTags {
 	private String name;
 
 	private String openingHours;
-	
-	
+
 	public String getAmenity() {
 		return amenity;
 	}

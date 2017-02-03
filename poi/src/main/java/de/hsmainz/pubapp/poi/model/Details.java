@@ -1,5 +1,12 @@
 package de.hsmainz.pubapp.poi.model;
 
+/**
+ * Class for saving and returning relevant details to Client for each Place that
+ * has been found with PoiSerach
+ * 
+ * @author caro
+ *
+ */
 public class Details {
 
 	private String openingHours;
@@ -20,8 +27,5 @@ public class Details {
 	public void setIsOpen(String isOpen) {
 		this.isOpen = isOpen;
 	}
-
-	
-	
 
 }

@@ -8,9 +8,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+import org.apache.log4j.Logger;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -22,13 +25,20 @@ import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.googleapi.GooglePoiSearchResult;
 import de.hsmainz.pubapp.poi.model.googleapi.GoogleResultPoi;
 
+/**
+ * Implementation of PoiSearchService with using Overpass API
+ * 
+ * @author caro
+ *
+ */
 public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
+	private static final Logger logger = Logger.getLogger(PoiSearchWithGooglePlaces.class);
 	private static final ResourceBundle config = ResourceBundle.getBundle("config");
 	private static final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
-	private static final String LOG_TAG = "PubApp_SearchPoiWithGoogle";
+
 	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
 	private static final String TYPE_SEARCH = "/search";
 	private static final String OUT_JSON = "/json";
@@ -62,33 +72,33 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	// ****************************************
 	@Override
 	public List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
-		String requestStart = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
+		String request = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
 
-		InputStreamReader in = postQuery(requestStart);
+		InputStreamReader in = postQuery(request);
 		List<ResultPoi> resultPois = null;
-		
+
 		try {
-			Gson gson = new GsonBuilder()
-		    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-		    .create();
+			Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 			GooglePoiSearchResult placesResult = gson.fromJson(in, GooglePoiSearchResult.class);
 			List<GoogleResultPoi> places = placesResult.getList();
 			if (places.isEmpty()) {
-				System.out.println("No POIs found");
+				logger.info("No POIs found with URL:" + request);
 			}
 			resultPois = transformApiResultsToResultPoi(places, interest);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error("Problem while saving POIs in List", e);
+
 		}
-		
+
 		return resultPois;
 
 	}
 
 	@Override
 	public List<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords) {
-		// TODO Auto-generated method stub
-		return null;
+		logger.warn("Tried to do BoundingBox Search with Google Places API with: " + interest + " and "
+				+ Arrays.toString(coords));
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -102,11 +112,9 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 			in = new InputStreamReader(conn.getInputStream());
 
 		} catch (MalformedURLException e) {
-			System.out.println(LOG_TAG + "Error processing API URL" + e);
-			e.printStackTrace();
+			logger.error("Error processing API URL" + e);
 		} catch (IOException e) {
-			System.out.println(LOG_TAG + "Error connecting API" + e);
-			e.printStackTrace();
+			logger.error("Error connecting API" + e);
 		}
 		return in;
 	}
@@ -140,6 +148,9 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 				details.setIsOpen(Boolean.toString(googlePoi.getOpeningHours().getOpenNow()));
 				details.setOpeningHours(lables.getString("message_no_opening_hours"));
 			} catch (NullPointerException e) {
+				logger.info(
+						e + "No information about opening hours found. Messages are being set as defined for the following place:"
+								+ googlePoi.getName());
 				details.setIsOpen(lables.getString("message_no_open_now"));
 				details.setOpeningHours(lables.getString("message_no_opening_hours"));
 			}
@@ -170,11 +181,13 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 			sb.append("&key=" + API_KEY);
 			sb.append("&keyword=" + URLEncoder.encode(interest, "utf8"));
 			sb.append("&location=" + Double.toString(lat) + "," + Double.toString(lng));
-			sb.append("&radius=" + String.valueOf(radius));
+			sb.append("&radius=" + Integer.toString(radius));
 			requestUri = sb.toString();
-			System.out.println(requestUri);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Request URI: " + requestUri);
+			}
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e, e);
 		}
 
 		return requestUri;

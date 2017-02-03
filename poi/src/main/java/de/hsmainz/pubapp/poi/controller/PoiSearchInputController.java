@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import de.hsmainz.pubapp.poi.model.Coordinate;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.SelectedSearchCriteria;
@@ -20,7 +22,7 @@ public class PoiSearchInputController {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
-
+	private static final Logger logger = Logger.getLogger(PoiSearchInputController.class);
 	// ****************************************
 	// VARIABLES
 	// ****************************************
@@ -72,6 +74,11 @@ public class PoiSearchInputController {
 			}
 
 		}
+		
+		if(logger.isDebugEnabled()){
+			logger.debug("Search used: " + poiSearchService.getSearchType() +  "Number of POIs found : " + allPois.size());
+		}
+
 		return allPois;
 
 	}

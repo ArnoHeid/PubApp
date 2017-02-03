@@ -1,5 +1,11 @@
 package de.hsmainz.pubapp.poi.model.googleapi;
 
+/**
+ * Represents a places Location returned by Google Places API
+ * 
+ * @author caro
+ *
+ */
 public class GoogleLocation {
 
 	private double lat;

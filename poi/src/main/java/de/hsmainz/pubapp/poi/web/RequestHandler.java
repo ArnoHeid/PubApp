@@ -1,7 +1,6 @@
 package de.hsmainz.pubapp.poi.web;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -11,6 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 
@@ -34,12 +35,12 @@ public class RequestHandler {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
-
+	private static final Logger logger = Logger.getLogger(RequestHandler.class);
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	public PoiSearchService poiSearchService;
-	public String errorMessage;
+	private PoiSearchService poiSearchService;
+	private String errorMessage;
 	private ResourceBundle config = ResourceBundle.getBundle("config");
 	private ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
 
@@ -54,23 +55,39 @@ public class RequestHandler {
 	// ****************************************
 	// PUBLIC METHODS
 	// ****************************************
-
+	/**
+	 * Handles Client GET Request
+	 * 
+	 * @param callback
+	 *            Client can use this field for callback parameters
+	 * @param selectedSearchCriteria
+	 *            Stores two Lists in JSON Format including all selected
+	 *            interests and all given coordinated
+	 * @param api
+	 *            Defines which API should be used to search for POIs
+	 * @param searchType
+	 *            Defines which kind of search should be done
+	 * @return success: all POIs found including details like their name or
+	 *         opening hours; fail: error message according to failure
+	 * @throws IOException
+	 */
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String get(@QueryParam("callback") String callback, @QueryParam("criteria") String selectedSearchCriteria,
 			@QueryParam("api") String api, @QueryParam("searchtype") String searchType) throws IOException {
-
+		logger.debug("MicroService GET method called: " + "Search Criteria given: " + selectedSearchCriteria
+				+ "API to use: " + api + "Given search type: " + searchType);
 		// Define needed Parameters for Response
 		ResponseHandler responseHandler = new ResponseHandler();
-		String response = "";
-		List<ResultPoi> allPois = new ArrayList<ResultPoi>();
+		String response;
+		List<ResultPoi> allPois;
 		PoiSearchInputController poiInputController = new PoiSearchInputController();
 		SelectedSearchCriteria criteria = null;
 		// Transform Criteria JSON to Criteria Object
 		try {
 			criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
-		} catch (Exception e) {
-			System.out.println(e);
+		} catch (NullPointerException e) {
+			logger.error("Mapping JSON for search Criteria to Object failed: ", e);
 		}
 		// Validate input parameters and handle request
 		if (!valid(criteria, api, searchType)) {
@@ -86,14 +103,17 @@ public class RequestHandler {
 	// ****************************************
 	// PRIVATE METHODS
 	// ****************************************
+	/**
+	 * Validate Client Request
+	 * 
+	 * @return boolean whether Input is valid
+	 */
 	private boolean valid(SelectedSearchCriteria criteria, String api, String searchType) throws IOException {
 		boolean valid = true;
-		if (searchType == null) {
+		if (searchType == null)
 			searchType = config.getString("standard_search_type");
-		}
-		if (api == null) {
+		if (api == null)
 			api = config.getString("standard_api");
-		} 
 		if (criteria != null) {
 			if (config.getString("bounding_box_search").equals(searchType)) {
 				if (criteria.getCoordinates().size() != 2) {
@@ -121,6 +141,15 @@ public class RequestHandler {
 		return valid;
 	}
 
+	/**
+	 * Adds callback to response JSON string
+	 * 
+	 * @param callback
+	 *            String defined by client
+	 * @param response
+	 *            JSON Response String according to request
+	 * @return
+	 */
 	public String addCallback(String callback, String response) {
 		if (callback == null || callback.isEmpty()) {
 			return response;

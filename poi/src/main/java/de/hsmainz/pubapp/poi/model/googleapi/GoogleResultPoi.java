@@ -1,11 +1,17 @@
 package de.hsmainz.pubapp.poi.model.googleapi;
 
+/**
+ * Represents a place returned by Google Places API
+ * 
+ * @author caro
+ *
+ */
 public class GoogleResultPoi {
 
 	private GoogleGeometry geometry;
 	private String name;
 	private GoogleOpeningHours openingHours;
-	
+
 	public GoogleGeometry getGeometry() {
 		return geometry;
 	}
@@ -21,7 +27,7 @@ public class GoogleResultPoi {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public GoogleOpeningHours getOpeningHours() {
 		return openingHours;
 	}
@@ -29,7 +35,5 @@ public class GoogleResultPoi {
 	public void setOpeningHours(GoogleOpeningHours openingHours) {
 		this.openingHours = openingHours;
 	}
-
-
 
 }

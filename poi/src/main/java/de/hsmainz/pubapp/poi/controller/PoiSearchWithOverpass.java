@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,13 +22,19 @@ import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.overpass.OverpassPoiSearchResult;
 import de.hsmainz.pubapp.poi.model.overpass.OverpassResultPoi;
 
+/**
+ * Implementation of PoiSearchService with using Overpass API
+ * 
+ * @author caro
+ *
+ */
 public class PoiSearchWithOverpass implements PoiSearchService {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
+	private static final Logger logger = Logger.getLogger(PoiSearchWithOverpass.class);
 	private static final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
 	private static final String BASE_API_URL = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];";
-	private static final String LOG_TAG = "PubApp_PoiSearchWithOverpass";
 
 	// ****************************************
 	// VARIABLES
@@ -56,22 +64,20 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 
 	@Override
 	public List<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
-		String requestStart = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
+		String request = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
 
-		InputStreamReader in = postQuery(requestStart);
+		InputStreamReader in = postQuery(request);
 		List<ResultPoi> resultPois = null;
 		try {
-			Gson gson = new GsonBuilder()
-		    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-		    .create();
+			Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 			OverpassPoiSearchResult placesResult = gson.fromJson(in, OverpassPoiSearchResult.class);
 			List<OverpassResultPoi> places = placesResult.getList();
 			if (places.isEmpty()) {
-				System.out.println("No POIs found");
+				logger.info("No POIs found with URL:" + request);
 			}
 			resultPois = transformApiResultsToResultPoi(places);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error("Problem while saving POIs in List", e);
 		}
 
 		return resultPois;
@@ -79,9 +85,7 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 
 	@Override
 	public List<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords) {
-
 		String requestStart = buildRequestBBox(interest, coords);
-
 		InputStreamReader in = postQuery(requestStart);
 
 		OverpassPoiSearchResult placesResult = new Gson().fromJson(in, OverpassPoiSearchResult.class);
@@ -101,13 +105,10 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 			in = new InputStreamReader(conn.getInputStream());
 
 		} catch (MalformedURLException e) {
-			System.out.println(LOG_TAG + "Error processing API URL" + e);
-			e.printStackTrace();
+			logger.error("Error processing API URL" + e);
 		} catch (IOException e) {
-			System.out.println(LOG_TAG + "Error connecting API" + e);
-			e.printStackTrace();
+			logger.error("Error connecting API" + e);
 		}
-		System.out.println(in.toString());
 		return in;
 	}
 
@@ -125,10 +126,9 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	 *         parameters
 	 */
 	private String buildRequestRadius(String interest, double lat, double lng, int radius) {
-		String requestUri = "";
+		StringBuilder sb = new StringBuilder(BASE_API_URL);
 		String amenityQueryString = "[amenity=" + interest + "]";
 		String coordWithRadiusQueryString = "(around:" + radius + "," + lat + "," + lng + ");";
-		StringBuilder sb = new StringBuilder(BASE_API_URL);
 		sb.append("(node" + amenityQueryString);
 		sb.append(coordWithRadiusQueryString);
 		sb.append("way" + amenityQueryString);
@@ -136,8 +136,10 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 		sb.append("relation" + amenityQueryString);
 		sb.append(coordWithRadiusQueryString);
 		sb.append(");out;");
-		requestUri = sb.toString();
-		System.out.println(requestUri);
+		String requestUri = sb.toString();
+		if (logger.isDebugEnabled()) {
+			logger.debug("Request URI: " + requestUri);
+		}
 
 		return requestUri;
 	}
@@ -152,7 +154,6 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	 *         parameters
 	 */
 	public String buildRequestBBox(String interest, Coordinate[] coords) {
-		String requestUri = "";
 		String amenityQueryString = "[amenity=" + interest + "]";
 		String bBoxQueryString = "(" + coords[0].getLat() + "," + coords[0].getLng() + "," + coords[1].getLat() + ","
 				+ coords[1].getLng() + ");";
@@ -164,8 +165,10 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 		sb.append("relation" + amenityQueryString);
 		sb.append(bBoxQueryString);
 		sb.append(");out;");
-		requestUri = sb.toString();
-		System.out.println(requestUri);
+		String requestUri = sb.toString();
+		if (logger.isDebugEnabled()) {
+			logger.debug("Request URI: " + requestUri);
+		}
 
 		return requestUri;
 	}
@@ -189,18 +192,21 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 			resultPoi.setInterest(overpassPoi.getTags().getAmenity());
 			resultPoi.setLat(overpassPoi.getLat());
 			resultPoi.setLon(overpassPoi.getLon());
-			
+
 			Details details = new Details();
 			try {
 				details.setOpeningHours(overpassPoi.getTags().getOpeningHours());
 				details.setIsOpen(lables.getString("message_no_open_now"));
 			} catch (NullPointerException e) {
+				logger.info(
+						e + "No information about opening hours found. Messages are being set as defined for the following place:"
+								+ overpassPoi.getTags().getName());
 				details.setIsOpen(lables.getString("message_no_open_now"));
 				details.setOpeningHours(lables.getString("message_no_opening_hours"));
 			}
-			
+
 			resultPoi.setDetails(details);
-			
+
 			results.add(resultPoi);
 		}
 		return results;

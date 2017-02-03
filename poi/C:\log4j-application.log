@@ -1,0 +1,5 @@
+2017-02-03 19:27:34 INFO  PoiServiceMain:51 - Jersey app started with WADL available at %sapplication.wadl
+Hit enter to stop it...http://localhost:8000/pubapp/
+2017-02-03 20:14:36 INFO  PoiServiceMain:51 - Jersey app started with WADL available at %sapplication.wadl
+Hit enter to stop it...http://localhost:8000/pubapp/
+2017-02-03 20:14:42 WARN  ResponseHandler:85 - Errormessage to Client:Es sind zu wenig Koordianten für die Bounding Box Suche vorhanden
