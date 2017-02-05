@@ -52,7 +52,8 @@ function init() {																// Sobald das HTML Dokument geladen wird, wird 
 	$('#poi').hide();
 }
 
-function onEachFeature(feature, layer) {
+function getCoords(feature, layer) {
+	layer.bindPopup(feature.properties.name);
 	layer.on('click', function(e) {
 		if (i == 0) {
 		startclicklat = e.latlng.lat;
@@ -100,10 +101,7 @@ geocoder = function() {
 	function (data) {
 	console.log(data);
 	GEOJSON = L.geoJSON(data, {
-		onEachFeature: onEachFeature,
-		onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.name);
-		}
+		onEachFeature: getCoords
 	}).addTo(mymap);
 	mymap.fitBounds(GEOJSON.getBounds());
 		$('#Startpunkt').show();
@@ -164,11 +162,12 @@ POI = function() {
 			interest[c] = document.getElementById('interest' + (c+1)).value;
 		}
 	}
+
 	$.ajax({														
     type: 'GET',
     dataType: 'jsonp',
     url: api_poi,
-	data: 'criteria={"interests":["' + interest[0] + '","atm"],"coordinates":[{"lat":' + startclicklat + ',"lng":' + startclicklng + '},{"lat":' + endclicklat + ',"lng":' + endclicklng + '}]}',
+	data: 'criteria={"interests":["' + interest[0] + '","' + interest[1] + '"],"coordinates":[{"lat":' + startclicklat + ',"lng":' + startclicklng + '},{"lat":' + endclicklat + ',"lng":' + endclicklng + '}]}',
     crossDomain : true,
     xhrFields: { withCredentials: true },
 	success: function (data) {
