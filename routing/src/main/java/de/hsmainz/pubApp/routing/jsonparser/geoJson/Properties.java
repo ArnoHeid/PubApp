@@ -1,7 +1,37 @@
-package de.hsmainz.pubApp.routing.jsonparser.geoJson;
+package de.hsmainz.pubapp.routing.jsonparser.geojson;
 
 /**
- * Created by Sarah on 20.12.2016.
+ * @author Sarah
+ * @since 20.12.2016
  */
-public class Properties {           //Do I need Properties? Is it useful in this case?
+public class Properties { // TODO Do I need Properties? Is it useful in this case?
+
+    //****************************************
+    // CONSTANTS
+    //****************************************
+
+    //****************************************
+    // VARIABLES
+    //****************************************
+
+    //****************************************
+    // INIT/CONSTRUCTOR
+    //****************************************
+
+    //****************************************
+    // GETTER/SETTER
+    //****************************************
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
+
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    //****************************************
+    // INNER CLASSES
+    //****************************************
+
 }

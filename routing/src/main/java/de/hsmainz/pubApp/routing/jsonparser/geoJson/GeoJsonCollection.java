@@ -1,17 +1,31 @@
-package de.hsmainz.pubApp.routing.jsonparser.geoJson;
+package de.hsmainz.pubapp.routing.jsonparser.geojson;
 
-import de.hsmainz.pubApp.routing.jsonparser.graphhopperJson.GraphhopperJson;
-import de.hsmainz.pubApp.routing.jsonparser.graphhopperJson.PathsJson;
+import de.hsmainz.pubapp.routing.jsonparser.graphhopperjson.GraphhopperJson;
+import de.hsmainz.pubapp.routing.jsonparser.graphhopperjson.PathsJson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Sarah on 20.12.2016.
+ * @author Sarah
+ * @since 20.12.2016
  */
 public class GeoJsonCollection {
+
+    //****************************************
+    // CONSTANTS
+    //****************************************
+
+    //****************************************
+    // VARIABLES
+    //****************************************
+
     private String type;
     private List<GeoJson> features;
+
+    //****************************************
+    // INIT/CONSTRUCTOR
+    //****************************************
 
     public GeoJsonCollection() {
 
@@ -24,4 +38,21 @@ public class GeoJsonCollection {
             features.add(new GeoJson(pathsJson));
         }
     }
+
+    //****************************************
+    // GETTER/SETTER
+    //****************************************
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
+
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    //****************************************
+    // INNER CLASSES
+    //****************************************
+
 }

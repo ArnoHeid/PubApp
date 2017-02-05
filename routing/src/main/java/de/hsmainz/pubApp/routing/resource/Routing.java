@@ -1,18 +1,39 @@
-package de.hsmainz.pubApp.routing.resource;
+package de.hsmainz.pubapp.routing.resource;
 
 import com.google.gson.Gson;
-import de.hsmainz.pubApp.routing.httpApiRequest.HttpAPIRequest;
-import de.hsmainz.pubApp.routing.httpApiRequest.HttpGraphhopperRequest;
-import de.hsmainz.pubApp.routing.jsonparser.geoJson.GeoJsonCollection;
+import de.hsmainz.pubapp.routing.httpapirequest.HttpAPIRequest;
+import de.hsmainz.pubapp.routing.httpapirequest.HttpGraphhopperRequest;
+import de.hsmainz.pubapp.routing.jsonparser.geojson.GeoJsonCollection;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Created by Sarah.
+ * @author Sarah
+ * @since 09.12.2016
  */
 @Path("routing")
 public class Routing extends RoutingTemplate {
+
+    //****************************************
+    // CONSTANTS
+    //****************************************
+
+    //****************************************
+    // VARIABLES
+    //****************************************
+
+    //****************************************
+    // INIT/CONSTRUCTOR
+    //****************************************
+
+    //****************************************
+    // GETTER/SETTER
+    //****************************************
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
 
     /**
      * Method handling HTTP GET requests. The returned object will be sent
@@ -36,4 +57,12 @@ public class Routing extends RoutingTemplate {
 
         return jsonCallbackWrapper(callback, gson.toJson(geoJsonColection));
     }
+
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    //****************************************
+    // INNER CLASSES
+    //****************************************
 }

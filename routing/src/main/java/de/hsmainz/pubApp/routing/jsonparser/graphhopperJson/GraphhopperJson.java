@@ -1,14 +1,44 @@
-package de.hsmainz.pubApp.routing.jsonparser.graphhopperJson;
+package de.hsmainz.pubapp.routing.jsonparser.graphhopperjson;
 
 import java.util.List;
 
 /**
- * Created by Sarah on 20.12.2016.
+ * @author Sarah
+ * @since 20.12.2016
  */
 public class GraphhopperJson {
+
+    //****************************************
+    // CONSTANTS
+    //****************************************
+
+    //****************************************
+    // VARIABLES
+    //****************************************
+
     private List<PathsJson> paths;
+
+    //****************************************
+    // INIT/CONSTRUCTOR
+    //****************************************
+
+    //****************************************
+    // GETTER/SETTER
+    //****************************************
 
     public List<PathsJson> getPaths() {
         return paths;
     }
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
+
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    //****************************************
+    // INNER CLASSES
+    //****************************************
 }

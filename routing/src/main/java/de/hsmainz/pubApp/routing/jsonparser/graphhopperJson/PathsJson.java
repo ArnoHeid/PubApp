@@ -1,14 +1,45 @@
-package de.hsmainz.pubApp.routing.jsonparser.graphhopperJson;
+package de.hsmainz.pubapp.routing.jsonparser.graphhopperjson;
 
 import com.google.gson.JsonObject;
 
 /**
- * Created by Sarah on 20.12.2016.
+ * @author Sarah
+ * @since 20.12.2016
  */
 public class PathsJson {
+
+    //****************************************
+    // CONSTANTS
+    //****************************************
+
+    //****************************************
+    // VARIABLES
+    //****************************************
+
     private JsonObject points;
+
+    //****************************************
+    // INIT/CONSTRUCTOR
+    //****************************************
+
+    //****************************************
+    // GETTER/SETTER
+    //****************************************
 
     public JsonObject getPoints() {
         return points;
     }
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
+
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    //****************************************
+    // INNER CLASSES
+    //****************************************
+
 }

@@ -1,19 +1,49 @@
-package de.hsmainz.pubApp.routing.jsonparser.geoJson;
+package de.hsmainz.pubapp.routing.jsonparser.geojson;
 
 import com.google.gson.JsonObject;
-import de.hsmainz.pubApp.routing.jsonparser.graphhopperJson.PathsJson;
+import de.hsmainz.pubapp.routing.jsonparser.graphhopperjson.PathsJson;
 
 /**
- * Created by Sarah on 20.12.2016.
+ * @author Sarah
+ * @since 20.12.2016
  */
 public class GeoJson {
+
+    //****************************************
+    // CONSTANTS
+    //****************************************
+
+    //****************************************
+    // VARIABLES
+    //****************************************
+
     private String type;
     private JsonObject geometry;
     private Properties properties = new Properties(); // GeoJSON requires `properties` to exist, but is empty atm.
 
+    //****************************************
+    // INIT/CONSTRUCTOR
+    //****************************************
+
     public GeoJson(PathsJson pathsJson) {
         type = "Feature";
         geometry = pathsJson.getPoints();
-
     }
+
+    //****************************************
+    // GETTER/SETTER
+    //****************************************
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
+
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    //****************************************
+    // INNER CLASSES
+    //****************************************
+
 }
