@@ -2,7 +2,7 @@ package de.hsmainz.pubapp.geocoder.resource;
 
 
 import de.hsmainz.pubapp.geocoder.httpapirequest.HttpAPIRequest;
-import de.hsmainz.pubapp.geocoder.httpapirequest.HttpGraphhopperRequest;
+import de.hsmainz.pubapp.geocoder.httpapirequest.HttpAPIRequesterFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -46,7 +46,7 @@ public class Resource extends ResourceTemplate {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String geoCoder(@QueryParam("callback") String callback, @QueryParam("queryString") String queryString, @QueryParam("locale") @DefaultValue("de") String locale) {
-        HttpAPIRequest httpAPIRequest = new HttpGraphhopperRequest();
+        HttpAPIRequest httpAPIRequest = HttpAPIRequesterFactory.createRequest("grapper");
         String geoJson = httpAPIRequest.requestGeocoder(queryString, locale);
         return jsonCallbackWraper(callback, geoJson);
     }

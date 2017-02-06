@@ -2,8 +2,10 @@ package de.hsmainz.pubapp.geocoder.jsonparser.geojson;
 
 import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.GrahhopperJson;
 import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.HitsJson;
+import de.hsmainz.pubapp.geocoder.jsonparser.nominatimjson.NominatimJson;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,5 +30,11 @@ public class GeoJsonCollection {
 
     public GeoJsonCollection() {
         //default Constructor for use this fail request
+    }
+
+    public GeoJsonCollection(List<NominatimJson> nominatimJson) {
+    }
+
+    public GeoJsonCollection(Collection<NominatimJson> nominatimJson) {
     }
 }
