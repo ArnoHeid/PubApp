@@ -36,14 +36,16 @@ public class RequestHandler {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
-	private static final Logger logger = Logger.getLogger(RequestHandler.class);
+	private final Logger logger = Logger.getLogger(RequestHandler.class);
+	private final ResourceBundle config = ResourceBundle.getBundle("config");
+	private final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
+	private final String bboxString = config.getString("bounding_box_search");
+	private final String radiusString = config.getString("radius_search");
 	// ****************************************
 	// VARIABLES
 	// ****************************************
 	private PoiSearchService poiSearchService;
 	private String errorMessage;
-	private ResourceBundle config = ResourceBundle.getBundle("config");
-	private ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
 
 	// ****************************************
 	// INIT/CONSTRUCTOR
@@ -76,66 +78,28 @@ public class RequestHandler {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String get(@QueryParam("callback") String callback, @QueryParam("criteria") String selectedSearchCriteria,
 			@QueryParam("api") String api, @QueryParam("searchtype") String searchType)
-			throws IOException, InvocationTargetException {
+			throws InvocationTargetException {
 		logger.debug("MicroService GET method called: " + "Search Criteria given: " + selectedSearchCriteria
 				+ "API to use: " + api + "Given search type: " + searchType);
 		// Define needed Parameters for Response
 		ResponseHandler responseHandler = new ResponseHandler();
-		String response;
+		String response = null;
 		List<ResultPoi> allPois;
 		PoiSearchInputController poiInputController = new PoiSearchInputController();
-		SelectedSearchCriteria criteria = null;
-		criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
+		SelectedSearchCriteria criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
 		// Validate input parameters and handle request
-		if (!valid(criteria, api, searchType)) {
-			response = responseHandler.getErrorResponse(errorMessage);
-		} else {
-			allPois = poiInputController.getPoisForCriteria(criteria, poiSearchService);
-			response = responseHandler.getResponse(allPois);
+		try {
+			if (!valid(criteria, api, searchType)) {
+				response = responseHandler.getErrorResponse(errorMessage);
+			} else {
+				allPois = poiInputController.getPoisForCriteria(criteria, poiSearchService);
+				response = responseHandler.getResponse(allPois);
+			}
+		} catch (IOException e) {
+			logger.error(e);
 		}
 
 		return addCallback(callback, response);
-	}
-
-	// ****************************************
-	// PRIVATE METHODS
-	// ****************************************
-	/**
-	 * Validate Client Request
-	 * 
-	 * @return boolean whether Input is valid
-	 */
-	private boolean valid(SelectedSearchCriteria criteria, String api, String searchType) throws IOException {
-		boolean valid = true;
-		if (searchType == null)
-			searchType = config.getString("standard_search_type");
-		if (api == null)
-			api = config.getString("standard_api");
-		if (criteria != null) {
-			if (config.getString("bounding_box_search").equals(searchType)) {
-				if (criteria.getCoordinates().size() != 2) {
-					errorMessage = lables.getString("error_bbox_amout_coords");
-					valid = false;
-				}
-				poiSearchService = new PoiSearchWithOverpass();
-				poiSearchService.setSearchType(searchType);
-			} else if (config.getString("radius_search").equals(searchType)) {
-				if (config.getString("google_places_api").equals(api)) {
-					poiSearchService = new PoiSearchWithGooglePlaces();
-				} else {
-					poiSearchService = new PoiSearchWithOverpass();
-				}
-				poiSearchService.setSearchType(searchType);
-			}
-			if (criteria.getInterests() == null || criteria.getInterests().isEmpty()) {
-				errorMessage = lables.getString("error_no_interest");
-				valid = false;
-			}
-		} else {
-			errorMessage = lables.getString("error_criteria");
-			valid = false;
-		}
-		return valid;
 	}
 
 	/**
@@ -155,6 +119,64 @@ public class RequestHandler {
 		}
 
 	}
+
+	// ****************************************
+	// PRIVATE METHODS
+	// ****************************************
+	/**
+	 * Validate Client Request
+	 * 
+	 * @return boolean whether Input is valid
+	 */
+	private boolean valid(SelectedSearchCriteria criteria, String api, String searchType) throws IOException {
+		boolean valid = true;
+
+		if (criteria != null) {
+			if (bboxString.equalsIgnoreCase(searchType) || radiusString.equals(searchType)) {
+				criteria.setSearchType(searchType);
+			} else {
+				criteria.setSearchType(config.getString("standard_search_type"));
+			}
+			if (config.getString("google_places_api").equalsIgnoreCase(api)
+					|| config.getString("overpass_api").equalsIgnoreCase(api)) {
+				criteria.setApi(api);
+			} else {
+				criteria.setApi(config.getString("standard_api"));
+			}
+
+			if (criteria.getInterests() == null || criteria.getInterests().isEmpty()) {
+				errorMessage = lables.getString("error_no_interest");
+			}
+
+			setPoiSearchService(criteria);
+
+		} else {
+			errorMessage = lables.getString("error_criteria");
+		}
+		if (!(errorMessage == null || errorMessage.isEmpty())) {
+			valid = false;
+		}
+		return valid;
+	}
+
+	private void setPoiSearchService(SelectedSearchCriteria criteria) {
+		if (bboxString.equals(criteria.getSearchType())) {
+			if (criteria.getCoordinates().size() != 2) {
+				errorMessage = lables.getString("error_bbox_amout_coords");
+			}
+			poiSearchService = new PoiSearchWithOverpass();
+			poiSearchService.setSearchType(criteria.getSearchType());
+		} else if (radiusString.equals(criteria.getSearchType())) {
+			if (config.getString("google_places_api").equals(criteria.getApi())) {
+				poiSearchService = new PoiSearchWithGooglePlaces();
+			} else {
+				poiSearchService = new PoiSearchWithOverpass();
+			}
+			poiSearchService.setSearchType(config.getString("radius_search"));
+		}
+
+	}
+
 	// *****************************************
 	// INNER CLASSES
 	// *****************************************

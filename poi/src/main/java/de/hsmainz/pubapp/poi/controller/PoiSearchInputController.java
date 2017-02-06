@@ -55,7 +55,7 @@ public class PoiSearchInputController {
 	 */
 	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, PoiSearchService poiSearchService) {
 		List<ResultPoi> allPois = new ArrayList<>();
-		Set<ResultPoi> foundPois = new HashSet<ResultPoi>();
+		Set<ResultPoi> foundPois = new HashSet<>();
 
 		if (config.getString("bounding_box_search").equals(poiSearchService.getSearchType())) {
 			Coordinate[] coords = new Coordinate[2];

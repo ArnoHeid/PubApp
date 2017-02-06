@@ -81,8 +81,8 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 		} catch (Exception e) {
 			logger.error("Problem while saving POIs in List", e);
 		}
-		Set<ResultPoi> resultPoisAsSet = new HashSet<ResultPoi>(resultPois);
-		return resultPoisAsSet;
+
+		return new HashSet<>(resultPois);
 	}
 
 	@Override
@@ -94,8 +94,7 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 		List<OverpassResultPoi> places = placesResult.getList();
 
 		List<ResultPoi> transformedPoiList = transformApiResultsToResultPoi(places);
-		Set<ResultPoi> result = new HashSet<ResultPoi>(transformedPoiList);
-		return result;
+		return new HashSet<>(transformedPoiList);
 	}
 
 	@Override

@@ -84,15 +84,18 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 			GooglePoiSearchResult placesResult = gson.fromJson(in, GooglePoiSearchResult.class);
 			List<GoogleResultPoi> places = placesResult.getList();
 			if (places.isEmpty()) {
-				logger.info("No POIs found with URL:" + request);
+				logger.info("No POIs found with URL:" + request + "and given interest: " + interest);
 			}
 			resultPois = transformApiResultsToResultPoi(places, interest);
-		} catch (Exception e) {
+		} catch (NullPointerException e) {
 			logger.error("Problem while saving POIs in List", e);
+			if (in == null) {
+				resultPois = new ArrayList<>();
+			}
 
 		}
-		Set<ResultPoi> resultPoisAsSet = new HashSet<ResultPoi>(resultPois);
-		return resultPoisAsSet;
+
+		return new HashSet<>(resultPois);
 
 	}
 
