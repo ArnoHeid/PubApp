@@ -42,6 +42,8 @@ public class MyProperties extends Properties {
         propertiesFile = propertiesFileName;
     }
 
+    //TODO Check if file exists
+
     //****************************************
     // PUBLIC METHODS
     //****************************************
