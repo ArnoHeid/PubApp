@@ -47,10 +47,10 @@ public class ResourceJson extends ResourceTemplate {
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String geoCoder(@QueryParam("callback") String callback, @QueryParam("queryText") @DefaultValue("de") String queryText) {
+    public String geoCoder(@QueryParam("callback") String callback, @QueryParam("queryText") String queryText) {
         Gson gson = new Gson();
         ClientInputJson inputJson = gson.fromJson(queryText, ClientInputJson.class);
-        HttpAPIRequest httpAPIRequest = HttpAPIRequesterFactory.createRequest("graphhopper");
+        HttpAPIRequest httpAPIRequest = HttpAPIRequesterFactory.createRequest(inputJson.getApi());
         String geoJson = httpAPIRequest.requestGeocoder(inputJson);
         return jsonCallbackWraper(callback, geoJson);
     }

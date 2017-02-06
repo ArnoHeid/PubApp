@@ -45,8 +45,10 @@ public class Resource extends ResourceTemplate {
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String geoCoder(@QueryParam("callback") String callback, @QueryParam("queryString") String queryString, @QueryParam("locale") @DefaultValue("de") String locale) {
-        HttpAPIRequest httpAPIRequest = HttpAPIRequesterFactory.createRequest("grapper");
+    public String geoCoder(@QueryParam("callback") String callback, @QueryParam("queryString") String queryString,
+                           @QueryParam("locale") @DefaultValue("de") String locale,
+                           @QueryParam("api") @DefaultValue("nominatim") String api) {
+        HttpAPIRequest httpAPIRequest = HttpAPIRequesterFactory.createRequest(api);
         String geoJson = httpAPIRequest.requestGeocoder(queryString, locale);
         return jsonCallbackWraper(callback, geoJson);
     }

@@ -18,6 +18,7 @@ public class ClientInputJson {
 
     private String queryString;
     private String locale;
+    private String api;
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -33,6 +34,10 @@ public class ClientInputJson {
 
     public String getLocale() {
         return locale;
+    }
+
+    public String getApi() {
+        return api;
     }
 
     //****************************************
