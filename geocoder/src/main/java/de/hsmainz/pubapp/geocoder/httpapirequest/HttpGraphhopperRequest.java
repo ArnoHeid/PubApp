@@ -1,6 +1,7 @@
 package de.hsmainz.pubapp.geocoder.httpapirequest;
 
 import com.google.gson.Gson;
+import de.hsmainz.pubapp.geocoder.MyProperties;
 import de.hsmainz.pubapp.geocoder.jsonparser.APIKeys;
 import de.hsmainz.pubapp.geocoder.jsonparser.ErrorJson;
 import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonCollection;
@@ -144,12 +145,12 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
             apiKeys = new APIKeys();
         }
         URIBuilder uriBuilder = new URIBuilder();
-        uriBuilder.setScheme("http");
-        uriBuilder.setHost("graphhopper.com");
-        uriBuilder.setPath("/api/1/geocode");
+        uriBuilder.setScheme(MyProperties.getInstance().getProperty("gscheme"));
+        uriBuilder.setHost(MyProperties.getInstance().getProperty("ghost"));
+        uriBuilder.setPath(MyProperties.getInstance().getProperty("gpath"));
         uriBuilder.setParameter("q", queryString);
         uriBuilder.setParameter("locale", locale);
-        uriBuilder.setParameter("key", apiKeys.getGraphhopperKey());
+        uriBuilder.setParameter("key", MyProperties.getInstance().getProperty("gkey"));
         URI uri = null;
         try {
             uri = uriBuilder.build();

@@ -1,7 +1,10 @@
 package de.hsmainz.pubapp.geocoder.httpapirequest;
 
 
+import com.google.gson.Gson;
 import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Arno
@@ -13,9 +16,13 @@ public class HttpNominatimRequest implements HttpAPIRequest {
     // CONSTANTS
     //****************************************
 
+    private static final Logger logger = LogManager.getLogger(HttpGraphhopperRequest.class);
+
     //****************************************
     // VARIABLES
     //****************************************
+
+    private Gson gson = new Gson();
 
     //****************************************
     // INIT/CONSTRUCTOR
