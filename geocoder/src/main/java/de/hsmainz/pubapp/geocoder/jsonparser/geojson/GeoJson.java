@@ -1,6 +1,7 @@
 package de.hsmainz.pubapp.geocoder.jsonparser.geojson;
 
 import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.HitsJson;
+import de.hsmainz.pubapp.geocoder.jsonparser.nominatimjson.NominatimJson;
 
 /**
  * GeoJSON with Type "Feature"
@@ -31,6 +32,12 @@ public class GeoJson {
         properties = new Properties(hitsJson.getCountry(), hitsJson.getName());
         geometry = new Geometry(hitsJson.getPoint());
 
+    }
+
+    public GeoJson(NominatimJson nomJson) {
+        type = "Feature";
+        properties = new Properties("", nomJson.getDisplay_name());
+        geometry = new Geometry(nomJson.getLat(),nomJson.getLon());
     }
 
     //****************************************

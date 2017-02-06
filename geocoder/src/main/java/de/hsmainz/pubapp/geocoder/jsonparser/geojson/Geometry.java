@@ -32,6 +32,13 @@ public class Geometry {
         coordinates[0] = point.getLng();
     }
 
+    public Geometry(double lat, double lon) {
+        type = "Point";
+        coordinates = new double[2];
+        coordinates[1] = lat;
+        coordinates[0] = lon;
+    }
+
     //****************************************
     // GETTER/SETTER
     //****************************************

@@ -5,7 +5,6 @@ import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.HitsJson;
 import de.hsmainz.pubapp.geocoder.jsonparser.nominatimjson.NominatimJson;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,8 +32,12 @@ public class GeoJsonCollection {
     }
 
     public GeoJsonCollection(List<NominatimJson> nominatimJson) {
+        type = "FeatureCollection";
+        features = new ArrayList<>();
+        for (NominatimJson nomJson : nominatimJson){
+            features.add(new GeoJson(nomJson));
+        }
+
     }
 
-    public GeoJsonCollection(Collection<NominatimJson> nominatimJson) {
-    }
 }

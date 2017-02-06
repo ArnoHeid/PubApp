@@ -21,7 +21,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -80,7 +80,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
      */
     private GeoJsonCollection doHttpGet(URI uri) {
         Gson gson = new Gson();
-        Collection<NominatimJson> nominatimJson;
+        List<NominatimJson> nominatimJson;
         GeoJsonCollection geoJsonCollection;
         HttpGet httpget = new HttpGet(uri);
         httpget.setHeader("Referrer","www.hs-mainz.de");
@@ -92,7 +92,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
 
             jsonString = splitJsonString(jsonString);
 
-            Type listType = new TypeToken<Collection<NominatimJson>>(){}.getType();
+            Type listType = new TypeToken<List<NominatimJson>>(){}.getType();
 
             nominatimJson = gson.fromJson(jsonString, listType);
 
@@ -154,12 +154,8 @@ public class HttpNominatimRequest implements HttpAPIRequest {
         return returnString;
     }
 
-
-
     //****************************************
     // INNER CLASSES
     //****************************************
-
-    //http://nominatim.openstreetmap.org/search?q=Berlin&format=json&addressdetails=1&limit=10
 
 }
