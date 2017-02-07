@@ -43,6 +43,14 @@ public class Geometry {
     // GETTER/SETTER
     //****************************************
 
+    public String getType() {
+        return type;
+    }
+
+    public double[] getCoordinates() {
+        return coordinates;
+    }
+
     //****************************************
     // PUBLIC METHODS
     //****************************************

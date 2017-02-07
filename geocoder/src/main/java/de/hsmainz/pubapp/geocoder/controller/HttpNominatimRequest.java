@@ -87,15 +87,10 @@ public class HttpNominatimRequest implements HttpAPIRequest {
         try (CloseableHttpClient httpclient = HttpClients.createDefault(); CloseableHttpResponse response = httpclient.execute(httpget)) {
             InputStream inputStream = response.getEntity().getContent();
             Reader reader = new InputStreamReader(inputStream, "UTF-8");
-
             String jsonString = IOUtils.toString(reader);
-
             jsonString = splitJsonString(jsonString);
-
             Type listType = new TypeToken<List<NominatimJson>>(){}.getType();
-
             nominatimJson = gson.fromJson(jsonString, listType);
-
             geoJsonCollection = new GeoJsonCollection(nominatimJson);
             inputStream.close();
         } catch (IOException e) {
@@ -133,7 +128,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
         uriBuilder.setParameter("format","json");
         uriBuilder.setParameter("json_callback","cb");
         uriBuilder.setParameter("addressdetails","1");
-        uriBuilder.setParameter("limit","10");
+        uriBuilder.setParameter("limit","2");
 
         URI uri = null;
         try {

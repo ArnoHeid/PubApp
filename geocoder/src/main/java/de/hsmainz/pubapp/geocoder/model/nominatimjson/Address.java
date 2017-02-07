@@ -1,13 +1,12 @@
 package de.hsmainz.pubapp.geocoder.model.nominatimjson;
 
 /**
- * Main nominatimJSON
+ * Adress class for Nominatim Json
  *
  * @author Arno
- * @since 03.02.2017.
+ * @since 07.02.2017.
  */
-public class NominatimJson {
-
+public class Address {
 
     //****************************************
     // CONSTANTS
@@ -17,10 +16,8 @@ public class NominatimJson {
     // VARIABLES
     //****************************************
 
-    private String display_name;
-    private double lat;
-    private double lon;
-    private Address address;
+    private String city;
+    private String country;
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -30,20 +27,12 @@ public class NominatimJson {
     // GETTER/SETTER
     //****************************************
 
-    public String getDisplay_name() {
-        return display_name;
+    public String getCity() {
+        return city;
     }
 
-    public double getLat() {
-        return lat;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    public Address getAdress() {
-        return address;
+    public String getCountry() {
+        return country;
     }
 
     //****************************************
@@ -57,4 +46,5 @@ public class NominatimJson {
     //****************************************
     // INNER CLASSES
     //****************************************
+
 }

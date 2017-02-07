@@ -9,7 +9,7 @@ import de.hsmainz.pubapp.geocoder.model.nominatimjson.NominatimJson;
  * @author Arno
  * @since 07.12.2016.
  */
-public class GeoJson {
+public class Features {
 
     //****************************************
     // CONSTANTS
@@ -27,22 +27,34 @@ public class GeoJson {
     // INIT/CONSTRUCTOR
     //****************************************
 
-    public GeoJson(HitsJson hitsJson) {
+    public Features(HitsJson hitsJson) {
         type = "Feature";
         properties = new Properties(hitsJson.getCountry(), hitsJson.getName());
         geometry = new Geometry(hitsJson.getPoint());
 
     }
 
-    public GeoJson(NominatimJson nomJson) {
+    public Features(NominatimJson nomJson) {
         type = "Feature";
-        properties = new Properties("", nomJson.getDisplay_name());
+        properties = new Properties(nomJson.getAdress().getCountry(), nomJson.getDisplay_name());
         geometry = new Geometry(nomJson.getLat(),nomJson.getLon());
     }
 
     //****************************************
     // GETTER/SETTER
     //****************************************
+
+    public String getType() {
+        return type;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
 
     //****************************************
     // PUBLIC METHODS

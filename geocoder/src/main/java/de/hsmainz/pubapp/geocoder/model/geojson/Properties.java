@@ -32,6 +32,14 @@ public class Properties {
     // GETTER/SETTER
     //****************************************
 
+    public String getName() {
+        return name;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
     //****************************************
     // PUBLIC METHODS
     //****************************************

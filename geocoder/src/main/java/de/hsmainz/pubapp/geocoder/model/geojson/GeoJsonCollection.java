@@ -14,17 +14,28 @@ import java.util.List;
  * @since 07.12.2016.
  */
 public class GeoJsonCollection {
-    private String type;
-    private List<GeoJson> features;
 
+    //****************************************
+    // CONSTANTS
+    //****************************************
+
+    //****************************************
+    // VARIABLES
+    //****************************************
+
+    private String type;
+    private List<Features> features;
+
+    //****************************************
+    // INIT/CONSTRUCTOR
+    //****************************************
 
     public GeoJsonCollection(GrahhopperJson grahhopperJson) {
         type = "FeatureCollection";
         features = new ArrayList<>();
         for (HitsJson hitsJson : grahhopperJson.getHits()) {
-            features.add(new GeoJson(hitsJson));
+            features.add(new Features(hitsJson));
         }
-
     }
 
     public GeoJsonCollection() {
@@ -35,9 +46,32 @@ public class GeoJsonCollection {
         type = "FeatureCollection";
         features = new ArrayList<>();
         for (NominatimJson nomJson : nominatimJson){
-            features.add(new GeoJson(nomJson));
+            features.add(new Features(nomJson));
         }
-
     }
+
+    //****************************************
+    // GETTER/SETTER
+    //****************************************
+
+    public List<Features> getFeatures() {
+        return features;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
+
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    //****************************************
+    // INNER CLASSES
+    //****************************************
 
 }
