@@ -28,7 +28,7 @@ public class MyProperties extends Properties {
 
     private static MyProperties instance = null;
     private static File propertiesFile;
-    private static String defaultPropertiesFile = "default.properties";
+    private static String defaultPropertiesFile = "/default.properties";
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -60,7 +60,7 @@ public class MyProperties extends Properties {
         if(instance==null){
             try {
                 instance = new MyProperties();
-                InputStream in = MyProperties.class.getClass().getResourceAsStream("/default.properties");
+                InputStream in = MyProperties.class.getClass().getResourceAsStream(defaultPropertiesFile);
                 instance.load(in);
                 in.close();
 
