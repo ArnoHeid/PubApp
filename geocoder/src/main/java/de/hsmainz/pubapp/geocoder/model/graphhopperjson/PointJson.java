@@ -1,12 +1,12 @@
-package de.hsmainz.pubapp.geocoder.jsonparser.geojson;
+package de.hsmainz.pubapp.geocoder.model.graphhopperjson;
 
 /**
- * Additional information to expand the coordinate information
+ * Point part of the graphhopperJSON with the lat-long Coordinates
  *
  * @author Arno
- * @since 07.12.2016.
+ * @since 04.12.2016.
  */
-public class Properties {
+public class PointJson {
 
     //****************************************
     // CONSTANTS
@@ -16,21 +16,24 @@ public class Properties {
     // VARIABLES
     //****************************************
 
-    private String name;
-    private String country;
+    private double lng;
+    private double lat;
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
-    public Properties(String country, String name) {
-        this.name = name;
-        this.country = country;
-    }
-
     //****************************************
     // GETTER/SETTER
     //****************************************
+
+    public double getLng() {
+        return lng;
+    }
+
+    public double getLat() {
+        return lat;
+    }
 
     //****************************************
     // PUBLIC METHODS

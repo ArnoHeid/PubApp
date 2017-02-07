@@ -1,7 +1,6 @@
-package de.hsmainz.pubapp.geocoder.httpapirequest;
+package de.hsmainz.pubapp.geocoder.controller;
 
-import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
-import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonCollection;
+import de.hsmainz.pubapp.geocoder.model.ClientInputJson;
 
 /**
  * Interface for all different geocoder APIs

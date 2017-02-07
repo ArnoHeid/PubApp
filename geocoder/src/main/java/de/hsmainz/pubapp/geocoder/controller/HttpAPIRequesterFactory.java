@@ -1,12 +1,12 @@
-package de.hsmainz.pubapp.geocoder.jsonparser;
+package de.hsmainz.pubapp.geocoder.controller;
 
 /**
- * Input JSON Class for use with GSON
+ * Factory to create HttpRequest for given API
  *
  * @author Arno
- * @since 04.12.2016.
+ * @since 06.02.2017.
  */
-public class ClientInputJson {
+public class HttpAPIRequesterFactory {
 
     //****************************************
     // CONSTANTS
@@ -16,33 +16,34 @@ public class ClientInputJson {
     // VARIABLES
     //****************************************
 
-    private String queryString;
-    private String locale;
-    private String api;
-
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
+
+    private HttpAPIRequesterFactory(){
+
+    }
 
     //****************************************
     // GETTER/SETTER
     //****************************************
 
-    public String getQueryString() {
-        return queryString;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public String getApi() {
-        return api;
-    }
-
     //****************************************
     // PUBLIC METHODS
     //****************************************
+
+    public static HttpAPIRequest createRequest(String type){
+
+        HttpAPIRequest returnValue;
+
+        if("graphhopper".equalsIgnoreCase(type)){
+            returnValue = new HttpGraphhopperRequest();
+        }else{
+            returnValue = new HttpNominatimRequest();
+        }
+
+        return returnValue;
+    }
 
     //****************************************
     // PRIVATE METHODS

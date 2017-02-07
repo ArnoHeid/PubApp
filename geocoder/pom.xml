@@ -79,7 +79,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>de.hsmainz.pubapp.geocoder.Main</mainClass>
+                    <mainClass>de.hsmainz.pubapp.geocoder.GeocoderServiceMain</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -91,7 +91,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>de.hsmainz.pubapp.geocoder.Main</mainClass>
+                            <mainClass>de.hsmainz.pubapp.geocoder.GeocoderServiceMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

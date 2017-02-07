@@ -10,10 +10,12 @@ import java.io.IOException;
 import java.net.URI;
 
 /**
+ *
+ *
  * @author Arno
  * @since 03.12.2016.
  */
-public class Main {
+public class GeocoderServiceMain {
 
     //****************************************
     // CONSTANTS
@@ -21,7 +23,8 @@ public class Main {
 
     // URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:8080/pubapp/";
-    private static final Logger logger = LogManager.getLogger(Main.class);
+    private static final Logger logger = LogManager.getLogger(GeocoderServiceMain.class);
+
     //****************************************
     // VARIABLES
     //****************************************
@@ -30,7 +33,7 @@ public class Main {
     // INIT/CONSTRUCTOR
     //****************************************
 
-    private Main() {
+    private GeocoderServiceMain() {
 
     }
 

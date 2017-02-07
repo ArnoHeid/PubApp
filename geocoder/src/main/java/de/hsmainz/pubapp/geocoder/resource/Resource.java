@@ -1,8 +1,8 @@
 package de.hsmainz.pubapp.geocoder.resource;
 
 
-import de.hsmainz.pubapp.geocoder.httpapirequest.HttpAPIRequest;
-import de.hsmainz.pubapp.geocoder.httpapirequest.HttpAPIRequesterFactory;
+import de.hsmainz.pubapp.geocoder.controller.HttpAPIRequest;
+import de.hsmainz.pubapp.geocoder.controller.HttpAPIRequesterFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

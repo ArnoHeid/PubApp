@@ -1,12 +1,12 @@
-package de.hsmainz.pubapp.geocoder.httpapirequest;
+package de.hsmainz.pubapp.geocoder.model;
 
 /**
- * Factory to create HttpRequest for given API
+ * JSON to report an error to the client
  *
  * @author Arno
- * @since 06.02.2017.
+ * @since 31.01.2017.
  */
-public class HttpAPIRequesterFactory {
+public class ErrorJson {
 
     //****************************************
     // CONSTANTS
@@ -15,15 +15,19 @@ public class HttpAPIRequesterFactory {
     //****************************************
     // VARIABLES
     //****************************************
-
+    private String type = "Error";
+    private String errortext;
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
-    private HttpAPIRequesterFactory(){
-
+    public ErrorJson() {
+        errortext = "Default Error Text";
     }
 
+    public ErrorJson(String errorText){
+        this.errortext = errorText;
+    }
 
     //****************************************
     // GETTER/SETTER
@@ -32,19 +36,6 @@ public class HttpAPIRequesterFactory {
     //****************************************
     // PUBLIC METHODS
     //****************************************
-
-    public static HttpAPIRequest createRequest(String type){
-
-        HttpAPIRequest returnValue;
-
-        if("graphhopper".equalsIgnoreCase(type)){
-            returnValue = new HttpGraphhopperRequest();
-        }else{
-            returnValue = new HttpNominatimRequest();
-        }
-
-        return returnValue;
-    }
 
     //****************************************
     // PRIVATE METHODS

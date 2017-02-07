@@ -1,6 +1,6 @@
 package de.hsmainz.pubapp.geocoder;
 
-import de.hsmainz.pubapp.geocoder.jsonparser.APIKeys;
+import de.hsmainz.pubapp.geocoder.model.APIKeys;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -1,14 +1,14 @@
-package de.hsmainz.pubapp.geocoder.jsonparser.geojson;
+package de.hsmainz.pubapp.geocoder.model.graphhopperjson;
 
-import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.PointJson;
+import java.util.List;
 
 /**
- * Geometry part of the GeoJSON with the lat-long Coordinates
+ * Main graphhopperJSON
  *
  * @author Arno
- * @since 07.12.2016.
+ * @since 03.12.2016.
  */
-public class Geometry {
+public class GrahhopperJson {
 
     //****************************************
     // CONSTANTS
@@ -18,30 +18,20 @@ public class Geometry {
     // VARIABLES
     //****************************************
 
-    private String type;
-    private double[] coordinates;
+    private List<HitsJson> hits;
+    private String locale;
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
-    public Geometry(PointJson point) {
-        type = "Point";
-        coordinates = new double[2];
-        coordinates[1] = point.getLat();
-        coordinates[0] = point.getLng();
-    }
-
-    public Geometry(double lat, double lon) {
-        type = "Point";
-        coordinates = new double[2];
-        coordinates[1] = lat;
-        coordinates[0] = lon;
-    }
-
     //****************************************
     // GETTER/SETTER
     //****************************************
+
+    public List<HitsJson> getHits() {
+        return hits;
+    }
 
     //****************************************
     // PUBLIC METHODS

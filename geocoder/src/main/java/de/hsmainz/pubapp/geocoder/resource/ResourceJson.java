@@ -2,9 +2,9 @@ package de.hsmainz.pubapp.geocoder.resource;
 
 
 import com.google.gson.Gson;
-import de.hsmainz.pubapp.geocoder.httpapirequest.HttpAPIRequest;
-import de.hsmainz.pubapp.geocoder.httpapirequest.HttpAPIRequesterFactory;
-import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
+import de.hsmainz.pubapp.geocoder.controller.HttpAPIRequest;
+import de.hsmainz.pubapp.geocoder.controller.HttpAPIRequesterFactory;
+import de.hsmainz.pubapp.geocoder.model.ClientInputJson;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

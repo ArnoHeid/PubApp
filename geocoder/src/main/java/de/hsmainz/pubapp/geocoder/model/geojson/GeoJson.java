@@ -1,14 +1,15 @@
-package de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson;
+package de.hsmainz.pubapp.geocoder.model.geojson;
 
-import java.util.List;
+import de.hsmainz.pubapp.geocoder.model.graphhopperjson.HitsJson;
+import de.hsmainz.pubapp.geocoder.model.nominatimjson.NominatimJson;
 
 /**
- * Main graphhopperJSON
+ * GeoJSON with Type "Feature"
  *
  * @author Arno
- * @since 03.12.2016.
+ * @since 07.12.2016.
  */
-public class GrahhopperJson {
+public class GeoJson {
 
     //****************************************
     // CONSTANTS
@@ -18,20 +19,30 @@ public class GrahhopperJson {
     // VARIABLES
     //****************************************
 
-    private List<HitsJson> hits;
-    private String locale;
+    private String type;
+    private Properties properties;
+    private Geometry geometry;
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
+    public GeoJson(HitsJson hitsJson) {
+        type = "Feature";
+        properties = new Properties(hitsJson.getCountry(), hitsJson.getName());
+        geometry = new Geometry(hitsJson.getPoint());
+
+    }
+
+    public GeoJson(NominatimJson nomJson) {
+        type = "Feature";
+        properties = new Properties("", nomJson.getDisplay_name());
+        geometry = new Geometry(nomJson.getLat(),nomJson.getLon());
+    }
+
     //****************************************
     // GETTER/SETTER
     //****************************************
-
-    public List<HitsJson> getHits() {
-        return hits;
-    }
 
     //****************************************
     // PUBLIC METHODS

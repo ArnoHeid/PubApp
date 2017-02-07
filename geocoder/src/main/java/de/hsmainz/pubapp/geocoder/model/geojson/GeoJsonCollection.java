@@ -1,8 +1,8 @@
-package de.hsmainz.pubapp.geocoder.jsonparser.geojson;
+package de.hsmainz.pubapp.geocoder.model.geojson;
 
-import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.GrahhopperJson;
-import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.HitsJson;
-import de.hsmainz.pubapp.geocoder.jsonparser.nominatimjson.NominatimJson;
+import de.hsmainz.pubapp.geocoder.model.graphhopperjson.GrahhopperJson;
+import de.hsmainz.pubapp.geocoder.model.graphhopperjson.HitsJson;
+import de.hsmainz.pubapp.geocoder.model.nominatimjson.NominatimJson;
 
 import java.util.ArrayList;
 import java.util.List;

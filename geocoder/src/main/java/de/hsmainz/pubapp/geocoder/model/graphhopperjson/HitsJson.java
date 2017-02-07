@@ -1,12 +1,12 @@
-package de.hsmainz.pubapp.geocoder.jsonparser;
+package de.hsmainz.pubapp.geocoder.model.graphhopperjson;
 
 /**
- * JSON to report an error to the client
+ * Additional information to expand the coordinate information
  *
  * @author Arno
- * @since 31.01.2017.
+ * @since 04.12.2016.
  */
-public class ErrorJson {
+public class HitsJson {
 
     //****************************************
     // CONSTANTS
@@ -15,23 +15,30 @@ public class ErrorJson {
     //****************************************
     // VARIABLES
     //****************************************
-    private String type = "Error";
-    private String errortext;
+
+    private String name;
+    private PointJson point;
+    private String country;
+
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
-    public ErrorJson() {
-        errortext = "Default Error Text";
-    }
-
-    public ErrorJson(String errorText){
-        this.errortext = errorText;
-    }
-
     //****************************************
     // GETTER/SETTER
     //****************************************
+
+    public String getName() {
+        return name;
+    }
+
+    public PointJson getPoint() {
+        return point;
+    }
+
+    public String getCountry() {
+        return country;
+    }
 
     //****************************************
     // PUBLIC METHODS

@@ -1,11 +1,11 @@
-package de.hsmainz.pubapp.geocoder.httpapirequest;
+package de.hsmainz.pubapp.geocoder.controller;
 
 import com.google.gson.Gson;
 import de.hsmainz.pubapp.geocoder.MyProperties;
-import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
-import de.hsmainz.pubapp.geocoder.jsonparser.ErrorJson;
-import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonCollection;
-import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.GrahhopperJson;
+import de.hsmainz.pubapp.geocoder.model.ClientInputJson;
+import de.hsmainz.pubapp.geocoder.model.ErrorJson;
+import de.hsmainz.pubapp.geocoder.model.geojson.GeoJsonCollection;
+import de.hsmainz.pubapp.geocoder.model.graphhopperjson.GrahhopperJson;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;

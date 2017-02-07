@@ -1,12 +1,12 @@
-package de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson;
+package de.hsmainz.pubapp.geocoder.model;
 
 /**
- * Point part of the graphhopperJSON with the lat-long Coordinates
+ * Input JSON Class for use with GSON
  *
  * @author Arno
  * @since 04.12.2016.
  */
-public class PointJson {
+public class ClientInputJson {
 
     //****************************************
     // CONSTANTS
@@ -16,8 +16,9 @@ public class PointJson {
     // VARIABLES
     //****************************************
 
-    private double lng;
-    private double lat;
+    private String queryString;
+    private String locale;
+    private String api;
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -27,12 +28,16 @@ public class PointJson {
     // GETTER/SETTER
     //****************************************
 
-    public double getLng() {
-        return lng;
+    public String getQueryString() {
+        return queryString;
     }
 
-    public double getLat() {
-        return lat;
+    public String getLocale() {
+        return locale;
+    }
+
+    public String getApi() {
+        return api;
     }
 
     //****************************************

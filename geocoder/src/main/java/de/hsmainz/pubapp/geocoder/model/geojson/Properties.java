@@ -1,12 +1,12 @@
-package de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson;
+package de.hsmainz.pubapp.geocoder.model.geojson;
 
 /**
  * Additional information to expand the coordinate information
  *
  * @author Arno
- * @since 04.12.2016.
+ * @since 07.12.2016.
  */
-public class HitsJson {
+public class Properties {
 
     //****************************************
     // CONSTANTS
@@ -17,28 +17,20 @@ public class HitsJson {
     //****************************************
 
     private String name;
-    private PointJson point;
     private String country;
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
+    public Properties(String country, String name) {
+        this.name = name;
+        this.country = country;
+    }
+
     //****************************************
     // GETTER/SETTER
     //****************************************
-
-    public String getName() {
-        return name;
-    }
-
-    public PointJson getPoint() {
-        return point;
-    }
-
-    public String getCountry() {
-        return country;
-    }
 
     //****************************************
     // PUBLIC METHODS

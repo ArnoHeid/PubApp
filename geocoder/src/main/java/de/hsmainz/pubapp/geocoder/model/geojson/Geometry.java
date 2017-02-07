@@ -1,15 +1,14 @@
-package de.hsmainz.pubapp.geocoder.jsonparser.geojson;
+package de.hsmainz.pubapp.geocoder.model.geojson;
 
-import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.HitsJson;
-import de.hsmainz.pubapp.geocoder.jsonparser.nominatimjson.NominatimJson;
+import de.hsmainz.pubapp.geocoder.model.graphhopperjson.PointJson;
 
 /**
- * GeoJSON with Type "Feature"
+ * Geometry part of the GeoJSON with the lat-long Coordinates
  *
  * @author Arno
  * @since 07.12.2016.
  */
-public class GeoJson {
+public class Geometry {
 
     //****************************************
     // CONSTANTS
@@ -20,24 +19,24 @@ public class GeoJson {
     //****************************************
 
     private String type;
-    private Properties properties;
-    private Geometry geometry;
+    private double[] coordinates;
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
-    public GeoJson(HitsJson hitsJson) {
-        type = "Feature";
-        properties = new Properties(hitsJson.getCountry(), hitsJson.getName());
-        geometry = new Geometry(hitsJson.getPoint());
-
+    public Geometry(PointJson point) {
+        type = "Point";
+        coordinates = new double[2];
+        coordinates[1] = point.getLat();
+        coordinates[0] = point.getLng();
     }
 
-    public GeoJson(NominatimJson nomJson) {
-        type = "Feature";
-        properties = new Properties("", nomJson.getDisplay_name());
-        geometry = new Geometry(nomJson.getLat(),nomJson.getLon());
+    public Geometry(double lat, double lon) {
+        type = "Point";
+        coordinates = new double[2];
+        coordinates[1] = lat;
+        coordinates[0] = lon;
     }
 
     //****************************************

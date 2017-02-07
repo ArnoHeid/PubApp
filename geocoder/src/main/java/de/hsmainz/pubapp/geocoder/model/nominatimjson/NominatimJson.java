@@ -1,4 +1,4 @@
-package de.hsmainz.pubapp.geocoder.jsonparser.nominatimjson;
+package de.hsmainz.pubapp.geocoder.model.nominatimjson;
 
 /**
  * Main nominatimJSON
