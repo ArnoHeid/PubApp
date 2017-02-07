@@ -1,10 +1,13 @@
 package de.hsmainz.pubapp.geocoder;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 /**
  * Handles Properties Files
@@ -24,7 +27,8 @@ public class MyProperties extends Properties {
     //****************************************
 
     private static MyProperties instance = null;
-    private static String propertiesFile = "config.properties";
+    private static File propertiesFile;
+    private static String defaultPropertiesFile = "default.properties";
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -38,11 +42,11 @@ public class MyProperties extends Properties {
     // GETTER/SETTER
     //****************************************
 
-    public static void setPropertiesFile(String propertiesFileName){
-        propertiesFile = propertiesFileName;
+    static void setPropertiesFile(String propertiesFileName){
+        File newProp = new File(propertiesFileName);
+        if(newProp.exists())
+            propertiesFile = newProp;
     }
-
-    //TODO Check if file exists
 
     //****************************************
     // PUBLIC METHODS
@@ -56,14 +60,22 @@ public class MyProperties extends Properties {
         if(instance==null){
             try {
                 instance = new MyProperties();
-                FileInputStream in = new FileInputStream(propertiesFile);
+                InputStream in = MyProperties.class.getClass().getResourceAsStream("/default.properties");
                 instance.load(in);
                 in.close();
+
+                if(propertiesFile!=null){
+                    FileInputStream fin = new FileInputStream(propertiesFile);
+                    instance.load(fin);
+                    fin.close();
+                }
+
             } catch (IOException e) {
                 logger.catching(e);
                 return null;
             }
         }
+
         return instance;
     }
 

@@ -21,8 +21,8 @@ public class GeocoderServiceMain {
     // CONSTANTS
     //****************************************
 
-    // URI the Grizzly HTTP server will listen on
-    private static final String BASE_URI = "http://localhost:8080/pubapp/";
+    private static final String BASE_URI = "http://localhost";
+    private static final String PATH = "pubapp/";
     private static final Logger logger = LogManager.getLogger(GeocoderServiceMain.class);
 
     //****************************************
@@ -46,21 +46,6 @@ public class GeocoderServiceMain {
     //****************************************
 
     /**
-     * Starts Grizzly HTTP server
-     *
-     * @return Grizzly HTTP server.
-     */
-    private static HttpServer startServer() {
-
-        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.geocoder.web");
-        return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
-    }
-
-    //****************************************
-    // PRIVATE METHODS
-    //****************************************
-
-    /**
      * Main server method.
      *
      * @param args load properties file
@@ -76,12 +61,35 @@ public class GeocoderServiceMain {
         logger.trace("Geocoder started");
 
         System.out.println(String.format("Jersey app started with WADL available at "
-                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+                + "%sapplication.wadl\nHit enter to stop it...", buildURL()));
 
         System.in.read();
 
         logger.trace("Geocoder stoped");
         server.shutdownNow();
+    }
+
+
+    //****************************************
+    // PRIVATE METHODS
+    //****************************************
+
+    /**
+     * Starts Grizzly HTTP server
+     *
+     * @return Grizzly HTTP server.
+     */
+    private static HttpServer startServer() {
+
+        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.geocoder.web");
+
+
+        return GrizzlyHttpServerFactory.createHttpServer(URI.create(buildURL()), rc);
+    }
+
+    private static String buildURL(){
+        String port = MyProperties.getInstance().getProperty("geo_port");
+        return BASE_URI + ":" + port + "/" +PATH;
     }
 
     //****************************************
