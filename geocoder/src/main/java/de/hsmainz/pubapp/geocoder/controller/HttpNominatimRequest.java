@@ -126,9 +126,9 @@ public class HttpNominatimRequest implements HttpAPIRequest {
     private URI buildNominatimUri(String queryString, String locale) {
 
         URIBuilder uriBuilder = new URIBuilder();
-        uriBuilder.setScheme(MyProperties.getInstance().getProperty("nscheme"));
-        uriBuilder.setHost(MyProperties.getInstance().getProperty("nhost"));
-        uriBuilder.setPath(MyProperties.getInstance().getProperty("npath"));
+        uriBuilder.setScheme(MyProperties.getInstance().getProperty("geo_nscheme"));
+        uriBuilder.setHost(MyProperties.getInstance().getProperty("geo_nhost"));
+        uriBuilder.setPath(MyProperties.getInstance().getProperty("geo_npath"));
         uriBuilder.setParameter("q", queryString);
         uriBuilder.setParameter("format","json");
         uriBuilder.setParameter("json_callback","cb");

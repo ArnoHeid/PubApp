@@ -22,7 +22,7 @@ public class GeocoderServiceMain {
     //****************************************
 
     // URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://localhost:8080/pubapp/";
+    private static final String BASE_URI = "http://localhost:8080/pubapp/";
     private static final Logger logger = LogManager.getLogger(GeocoderServiceMain.class);
 
     //****************************************
@@ -52,7 +52,7 @@ public class GeocoderServiceMain {
      */
     private static HttpServer startServer() {
 
-        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.geocoder.resource");
+        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.geocoder.web");
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
 
@@ -67,15 +67,19 @@ public class GeocoderServiceMain {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+        if(args.length > 0){
+            MyProperties.setPropertiesFile(args[0]);
+        }
+
+
         final HttpServer server = startServer();
         logger.trace("Geocoder started");
 
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
 
-        System.out.println(MyProperties.getInstance().getProperty("typ"));
-
         System.in.read();
+
         logger.trace("Geocoder stoped");
         server.shutdownNow();
     }

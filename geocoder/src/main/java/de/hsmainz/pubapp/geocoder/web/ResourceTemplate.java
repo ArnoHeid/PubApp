@@ -1,4 +1,4 @@
-package de.hsmainz.pubapp.geocoder.resource;
+package de.hsmainz.pubapp.geocoder.web;
 
 /**
  * father class for all resources

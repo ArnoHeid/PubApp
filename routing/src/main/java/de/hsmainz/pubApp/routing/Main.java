@@ -46,7 +46,7 @@ public class Main {
      * @return Grizzly HTTP server.
      */
     private static HttpServer startServer() {
-        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.routing.resource");
+        final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.routing.web");
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI

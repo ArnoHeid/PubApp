@@ -1,4 +1,4 @@
-package de.hsmainz.pubapp.geocoder.resource;
+package de.hsmainz.pubapp.geocoder.web;
 
 
 import de.hsmainz.pubapp.geocoder.controller.HttpAPIRequest;

@@ -139,12 +139,12 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      */
     private URI buildGraphhopperUri(String queryString, String locale) {
         URIBuilder uriBuilder = new URIBuilder();
-        uriBuilder.setScheme(MyProperties.getInstance().getProperty("gscheme"));
-        uriBuilder.setHost(MyProperties.getInstance().getProperty("ghost"));
-        uriBuilder.setPath(MyProperties.getInstance().getProperty("gpath"));
+        uriBuilder.setScheme(MyProperties.getInstance().getProperty("geo_gscheme"));
+        uriBuilder.setHost(MyProperties.getInstance().getProperty("geo_ghost"));
+        uriBuilder.setPath(MyProperties.getInstance().getProperty("geo_gpath"));
         uriBuilder.setParameter("q", queryString);
         uriBuilder.setParameter("locale", locale);
-        uriBuilder.setParameter("key", MyProperties.getInstance().getProperty("gkey"));
+        uriBuilder.setParameter("key", MyProperties.getInstance().getProperty("graphhopper_key"));
         URI uri = null;
         try {
             uri = uriBuilder.build();
