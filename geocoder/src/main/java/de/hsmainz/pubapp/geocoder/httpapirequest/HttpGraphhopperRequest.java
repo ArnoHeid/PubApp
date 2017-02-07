@@ -2,11 +2,10 @@ package de.hsmainz.pubapp.geocoder.httpapirequest;
 
 import com.google.gson.Gson;
 import de.hsmainz.pubapp.geocoder.MyProperties;
-import de.hsmainz.pubapp.geocoder.jsonparser.APIKeys;
+import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
 import de.hsmainz.pubapp.geocoder.jsonparser.ErrorJson;
 import de.hsmainz.pubapp.geocoder.jsonparser.geojson.GeoJsonCollection;
 import de.hsmainz.pubapp.geocoder.jsonparser.graphhopperjson.GrahhopperJson;
-import de.hsmainz.pubapp.geocoder.jsonparser.ClientInputJson;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -15,7 +14,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
