@@ -101,7 +101,6 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @return the requested geoJSON
      */
     private GeoJsonCollection doHttpGet(URI uri) {
-        Gson gson = new Gson();
         GrahhopperJson grahhopperJson;
         GeoJsonCollection geoJsonCollection;
         HttpGet httpget = new HttpGet(uri);
@@ -137,13 +136,6 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @return Uri for geocoder request to graphhopper API
      */
     private URI buildGraphhopperUri(String queryString, String locale) {
-        APIKeys apiKeys;
-        try {
-            apiKeys = APIKeys.readKeys();
-        } catch (FileNotFoundException e) {
-            logger.catching(e);
-            apiKeys = new APIKeys();
-        }
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme(MyProperties.getInstance().getProperty("gscheme"));
         uriBuilder.setHost(MyProperties.getInstance().getProperty("ghost"));

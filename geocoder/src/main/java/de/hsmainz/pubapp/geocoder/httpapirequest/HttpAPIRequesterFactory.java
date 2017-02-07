@@ -20,6 +20,11 @@ public class HttpAPIRequesterFactory {
     // INIT/CONSTRUCTOR
     //****************************************
 
+    private HttpAPIRequesterFactory(){
+
+    }
+
+
     //****************************************
     // GETTER/SETTER
     //****************************************
@@ -32,7 +37,7 @@ public class HttpAPIRequesterFactory {
 
         HttpAPIRequest returnValue;
 
-        if(type.equalsIgnoreCase("graphhopper")){
+        if("graphhopper".equalsIgnoreCase(type)){
             returnValue = new HttpGraphhopperRequest();
         }else{
             returnValue = new HttpNominatimRequest();

@@ -146,9 +146,9 @@ public class HttpNominatimRequest implements HttpAPIRequest {
 
     private String splitJsonString(String json){
         String returnString;
-        int pos = json.indexOf( ")" );
+        int pos = json.indexOf( ')' );
         returnString = pos >= 0 ? json.substring( 0, pos ) : json;
-        pos = returnString.indexOf("(");
+        pos = returnString.indexOf('(');
         returnString =  pos >= 0 ? returnString.substring( pos + ")".length() ) : "";
 
         return returnString;
