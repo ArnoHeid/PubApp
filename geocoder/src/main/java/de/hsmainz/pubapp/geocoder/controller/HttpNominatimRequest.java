@@ -1,13 +1,13 @@
 package de.hsmainz.pubapp.geocoder.controller;
 
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import de.hsmainz.pubapp.geocoder.MyProperties;
 import de.hsmainz.pubapp.geocoder.model.ClientInputJson;
 import de.hsmainz.pubapp.geocoder.model.ErrorJson;
 import de.hsmainz.pubapp.geocoder.model.geojson.GeoJsonCollection;
 import de.hsmainz.pubapp.geocoder.model.nominatimjson.NominatimJson;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -15,16 +15,15 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.commons.io.IOUtils;
 
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 
 /**
@@ -38,8 +37,6 @@ public class HttpNominatimRequest extends HttpAPIRequest {
     //****************************************
     // CONSTANTS
     //****************************************
-
-    private static final Logger logger = LogManager.getLogger(HttpGraphhopperRequest.class);
 
     //****************************************
     // VARIABLES
