@@ -40,7 +40,6 @@ public class HttpNominatimRequest implements HttpAPIRequest {
     private static final Logger logger = LogManager.getLogger(HttpGraphhopperRequest.class);
     private static final ResourceBundle lables = ResourceBundle.getBundle("lable", Locale.getDefault());
 
-
     //****************************************
     // VARIABLES
     //****************************************
@@ -107,7 +106,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
         List<NominatimJson> nominatimJson;
         GeoJsonCollection geoJsonCollection;
         HttpGet httpget = new HttpGet(uri);
-        httpget.setHeader("Referrer","www.hs-mainz.de");
+        httpget.setHeader("Referrer",MyProperties.getInstance().getProperty("geo_referrer"));
         try (CloseableHttpClient httpclient = HttpClients.createDefault(); CloseableHttpResponse response = httpclient.execute(httpget)) {
             InputStream inputStream = response.getEntity().getContent();
             Reader reader = new InputStreamReader(inputStream, "UTF-8");

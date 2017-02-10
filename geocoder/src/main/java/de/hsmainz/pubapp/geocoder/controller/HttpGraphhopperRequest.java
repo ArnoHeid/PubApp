@@ -37,6 +37,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
 
     private static final Logger logger = LogManager.getLogger(HttpGraphhopperRequest.class);
     private static final ResourceBundle lables = ResourceBundle.getBundle("lable", Locale.getDefault());
+
     //****************************************
     // VARIABLES
     //****************************************
