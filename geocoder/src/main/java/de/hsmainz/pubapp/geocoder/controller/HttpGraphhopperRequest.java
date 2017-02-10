@@ -70,13 +70,10 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         } else {
             try {
                 URI uri = buildGraphhopperUri(inputJson);
-                returnString = gson.toJson(doHttpGet(uri));
+                returnString = request(uri);
             } catch (URISyntaxException e) {
                 logger.catching(e);
-                returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
-            } catch (IOException e) {
-                logger.catching(e);
-                returnString=gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
+                returnString = gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
             }
         }
         return returnString;
@@ -97,13 +94,10 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         } else {
             try {
                 URI uri = buildGraphhopperUri(queryString, locale);
-                returnString = gson.toJson(doHttpGet(uri));
+                returnString = request(uri);
             } catch (URISyntaxException e) {
                 logger.catching(e);
-                returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
-            } catch (IOException e) {
-                logger.catching(e);
-                returnString=gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
+                returnString = gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
             }
         }
         return returnString;
@@ -112,6 +106,22 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     //****************************************
     // PRIVATE METHODS
     //****************************************
+
+    private String request(URI uri) {
+        String returnString;
+        try {
+            GeoJsonCollection geoJsonCollection = doHttpGet(uri);
+            if (validateOutput(geoJsonCollection)) {
+                returnString = gson.toJson(geoJsonCollection);
+            } else {
+                returnString = gson.toJson(new ErrorJson(lables.getString("message_no_location")));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            returnString = gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
+        }
+        return returnString;
+    }
 
     /**
      * Executes the request to the API
@@ -129,9 +139,6 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
             grahhopperJson = gson.fromJson(reader, GrahhopperJson.class);
             geoJsonCollection = new GeoJsonCollection(grahhopperJson);
             inputStream.close();
-        } catch (IOException e) {
-            logger.catching(e);
-            throw e;
         }
         return geoJsonCollection;
     }
@@ -168,7 +175,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * validates the Input to reduce unnecessary request to API
      *
      * @param inputJson the InputJSON to be validated
-     * @return the true is InputJSON is valid
+     * @return returns true if InputJSON is valid
      */
     private boolean validateInput(ClientInputJson inputJson) {
         boolean returnValue = true;
@@ -192,8 +199,9 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         return returnValue;
     }
 
-
-    //TODO validateOutput(GrahhopperJson grahhopperJson)
+    private boolean validateOutput(GeoJsonCollection geoJsonCollection) {
+        return !geoJsonCollection.getFeatures().isEmpty();
+    }
 
     //****************************************
     // INNER CLASSES
