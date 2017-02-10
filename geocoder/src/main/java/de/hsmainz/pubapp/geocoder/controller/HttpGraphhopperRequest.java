@@ -29,20 +29,15 @@ import java.util.ResourceBundle;
  * @author Arno
  * @since 04.12.2016
  */
-public class HttpGraphhopperRequest implements HttpAPIRequest {
+public class HttpGraphhopperRequest extends HttpAPIRequest {
 
     //****************************************
     // CONSTANTS
     //****************************************
 
-    private static final Logger logger = LogManager.getLogger(HttpGraphhopperRequest.class);
-    private static final ResourceBundle lables = ResourceBundle.getBundle("lable", Locale.getDefault());
-
     //****************************************
     // VARIABLES
     //****************************************
-
-    private Gson gson = new Gson();
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -107,29 +102,14 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     // PRIVATE METHODS
     //****************************************
 
-    private String request(URI uri) {
-        String returnString;
-        try {
-            GeoJsonCollection geoJsonCollection = doHttpGet(uri);
-            if (validateOutput(geoJsonCollection)) {
-                returnString = gson.toJson(geoJsonCollection);
-            } else {
-                returnString = gson.toJson(new ErrorJson(lables.getString("message_no_location")));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            returnString = gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
-        }
-        return returnString;
-    }
-
     /**
      * Executes the request to the API
      *
      * @param uri the URL for the request to geocoder
      * @return the requested geoJSON
      */
-    private GeoJsonCollection doHttpGet(URI uri) throws IOException {
+    @Override
+    GeoJsonCollection doHttpGet(URI uri) throws IOException {
         GrahhopperJson grahhopperJson;
         GeoJsonCollection geoJsonCollection;
         HttpGet httpget = new HttpGet(uri);
@@ -169,38 +149,6 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         uriBuilder.setParameter("locale", locale);
         uriBuilder.setParameter("key", MyProperties.getInstance().getProperty("graphhopper_key"));
         return uriBuilder.build();
-    }
-
-    /**
-     * validates the Input to reduce unnecessary request to API
-     *
-     * @param inputJson the InputJSON to be validated
-     * @return returns true if InputJSON is valid
-     */
-    private boolean validateInput(ClientInputJson inputJson) {
-        boolean returnValue = true;
-        if (inputJson.getQueryString() == null || inputJson.getQueryString().isEmpty()) {
-            returnValue = false;
-        }
-        if (inputJson.getLocale() == null || inputJson.getLocale().isEmpty()) {
-            returnValue = false;
-        }
-        if (inputJson.getLocale().matches("de|en|fr|it")) {
-            returnValue = false;
-        }
-        return returnValue;
-    }
-
-    private boolean validateInput(String inputString) {
-        boolean returnValue = true;
-        if (inputString == null || inputString.isEmpty()) {
-            returnValue = false;
-        }
-        return returnValue;
-    }
-
-    private boolean validateOutput(GeoJsonCollection geoJsonCollection) {
-        return !geoJsonCollection.getFeatures().isEmpty();
     }
 
     //****************************************

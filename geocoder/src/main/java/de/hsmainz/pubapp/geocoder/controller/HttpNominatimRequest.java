@@ -33,20 +33,17 @@ import java.util.ResourceBundle;
  * @author Arno
  * @since 03.02.2017.
  */
-public class HttpNominatimRequest implements HttpAPIRequest {
+public class HttpNominatimRequest extends HttpAPIRequest {
 
     //****************************************
     // CONSTANTS
     //****************************************
 
     private static final Logger logger = LogManager.getLogger(HttpGraphhopperRequest.class);
-    private static final ResourceBundle lables = ResourceBundle.getBundle("lable", Locale.getDefault());
 
     //****************************************
     // VARIABLES
     //****************************************
-
-    private Gson gson = new Gson();
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -70,7 +67,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
                 URI uri = buildNominatimUri(inputJson);
                 returnString = request(uri);
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                logger.catching(e);
                 returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
             }
         }
@@ -88,7 +85,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
                 URI uri = buildNominatimUri(queryString,locale);
                 returnString = request(uri);
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                logger.catching(e);
                 returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
             }
         }
@@ -99,33 +96,14 @@ public class HttpNominatimRequest implements HttpAPIRequest {
     // PRIVATE METHODS
     //****************************************
 
-    private String request(URI uri){
-        String returnString;
-        try {
-            GeoJsonCollection geoJsonCollection = doHttpGet(uri);
-            if (validateOutput(geoJsonCollection)) {
-                returnString = gson.toJson(geoJsonCollection);
-            } else {
-                returnString = gson.toJson(new ErrorJson(lables.getString("message_no_location")));
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            returnString=gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
-        }
-        return returnString;
-    }
-
-
-
     /**
      * Executes the request to the API
      *
      * @param uri the URL for the request to geocoder
      * @return the requested geoJSON
      */
-    private GeoJsonCollection doHttpGet(URI uri) throws IOException {
-        Gson gson = new Gson();
+    @Override
+    GeoJsonCollection doHttpGet(URI uri) throws IOException {
         List<NominatimJson> nominatimJson;
         GeoJsonCollection geoJsonCollection;
         HttpGet httpget = new HttpGet(uri);
@@ -184,36 +162,6 @@ public class HttpNominatimRequest implements HttpAPIRequest {
 
         return returnString;
     }
-
-    /**
-     * validates the Input to reduce unnecessary request to API
-     *
-     * @param inputJson the InputJSON to be validated
-     * @return returns true if InputJSON is valid
-     */
-    private boolean validateInput(ClientInputJson inputJson) {
-        boolean returnValue = true;
-        if (inputJson.getQueryString() == null || inputJson.getQueryString().isEmpty()) {
-            returnValue = false;
-        }
-        if (inputJson.getLocale() == null || inputJson.getLocale().isEmpty()) {
-            returnValue = false;
-        }
-        return returnValue;
-    }
-
-    private boolean validateInput(String inputString) {
-        boolean returnValue = true;
-        if (inputString == null || inputString.isEmpty()) {
-            returnValue = false;
-        }
-        return returnValue;
-    }
-
-    private boolean validateOutput(GeoJsonCollection geoJsonCollection) {
-        return !geoJsonCollection.getFeatures().isEmpty();
-    }
-
 
     //****************************************
     // INNER CLASSES
