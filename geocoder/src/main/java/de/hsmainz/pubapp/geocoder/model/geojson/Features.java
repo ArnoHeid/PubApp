@@ -29,14 +29,14 @@ public class Features {
 
     public Features(HitsJson hitsJson) {
         type = "Feature";
-        properties = new Properties(hitsJson.getCountry(), hitsJson.getName());
+        properties = new Properties(hitsJson.getCountry(), hitsJson.getName(), "grahhopper.de" );
         geometry = new Geometry(hitsJson.getPoint());
 
     }
 
     public Features(NominatimJson nomJson) {
         type = "Feature";
-        properties = new Properties(nomJson.getAdress().getCountry(), nomJson.getDisplay_name());
+        properties = new Properties(nomJson.getAdress().getCountry(), nomJson.getDisplay_name(), nomJson.getLicence());
         geometry = new Geometry(nomJson.getLat(),nomJson.getLon());
     }
 

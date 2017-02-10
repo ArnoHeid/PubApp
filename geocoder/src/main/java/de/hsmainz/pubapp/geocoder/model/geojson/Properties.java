@@ -18,14 +18,16 @@ public class Properties {
 
     private String name;
     private String country;
+    private String licence;
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
-    public Properties(String country, String name) {
+    public Properties(String country, String name, String licence) {
         this.name = name;
         this.country = country;
+        this.licence = licence;
     }
 
     //****************************************
@@ -38,6 +40,10 @@ public class Properties {
 
     public String getCountry() {
         return country;
+    }
+
+    public String getLicence() {
+        return licence;
     }
 
     //****************************************

@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Class for using Graphhopper as Geocoder
@@ -34,7 +36,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     //****************************************
 
     private static final Logger logger = LogManager.getLogger(HttpGraphhopperRequest.class);
-
+    private static final ResourceBundle lables = ResourceBundle.getBundle("lable", Locale.getDefault());
     //****************************************
     // VARIABLES
     //****************************************
@@ -63,11 +65,18 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     public String requestGeocoder(ClientInputJson inputJson) {
         String returnString;
         if (!validateInput(inputJson)) {
-            ErrorJson returnErrorJson = new ErrorJson("Input validation failed");
-            returnString = gson.toJson(returnErrorJson);
+            returnString = gson.toJson(new ErrorJson(lables.getString("message_Input_Empty")));
         } else {
-            URI uri = buildGraphhopperUri(inputJson);
-            returnString = gson.toJson(doHttpGet(uri));
+            try {
+                URI uri = buildGraphhopperUri(inputJson);
+                returnString = gson.toJson(doHttpGet(uri));
+            } catch (URISyntaxException e) {
+                logger.catching(e);
+                returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
+            } catch (IOException e) {
+                logger.catching(e);
+                returnString=gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
+            }
         }
         return returnString;
     }
@@ -83,11 +92,18 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     public String requestGeocoder(String queryString, String locale) {
         String returnString;
         if (!validateInput(queryString)) {
-            ErrorJson returnErrorJson = new ErrorJson("Input empty");
-            returnString = gson.toJson(returnErrorJson);
+            returnString = gson.toJson(new ErrorJson(lables.getString("message_Input_Empty")));
         } else {
-            URI uri = buildGraphhopperUri(queryString, locale);
-            returnString = gson.toJson(doHttpGet(uri));
+            try {
+                URI uri = buildGraphhopperUri(queryString, locale);
+                returnString = gson.toJson(doHttpGet(uri));
+            } catch (URISyntaxException e) {
+                logger.catching(e);
+                returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
+            } catch (IOException e) {
+                logger.catching(e);
+                returnString=gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
+            }
         }
         return returnString;
     }
@@ -102,7 +118,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @param uri the URL for the request to geocoder
      * @return the requested geoJSON
      */
-    private GeoJsonCollection doHttpGet(URI uri) {
+    private GeoJsonCollection doHttpGet(URI uri) throws IOException {
         GrahhopperJson grahhopperJson;
         GeoJsonCollection geoJsonCollection;
         HttpGet httpget = new HttpGet(uri);
@@ -114,10 +130,9 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
             inputStream.close();
         } catch (IOException e) {
             logger.catching(e);
-            geoJsonCollection = new GeoJsonCollection();
+            throw e;
         }
         return geoJsonCollection;
-        //TODO Better way to handle fail request
     }
 
     /**
@@ -126,7 +141,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @param inputJson Class with input parameters
      * @return Uri for geocoder request to graphhopper API
      */
-    private URI buildGraphhopperUri(ClientInputJson inputJson) {
+    private URI buildGraphhopperUri(ClientInputJson inputJson) throws URISyntaxException {
         return buildGraphhopperUri(inputJson.getQueryString(), inputJson.getLocale());
     }
 
@@ -137,7 +152,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @param locale      the string defining the used language
      * @return Uri for geocoder request to graphhopper API
      */
-    private URI buildGraphhopperUri(String queryString, String locale) {
+    private URI buildGraphhopperUri(String queryString, String locale) throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme(MyProperties.getInstance().getProperty("geo_gscheme"));
         uriBuilder.setHost(MyProperties.getInstance().getProperty("geo_ghost"));
@@ -145,13 +160,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         uriBuilder.setParameter("q", queryString);
         uriBuilder.setParameter("locale", locale);
         uriBuilder.setParameter("key", MyProperties.getInstance().getProperty("graphhopper_key"));
-        URI uri = null;
-        try {
-            uri = uriBuilder.build();
-        } catch (URISyntaxException e) {
-            logger.catching(e);
-        }
-        return uri;
+        return uriBuilder.build();
     }
 
     /**

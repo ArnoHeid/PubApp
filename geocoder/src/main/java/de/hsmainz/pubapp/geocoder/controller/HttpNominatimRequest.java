@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import de.hsmainz.pubapp.geocoder.MyProperties;
 import de.hsmainz.pubapp.geocoder.model.ClientInputJson;
+import de.hsmainz.pubapp.geocoder.model.ErrorJson;
 import de.hsmainz.pubapp.geocoder.model.geojson.GeoJsonCollection;
 import de.hsmainz.pubapp.geocoder.model.nominatimjson.NominatimJson;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -22,6 +23,8 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 /**
@@ -35,6 +38,8 @@ public class HttpNominatimRequest implements HttpAPIRequest {
     //****************************************
 
     private static final Logger logger = LogManager.getLogger(HttpGraphhopperRequest.class);
+    private static final ResourceBundle lables = ResourceBundle.getBundle("lable", Locale.getDefault());
+
 
     //****************************************
     // VARIABLES
@@ -56,16 +61,35 @@ public class HttpNominatimRequest implements HttpAPIRequest {
 
     @Override
     public String requestGeocoder(ClientInputJson inputJson) {
-        return null;
+        String returnString;
+        try {
+            URI uri = buildNominatimUri(inputJson);
+            returnString = gson.toJson(doHttpGet(uri));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            returnString=gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
+        }
+        return returnString;
     }
 
     @Override
     public String requestGeocoder(String queryString, String locale) {
         String returnString;
-
+        try {
             URI uri = buildNominatimUri(queryString, locale);
             returnString = gson.toJson(doHttpGet(uri));
-
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            returnString=gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
+        }
         return returnString;
     }
 
@@ -78,7 +102,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
      * @param uri the URL for the request to geocoder
      * @return the requested geoJSON
      */
-    private GeoJsonCollection doHttpGet(URI uri) {
+    private GeoJsonCollection doHttpGet(URI uri) throws IOException {
         Gson gson = new Gson();
         List<NominatimJson> nominatimJson;
         GeoJsonCollection geoJsonCollection;
@@ -95,10 +119,9 @@ public class HttpNominatimRequest implements HttpAPIRequest {
             inputStream.close();
         } catch (IOException e) {
             logger.catching(e);
-            geoJsonCollection = new GeoJsonCollection();
+            throw e;
         }
         return geoJsonCollection;
-        //TODO Better way to handle fail request
     }
 
     /**
@@ -107,7 +130,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
      * @param inputJson Class with input parameters
      * @return Uri for geocoder request to graphhopper API
      */
-    private URI buildNoiminatimUri(ClientInputJson inputJson) {
+    private URI buildNominatimUri(ClientInputJson inputJson) throws URISyntaxException {
         return buildNominatimUri(inputJson.getQueryString(), inputJson.getLocale());
     }
 
@@ -118,7 +141,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
      * @param locale      the string defining the used language
      * @return Uri for geocoder request to graphhopper API
      */
-    private URI buildNominatimUri(String queryString, String locale) {
+    private URI buildNominatimUri(String queryString, String locale) throws URISyntaxException {
 
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme(MyProperties.getInstance().getProperty("geo_nscheme"));
@@ -130,13 +153,7 @@ public class HttpNominatimRequest implements HttpAPIRequest {
         uriBuilder.setParameter("addressdetails","1");
         uriBuilder.setParameter("limit","2");
 
-        URI uri = null;
-        try {
-            uri = uriBuilder.build();
-        } catch (URISyntaxException e) {
-            logger.catching(e);
-        }
-        return uri;
+        return uriBuilder.build();
     }
 
     private String splitJsonString(String json){

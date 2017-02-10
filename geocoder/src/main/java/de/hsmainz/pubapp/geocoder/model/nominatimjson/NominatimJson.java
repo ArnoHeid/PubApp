@@ -21,6 +21,7 @@ public class NominatimJson {
     private double lat;
     private double lon;
     private Address address;
+    private String licence;
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -44,6 +45,10 @@ public class NominatimJson {
 
     public Address getAdress() {
         return address;
+    }
+
+    public String getLicence() {
+        return licence;
     }
 
     //****************************************

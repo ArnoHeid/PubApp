@@ -30,8 +30,6 @@ public interface HttpAPIRequest {
     // PUBLIC METHODS
     //****************************************
 
-    //TODO Change to Return String, so ErrorJSON can easy be returned
-
     /**
      * Executes request to geocoder API and creates GeoJSON. Custom ClientJson is used for the input
      *
