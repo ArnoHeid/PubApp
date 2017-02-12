@@ -35,7 +35,7 @@ public class JsonParserTest {
     @Test
     public void graohhopperJsonTest() {
 
-        //Testdaten
+        //Testdata
 
         String graphhopperJson = "{ \"hits\": [ { \"osm_id\": 62422, \"osm_type\": \"R\", " +
                 "\"extent\": [ 13.08835, 52.67551, 13.76116, 52.33826 ], \"country\": \"Deutschland\", " +
@@ -46,6 +46,7 @@ public class JsonParserTest {
                 "\"lng\": 13.3888599, \"lat\": 52.5170365 } } ], \"locale\": \"de\"}";
 
         double delta = 0.0000001;
+
         //Test
 
         Gson gson = new Gson();
@@ -80,8 +81,14 @@ public class JsonParserTest {
 
     }
 
+    /**
+     *
+     */
     @Test
     public void nominatimJsonTest() {
+
+        //Testdata
+
         String nominatimJson = "[{\"place_id\":\"202558748\",\"licence\":\"Data © OpenStreetMap contributors, ODbL 1.0. http:" +
                 "www.openstreetmap.orgcopyright\",\"osm_type\":\"node\",\"osm_id\":\"240028377\",\"boundingb" +
                 "ox\":[\"49.9233\",\"50.2433\",\"8.09\",\"8.41\"],\"lat\":\"50.0833\",\"lon\":\"8.25\",\"display_name\":\"" +
@@ -98,6 +105,7 @@ public class JsonParserTest {
                 "Hessen\",\"country\":\"Deutschland\",\"country_code\":\"de\"}}]";
 
         double delta = 0.0000001;
+
         //Test
 
         Gson gson = new Gson();
