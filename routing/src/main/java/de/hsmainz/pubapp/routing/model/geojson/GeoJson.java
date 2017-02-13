@@ -1,12 +1,13 @@
-package de.hsmainz.pubapp.routing.jsonparser.graphhopperjson;
+package de.hsmainz.pubapp.routing.model.geojson;
 
-import java.util.List;
+import com.google.gson.JsonObject;
+import de.hsmainz.pubapp.routing.model.graphhopperjson.PathsJson;
 
 /**
  * @author Sarah
  * @since 20.12.2016
  */
-public class GraphhopperJson {
+public class GeoJson {
 
     //****************************************
     // CONSTANTS
@@ -16,19 +17,22 @@ public class GraphhopperJson {
     // VARIABLES
     //****************************************
 
-    private List<PathsJson> paths;
+    private String type;
+    private JsonObject geometry;
+    private Properties properties = new Properties(); // GeoJSON requires `properties` to exist, but is empty atm.
 
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
 
+    public GeoJson(PathsJson pathsJson) {
+        type = "Feature";
+        geometry = pathsJson.getPoints();
+    }
+
     //****************************************
     // GETTER/SETTER
     //****************************************
-
-    public List<PathsJson> getPaths() {
-        return paths;
-    }
 
     //****************************************
     // PUBLIC METHODS
@@ -41,4 +45,5 @@ public class GraphhopperJson {
     //****************************************
     // INNER CLASSES
     //****************************************
+
 }

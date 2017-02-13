@@ -1,10 +1,12 @@
-package de.hsmainz.pubapp.routing.resource;
+package de.hsmainz.pubapp.routing.model.graphhopperjson;
+
+import com.google.gson.JsonObject;
 
 /**
  * @author Sarah
- * @since 17.12.2016
+ * @since 20.12.2016
  */
-public class RoutingTemplate {
+public class PathsJson {
 
     //****************************************
     // CONSTANTS
@@ -14,6 +16,8 @@ public class RoutingTemplate {
     // VARIABLES
     //****************************************
 
+    private JsonObject points;
+
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
@@ -22,6 +26,10 @@ public class RoutingTemplate {
     // GETTER/SETTER
     //****************************************
 
+    public JsonObject getPoints() {
+        return points;
+    }
+
     //****************************************
     // PUBLIC METHODS
     //****************************************
@@ -29,21 +37,6 @@ public class RoutingTemplate {
     //****************************************
     // PRIVATE METHODS
     //****************************************
-
-    /**
-     * Wraps JSON string with callback string
-     *
-     * @param callback the callback string
-     * @param json the json wrapped with the callback string
-     * @return the wrapped callback string
-     */
-    protected String jsonCallbackWrapper(String callback, String json){
-        if(callback == null || callback.isEmpty()) {
-            return json;
-        }
-        // … else return json wrapped in callback
-        return callback + '(' + json + ')';
-    }
 
     //****************************************
     // INNER CLASSES

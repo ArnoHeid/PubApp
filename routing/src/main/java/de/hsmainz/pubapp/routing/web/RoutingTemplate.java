@@ -1,13 +1,10 @@
-package de.hsmainz.pubapp.routing.jsonparser.geojson;
-
-import com.google.gson.JsonObject;
-import de.hsmainz.pubapp.routing.jsonparser.graphhopperjson.PathsJson;
+package de.hsmainz.pubapp.routing.web;
 
 /**
  * @author Sarah
- * @since 20.12.2016
+ * @since 17.12.2016
  */
-public class GeoJson {
+public class RoutingTemplate {
 
     //****************************************
     // CONSTANTS
@@ -17,18 +14,9 @@ public class GeoJson {
     // VARIABLES
     //****************************************
 
-    private String type;
-    private JsonObject geometry;
-    private Properties properties = new Properties(); // GeoJSON requires `properties` to exist, but is empty atm.
-
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
-
-    public GeoJson(PathsJson pathsJson) {
-        type = "Feature";
-        geometry = pathsJson.getPoints();
-    }
 
     //****************************************
     // GETTER/SETTER
@@ -41,6 +29,21 @@ public class GeoJson {
     //****************************************
     // PRIVATE METHODS
     //****************************************
+
+    /**
+     * Wraps JSON string with callback string
+     *
+     * @param callback the callback string
+     * @param json the json wrapped with the callback string
+     * @return the wrapped callback string
+     */
+    protected String jsonCallbackWrapper(String callback, String json){
+        if(callback == null || callback.isEmpty()) {
+            return json;
+        }
+        // … else return json wrapped in callback
+        return callback + '(' + json + ')';
+    }
 
     //****************************************
     // INNER CLASSES

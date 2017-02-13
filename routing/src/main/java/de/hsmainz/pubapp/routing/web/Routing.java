@@ -1,9 +1,10 @@
-package de.hsmainz.pubapp.routing.resource;
+package de.hsmainz.pubapp.routing.web;
 
 import com.google.gson.Gson;
-import de.hsmainz.pubapp.routing.httpapirequest.HttpAPIRequest;
-import de.hsmainz.pubapp.routing.httpapirequest.HttpGraphhopperRequest;
-import de.hsmainz.pubapp.routing.jsonparser.geojson.GeoJsonCollection;
+import com.google.gson.JsonObject;
+import de.hsmainz.pubapp.routing.controller.HttpAPIRequest;
+import de.hsmainz.pubapp.routing.controller.HttpGraphhopperRequest;
+import de.hsmainz.pubapp.routing.model.geojson.GeoJsonCollection;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -51,10 +52,15 @@ public class Routing extends RoutingTemplate {
             @QueryParam("callback") @DefaultValue("")  String callback){
         Gson gson = new Gson();
 
+        if(!validateInput(startPoint, endPoint, locale, pointsEncoded)) {
+            // TODO return proper errors
+            JsonObject tempError = new JsonObject();
+            tempError.addProperty("Error", "Some Error (TBD) occured ;)");
+            return gson.toJson(tempError);
+        }
+
         HttpAPIRequest httpApiRequest = new HttpGraphhopperRequest();
-
         GeoJsonCollection geoJsonColection = httpApiRequest.requestRouting(startPoint, endPoint, locale, pointsEncoded);
-
         return jsonCallbackWrapper(callback, gson.toJson(geoJsonColection));
     }
 
@@ -62,7 +68,43 @@ public class Routing extends RoutingTemplate {
     // PRIVATE METHODS
     //****************************************
 
+    /**
+     *
+     * @param startPoint
+     * @param endPoint
+     * @param locale
+     * @param pointsEncoded
+     * @return
+     */
+    private boolean validateInput(String startPoint,
+                                  String endPoint,
+                                  String locale,
+                                  String pointsEncoded) {
+
+        // locale could be null/empty/something else, since graphhopper defaults to "en"
+        // https://graphhopper.com/api/1/docs/routing/
+        if (locale == null || locale.isEmpty()){
+            System.out.println("locale null or empty");
+            return false;
+        }
+
+//        if (inputJson.getLocale() != "de" || inputJson.getLocale() != "en" || inputJson.getLocale() != "fr" || inputJson.getLocale() != "it"){
+//            System.out.println("locale not supported");
+//            return false;
+//        }
+
+        if (startPoint == null || startPoint.isEmpty() || endPoint == null || endPoint.isEmpty()) {
+            System.out.println("start- and/or endpoint null or empty");
+            return false;
+        }
+        // TODO? validate if start- & endpoint are proper points?
+        // TODO? validate pointsEncoded?
+
+        return true;
+    }
+
     //****************************************
     // INNER CLASSES
     //****************************************
+
 }
