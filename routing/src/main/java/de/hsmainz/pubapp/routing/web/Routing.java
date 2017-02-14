@@ -6,8 +6,13 @@ import de.hsmainz.pubapp.routing.controller.HttpAPIRequest;
 import de.hsmainz.pubapp.routing.controller.HttpGraphhopperRequest;
 import de.hsmainz.pubapp.routing.model.geojson.GeoJsonCollection;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * @author Sarah
@@ -20,9 +25,14 @@ public class Routing extends RoutingTemplate {
     // CONSTANTS
     //****************************************
 
+    private final ResourceBundle labels = ResourceBundle.getBundle("labels", Locale.getDefault());
+    private static final Logger logger = LogManager.getLogger(Routing.class);
+
     //****************************************
     // VARIABLES
     //****************************************
+
+    private String errorMessage;
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -49,19 +59,21 @@ public class Routing extends RoutingTemplate {
             @QueryParam("endPoint") String endPoint,
             @QueryParam("locale") @DefaultValue("de") String locale,
             @QueryParam("pointsEncoded") @DefaultValue("false") String pointsEncoded,
-            @QueryParam("callback") @DefaultValue("")  String callback){
+            @QueryParam("callback") @DefaultValue("") String callback){
         Gson gson = new Gson();
 
         if(!validateInput(startPoint, endPoint, locale, pointsEncoded)) {
-            // TODO return proper errors
-            JsonObject tempError = new JsonObject();
-            tempError.addProperty("Error", "Some Error (TBD) occured ;)");
-            return gson.toJson(tempError);
+            return jsonCallbackWrapper(callback, getErrorResponse(errorMessage));
         }
 
         HttpAPIRequest httpApiRequest = new HttpGraphhopperRequest();
-        GeoJsonCollection geoJsonColection = httpApiRequest.requestRouting(startPoint, endPoint, locale, pointsEncoded);
-        return jsonCallbackWrapper(callback, gson.toJson(geoJsonColection));
+        GeoJsonCollection geoJsonCollection = httpApiRequest.requestRouting(startPoint, endPoint, locale, pointsEncoded);
+
+        if ("{}".equals(gson.toJson(geoJsonCollection))) { // empty
+            return jsonCallbackWrapper(callback, getErrorResponse(labels.getString("message_graphhopper_req_failed")));
+        }
+
+        return jsonCallbackWrapper(callback, gson.toJson(geoJsonCollection));
     }
 
     //****************************************
@@ -80,27 +92,50 @@ public class Routing extends RoutingTemplate {
                                   String endPoint,
                                   String locale,
                                   String pointsEncoded) {
+        boolean valid = true;
 
-        // locale could be null/empty/something else, since graphhopper defaults to "en"
+        // locale could actually be null/empty/something else, since graphhopper defaults to "en"
         // https://graphhopper.com/api/1/docs/routing/
-        if (locale == null || locale.isEmpty()){
-            System.out.println("locale null or empty");
-            return false;
+        if (locale == null || locale.isEmpty()) {
+            errorMessage = labels.getString("error_no_locale");
+        } else if (!locale.matches("de|en|fr|it")) {
+            errorMessage = labels.getString("error_locale_not_supported");
         }
 
-//        if (inputJson.getLocale() != "de" || inputJson.getLocale() != "en" || inputJson.getLocale() != "fr" || inputJson.getLocale() != "it"){
-//            System.out.println("locale not supported");
-//            return false;
-//        }
-
-        if (startPoint == null || startPoint.isEmpty() || endPoint == null || endPoint.isEmpty()) {
-            System.out.println("start- and/or endpoint null or empty");
-            return false;
+        if (startPoint == null || startPoint.isEmpty()) {
+            errorMessage = labels.getString("error_no_startpoint");
         }
-        // TODO? validate if start- & endpoint are proper points?
-        // TODO? validate pointsEncoded?
 
-        return true;
+        if (endPoint == null || endPoint.isEmpty()) {
+            errorMessage = labels.getString("error_no_endpoint");
+        }
+
+        // TODO? validate if start- & endpoint are proper points
+        // e.g. using regex for twice, separated by ",",
+        // one number or two numbers, optional followed by "." and at least one number
+
+        if (pointsEncoded == null || pointsEncoded.isEmpty() || !pointsEncoded.matches("true|false")) {
+            // pointsEncoded could be defined as boolean, but since it will be send via HTTP anyway…
+            errorMessage = labels.getString("error_pointsencoded_invalid");
+        }
+
+        if (!(errorMessage == null || errorMessage.isEmpty())) {
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    /**
+     *
+     * @param errorMessage
+     * @return
+     */
+    private String getErrorResponse(String errorMessage) {
+        JsonObject error = new JsonObject();
+        error.addProperty("Error", errorMessage);
+        logger.info("Error message returned to Client: " + errorMessage);
+        return new Gson().toJson(error);
     }
 
     //****************************************
