@@ -1,7 +1,7 @@
 package de.hsmainz.pubapp.routing.controller;
 
 import com.google.gson.Gson;
-import de.hsmainz.pubapp.geocoder.model.APIKeys;
+import de.hsmainz.pubapp.routing.model.APIKeys;
 import de.hsmainz.pubapp.routing.model.geojson.GeoJsonCollection;
 import de.hsmainz.pubapp.routing.model.graphhopperjson.GraphhopperJson;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -78,6 +78,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         try {
             apiKeys = APIKeys.readKeys();
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
             logger.catching(e);
             apiKeys = new APIKeys();
         }
@@ -90,12 +91,14 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         uriBuilder.addParameter("point", endPoint);
         uriBuilder.setParameter("locale", locale);
         uriBuilder.setParameter("points_encoded", pointsEncoded);
+        uriBuilder.addParameter("vehicle","foot");
         uriBuilder.setParameter("key", apiKeys.getGraphhopperKey());
 
         URI uri = null;
         try {
             uri = uriBuilder.build();
         } catch (URISyntaxException e) {
+            e.printStackTrace();
             logger.catching(e);
         }
 
@@ -118,6 +121,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
             inputStream.close();
         } catch (Exception e){
             geoJsonCollection = new GeoJsonCollection();
+            e.printStackTrace();
             logger.catching(e);
         }
         return geoJsonCollection;
