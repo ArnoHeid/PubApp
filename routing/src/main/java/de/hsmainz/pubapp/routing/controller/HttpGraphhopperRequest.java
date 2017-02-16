@@ -1,9 +1,9 @@
-package de.hsmainz.pubapp.routing.httpapirequest;
+package de.hsmainz.pubapp.routing.controller;
 
 import com.google.gson.Gson;
-import de.hsmainz.pubapp.geocoder.model.APIKeys;
-import de.hsmainz.pubapp.routing.jsonparser.geojson.GeoJsonCollection;
-import de.hsmainz.pubapp.routing.jsonparser.graphhopperjson.GraphhopperJson;
+import de.hsmainz.pubapp.routing.model.APIKeys;
+import de.hsmainz.pubapp.routing.model.geojson.GeoJsonCollection;
+import de.hsmainz.pubapp.routing.model.graphhopperjson.GraphhopperJson;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -52,13 +52,8 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
                                             String endPoint,
                                             String locale,
                                             String pointsEncoded) {
-
-        if (validateInput(startPoint, endPoint, locale, pointsEncoded)) {
-            return doHttpGet(buildGraphhopperUri(startPoint, endPoint, locale, pointsEncoded));
-        }
-
-        // …else return empty GeoJsonCollection
-        return new GeoJsonCollection(); // TODO proper error handling?
+        // validation is now prior to this
+        return doHttpGet(buildGraphhopperUri(startPoint, endPoint, locale, pointsEncoded));
     }
 
     //****************************************
@@ -83,6 +78,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         try {
             apiKeys = APIKeys.readKeys();
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
             logger.catching(e);
             apiKeys = new APIKeys();
         }
@@ -95,51 +91,19 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         uriBuilder.addParameter("point", endPoint);
         uriBuilder.setParameter("locale", locale);
         uriBuilder.setParameter("points_encoded", pointsEncoded);
+        uriBuilder.addParameter("vehicle","foot");
         uriBuilder.setParameter("key", apiKeys.getGraphhopperKey());
 
         URI uri = null;
         try {
             uri = uriBuilder.build();
         } catch (URISyntaxException e) {
+            e.printStackTrace();
             logger.catching(e);
         }
 
 //        System.out.println(uri.toString()); // TODO remove; logging the link which will be called
         return uri;
-    }
-
-    /**
-     *
-     * @param startPoint
-     * @param endPoint
-     * @param locale
-     * @param pointsEncoded
-     * @return
-     */
-    private boolean validateInput(String startPoint,
-                                  String endPoint,
-                                  String locale,
-                                  String pointsEncoded) {
-
-        // locale could be null/empty/something else, since graphhopper defaults to "en"
-        // https://graphhopper.com/api/1/docs/routing/
-        if (locale == null || locale.isEmpty()){
-            System.out.println("locale null or empty");
-            return false;
-        }
-//        if (inputJson.getLocale() != "de" || inputJson.getLocale() != "en" || inputJson.getLocale() != "fr" || inputJson.getLocale() != "it"){
-//            System.out.println("locale not supported");
-//            return false;
-//        }
-
-        if (startPoint == null || startPoint.isEmpty() || endPoint == null || endPoint.isEmpty()) {
-            System.out.println("start- and/or endpoint null or empty");
-            return false;
-        }
-        // TODO? validate if start- & endpoint are proper points?
-        // TODO? validate pointsEncoded?
-
-        return true;
     }
 
     private GeoJsonCollection doHttpGet(URI uri) {
@@ -157,6 +121,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
             inputStream.close();
         } catch (Exception e){
             geoJsonCollection = new GeoJsonCollection();
+            e.printStackTrace();
             logger.catching(e);
         }
         return geoJsonCollection;
@@ -165,4 +130,5 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     //****************************************
     // INNER CLASSES
     //****************************************
+
 }

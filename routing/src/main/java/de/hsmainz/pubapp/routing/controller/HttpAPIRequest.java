@@ -1,6 +1,6 @@
-package de.hsmainz.pubapp.routing.httpapirequest;
+package de.hsmainz.pubapp.routing.controller;
 
-import de.hsmainz.pubapp.routing.jsonparser.geojson.GeoJsonCollection;
+import de.hsmainz.pubapp.routing.model.geojson.GeoJsonCollection;
 
 /**
  * @author Sarah

@@ -157,9 +157,30 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	 *         parameters
 	 */
 	public String buildRequestBBox(String interest, Coordinate[] coords) {
-		String amenityQueryString = "[amenity=" + interest + "]";
-		String bBoxQueryString = "(" + coords[0].getLat() + "," + coords[0].getLng() + "," + coords[1].getLat() + ","
-				+ coords[1].getLng() + ");";
+
+		double n;
+		double s;
+		double e;
+		double w;
+
+		if (coords[0].getLat() >= coords[1].getLat()) {
+			n = coords[0].getLat();
+			s = coords[1].getLat();
+		} else {
+			n = coords[1].getLat();
+			s = coords[0].getLat();
+		}
+
+		if (coords[0].getLng() >= coords[1].getLng()) {
+			e = coords[0].getLng();
+			w = coords[1].getLng();
+		} else {
+			e = coords[1].getLng();
+			w = coords[0].getLng();
+		}
+
+		String amenityQueryString = "[amenity=" + interest.toLowerCase() + "]";
+		String bBoxQueryString = "(" + s + "," + w + "," + n + "," + e + ");";
 		StringBuilder sb = new StringBuilder(BASE_API_URL);
 		sb.append("(node" + amenityQueryString);
 		sb.append(bBoxQueryString);

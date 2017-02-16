@@ -13,13 +13,13 @@ import java.net.URI;
  * @author Sarah
  * @since 09.12.2016
  */
-public class Main {
+public class RoutingServiceMain {
 
     //****************************************
     // CONSTANTS
     //****************************************
     public static final String BASE_URI = "http://localhost:8090/pubapp/"; // Base URI the Grizzly HTTP server will listen on
-    private static final Logger logger = LogManager.getLogger(Main.class);
+    private static final Logger logger = LogManager.getLogger(RoutingServiceMain.class);
 
     //****************************************
     // VARIABLES
@@ -28,13 +28,37 @@ public class Main {
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
-    private Main() {
+
+    private RoutingServiceMain() {
 
     }
 
     //****************************************
     // GETTER/SETTER
     //****************************************
+
+    //****************************************
+    // PUBLIC METHODS
+    //****************************************
+
+    /**
+     * RoutingServiceMain server method.
+     *
+     * @param args load properties file
+     * @throws IOException
+     */
+    public static void main(String[] args) throws IOException {
+        final HttpServer server = startServer();
+        logger.trace("Routing service started");
+
+        System.out.println(String.format("Jersey app started with WADL available at "
+                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+
+        System.in.read();
+
+        logger.trace("Routing service stopped");
+        server.shutdownNow();
+    }
 
     //****************************************
     // PRIVATE METHODS
@@ -47,35 +71,11 @@ public class Main {
      */
     private static HttpServer startServer() {
         final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.routing.web");
-
-        // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE_URI
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
-    }
-
-    //****************************************
-    // PUBLIC METHODS
-    //****************************************
-
-    /**
-     * Main server method.
-     *
-     * @param args
-     * @throws IOException
-     */
-    public static void main(String[] args) throws IOException {
-        final HttpServer server = startServer();
-        logger.trace("Routing service started");
-
-        System.out.println(String.format("Jersey app started with WADL available at "
-                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
-
-        System.in.read();
-        logger.trace("Routing service stopped");
-        server.shutdownNow();
     }
 
     //****************************************
     // INNER CLASSES
     //****************************************
+
 }

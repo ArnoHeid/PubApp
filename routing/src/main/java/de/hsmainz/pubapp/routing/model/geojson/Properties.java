@@ -1,12 +1,10 @@
-package de.hsmainz.pubapp.routing.jsonparser.graphhopperjson;
-
-import com.google.gson.JsonObject;
+package de.hsmainz.pubapp.routing.model.geojson;
 
 /**
  * @author Sarah
  * @since 20.12.2016
  */
-public class PathsJson {
+public class Properties { // TODO Do I need Properties? Is it useful in this case?
 
     //****************************************
     // CONSTANTS
@@ -16,8 +14,6 @@ public class PathsJson {
     // VARIABLES
     //****************************************
 
-    private JsonObject points;
-
     //****************************************
     // INIT/CONSTRUCTOR
     //****************************************
@@ -25,10 +21,6 @@ public class PathsJson {
     //****************************************
     // GETTER/SETTER
     //****************************************
-
-    public JsonObject getPoints() {
-        return points;
-    }
 
     //****************************************
     // PUBLIC METHODS
