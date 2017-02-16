@@ -20,7 +20,7 @@ public class HttpAPIRequesterFactory {
     // INIT/CONSTRUCTOR
     //****************************************
 
-    private HttpAPIRequesterFactory(){
+    private HttpAPIRequesterFactory() {
 
     }
 
@@ -32,13 +32,19 @@ public class HttpAPIRequesterFactory {
     // PUBLIC METHODS
     //****************************************
 
-    public static HttpAPIRequest createRequest(String type){
+    /**
+     * Creates the API-Requester
+     *
+     * @param type the type defines which geocoder is used
+     * @return returns the specified geocoder
+     */
+    public static HttpAPIRequest createRequest(String type) {
 
         HttpAPIRequest returnValue;
 
-        if("graphhopper".equalsIgnoreCase(type)){
+        if ("graphhopper".equalsIgnoreCase(type)) {
             returnValue = new HttpGraphhopperRequest();
-        }else{
+        } else {
             returnValue = new HttpNominatimRequest();
         }
 

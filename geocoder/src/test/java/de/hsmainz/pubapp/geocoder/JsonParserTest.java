@@ -13,7 +13,6 @@ import org.junit.Test;
 import java.lang.reflect.Type;
 import java.util.List;
 
-
 import static org.junit.Assert.*;
 
 /**
@@ -50,7 +49,7 @@ public class JsonParserTest {
         //Test
 
         Gson gson = new Gson();
-        GeoJsonCollection geoJsonToTest = new GeoJsonCollection(gson.fromJson(graphhopperJson,GrahhopperJson.class));
+        GeoJsonCollection geoJsonToTest = new GeoJsonCollection(gson.fromJson(graphhopperJson, GrahhopperJson.class));
         Features featuresToTest = geoJsonToTest.getFeatures().get(0);
         Geometry geometryToTest = featuresToTest.getGeometry();
         Properties propertiesToTest = featuresToTest.getProperties();
@@ -58,26 +57,26 @@ public class JsonParserTest {
         //Asserts
 
         assertNotNull("GeoJsonCollection must not be Null", geoJsonToTest);
-        assertEquals("GeoJsonCollection type should be equal to \"FeatureCollection\" ","FeatureCollection", geoJsonToTest.getType());
+        assertEquals("GeoJsonCollection type should be equal to \"FeatureCollection\" ", "FeatureCollection", geoJsonToTest.getType());
 
         //Test Features
 
         assertNotNull("GeoJson feature must not be Null", geoJsonToTest.getFeatures());
-        assertEquals("GeoJson feature list length should be 2",2, geoJsonToTest.getFeatures().size());
-        assertEquals("GeoJson type should be equal to \"Feature\" ","Feature", featuresToTest.getType());
+        assertEquals("GeoJson feature list length should be 2", 2, geoJsonToTest.getFeatures().size());
+        assertEquals("GeoJson type should be equal to \"Feature\" ", "Feature", featuresToTest.getType());
 
         //Test Geometry
 
         assertNotNull("Feature Geometry must not be Null", geometryToTest);
-        assertEquals("Feature type should be equal to \"Point\" ","Point",geometryToTest.getType());
+        assertEquals("Feature type should be equal to \"Point\" ", "Point", geometryToTest.getType());
         double[] testcoords = {13.4385964, 52.5198535};
-        assertArrayEquals("Coordinats should match testcoordinats ",testcoords,geometryToTest.getCoordinates(),delta);
+        assertArrayEquals("Coordinats should match testcoordinats ", testcoords, geometryToTest.getCoordinates(), delta);
 
         //Test Properties
 
         assertNotNull("Feature Properties must not be Null", propertiesToTest);
-        assertEquals("Country should match \"Deutschland\"","Deutschland",propertiesToTest.getCountry());
-        assertEquals("Country should match \"Berlin\"","Berlin",propertiesToTest.getName());
+        assertEquals("Country should match \"Deutschland\"", "Deutschland", propertiesToTest.getCountry());
+        assertEquals("Country should match \"Berlin\"", "Berlin", propertiesToTest.getName());
 
     }
 
@@ -110,7 +109,8 @@ public class JsonParserTest {
 
         Gson gson = new Gson();
 
-        Type listType = new TypeToken<List<NominatimJson>>(){}.getType();
+        Type listType = new TypeToken<List<NominatimJson>>() {
+        }.getType();
         List<NominatimJson> nominatimJsonList = gson.fromJson(nominatimJson, listType);
 
         GeoJsonCollection geoJsonToTest = new GeoJsonCollection(nominatimJsonList);
@@ -121,27 +121,27 @@ public class JsonParserTest {
         //Asserts
 
         assertNotNull("GeoJsonCollection must not be Null", geoJsonToTest);
-        assertEquals("GeoJsonCollection type should be equal to \"FeatureCollection\" ","FeatureCollection", geoJsonToTest.getType());
+        assertEquals("GeoJsonCollection type should be equal to \"FeatureCollection\" ", "FeatureCollection", geoJsonToTest.getType());
 
         //Test Features
 
         assertNotNull("GeoJson feature must not be Null", geoJsonToTest.getFeatures());
-        assertEquals("GeoJson feature list length should be 2",2, geoJsonToTest.getFeatures().size());
-        assertEquals("GeoJson type should be equal to \"Feature\" ","Feature", featuresToTest.getType());
+        assertEquals("GeoJson feature list length should be 2", 2, geoJsonToTest.getFeatures().size());
+        assertEquals("GeoJson type should be equal to \"Feature\" ", "Feature", featuresToTest.getType());
 
         //Test Geometry
 
         assertNotNull("Feature Geometry must not be Null", geometryToTest);
-        assertEquals("Feature type should be equal to \"Point\" ","Point",geometryToTest.getType());
-        double[] testcoords = {8.25,50.0833};
-        assertArrayEquals("Coordinats should match testcoordinats ",testcoords,geometryToTest.getCoordinates(),delta);
+        assertEquals("Feature type should be equal to \"Point\" ", "Point", geometryToTest.getType());
+        double[] testcoords = {8.25, 50.0833};
+        assertArrayEquals("Coordinats should match testcoordinats ", testcoords, geometryToTest.getCoordinates(), delta);
 
         //Test Properties
 
         assertNotNull("Feature Properties must not be Null", propertiesToTest);
-        assertEquals("Country should match \"Deutschland\"","Deutschland",propertiesToTest.getCountry());
+        assertEquals("Country should match \"Deutschland\"", "Deutschland", propertiesToTest.getCountry());
         String testname = "Wiesbaden, Regierungsbezirk Darmstadt, Hessen, Deutschland";
-        assertEquals("Country should match \"Berlin\"",testname,propertiesToTest.getName());
+        assertEquals("Country should match \"Berlin\"", testname, propertiesToTest.getName());
 
     }
 

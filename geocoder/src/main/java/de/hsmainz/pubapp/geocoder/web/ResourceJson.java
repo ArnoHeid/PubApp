@@ -6,7 +6,10 @@ import de.hsmainz.pubapp.geocoder.controller.HttpAPIRequest;
 import de.hsmainz.pubapp.geocoder.controller.HttpAPIRequesterFactory;
 import de.hsmainz.pubapp.geocoder.model.ClientInputJson;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 

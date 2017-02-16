@@ -25,7 +25,7 @@ public class ErrorJson {
         errortext = "Default Error Text";
     }
 
-    public ErrorJson(String errorText){
+    public ErrorJson(String errorText) {
         this.errortext = errorText;
     }
 

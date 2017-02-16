@@ -49,7 +49,7 @@ public abstract class HttpAPIRequest {
      * Executes request to geocoder API and creates GeoJSON. Custom ClientJson is used for the input
      *
      * @param inputJson the request parameters combined in a custom ClientJson
-     * @return API response converted to GeoJSON
+     * @return API response converted to a String
      */
     public abstract String requestGeocoder(ClientInputJson inputJson);
 
@@ -58,7 +58,7 @@ public abstract class HttpAPIRequest {
      *
      * @param queryString the string containing the address
      * @param locale      the string defining the used language
-     * @return API response converted to GeoJSON
+     * @return API response converted to a String
      */
     public abstract String requestGeocoder(String queryString, String locale);
 
@@ -66,10 +66,22 @@ public abstract class HttpAPIRequest {
     // PRIVATE METHODS
     //****************************************
 
+    /**
+     * Executes the request to the API
+     *
+     * @param uri the geocoder URL
+     * @return the requested geoJSON
+     * @throws throws an exception if the request fails
+     */
     abstract GeoJsonCollection doHttpGet(URI uri) throws IOException;
 
-
-    String request(URI uri){
+    /**
+     * Method to catch exceptions and create ErrorJSONs
+     *
+     * @param uri
+     * @return returns the GeoJSON or ErrorJSON as a String
+     */
+    String request(URI uri) {
         String returnString;
         try {
             GeoJsonCollection geoJsonCollection = doHttpGet(uri);
@@ -78,10 +90,9 @@ public abstract class HttpAPIRequest {
             } else {
                 returnString = gson.toJson(new ErrorJson(lables.getString("message_no_location")));
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.catching(e);
-            returnString=gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
+            returnString = gson.toJson(new ErrorJson(lables.getString("error_API_request_Faild")));
         }
         return returnString;
     }
@@ -103,6 +114,12 @@ public abstract class HttpAPIRequest {
         return returnValue;
     }
 
+    /**
+     * validates the Input to reduce unnecessary request to API
+     *
+     * @param inputString the Input String to be validated
+     * @return true if Input String is not Empty
+     */
     boolean validateInput(String inputString) {
         boolean returnValue = true;
         if (inputString == null || inputString.isEmpty()) {
@@ -111,6 +128,12 @@ public abstract class HttpAPIRequest {
         return returnValue;
     }
 
+    /**
+     * validates the output from the API
+     *
+     * @param geoJsonCollection the API outputJSON to be validated
+     * @return returns true if the outputJSON is not empty
+     */
     private boolean validateOutput(GeoJsonCollection geoJsonCollection) {
         return !geoJsonCollection.getFeatures().isEmpty();
     }

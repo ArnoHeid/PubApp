@@ -13,8 +13,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,36 +52,49 @@ public class HttpNominatimRequest extends HttpAPIRequest {
     // PUBLIC METHODS
     //****************************************
 
+    /**
+     * Executes request to nominatim-geocoder API and creates a GeoJSON. Custom ClientJson is used for the input
+     *
+     * @param inputJson the request parameters combined in a custom ClientJson
+     * @return nominatim-API response converted to a String
+     */
     @Override
     public String requestGeocoder(ClientInputJson inputJson) {
         String returnString;
-        if(!validateInput(inputJson)){
+        if (!validateInput(inputJson)) {
             returnString = gson.toJson(new ErrorJson(lables.getString("message_Input_Empty")));
-        }else{
+        } else {
             try {
                 URI uri = buildNominatimUri(inputJson);
                 returnString = request(uri);
             } catch (URISyntaxException e) {
                 logger.catching(e);
-                returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
+                returnString = gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
             }
         }
 
         return returnString;
     }
 
+    /**
+     * Executes request to graphhopper-geocoder API and creates a GeoJSON
+     *
+     * @param queryString the string containing the address
+     * @param locale      the string defining the used language
+     * @return nominatim-API response converted to a String
+     */
     @Override
     public String requestGeocoder(String queryString, String locale) {
         String returnString;
-        if(!validateInput(queryString)){
+        if (!validateInput(queryString)) {
             returnString = gson.toJson(new ErrorJson(lables.getString("message_Input_Empty")));
-        }else{
+        } else {
             try {
-                URI uri = buildNominatimUri(queryString,locale);
+                URI uri = buildNominatimUri(queryString, locale);
                 returnString = request(uri);
             } catch (URISyntaxException e) {
                 logger.catching(e);
-                returnString=gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
+                returnString = gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
             }
         }
         return returnString;
@@ -104,13 +115,14 @@ public class HttpNominatimRequest extends HttpAPIRequest {
         List<NominatimJson> nominatimJson;
         GeoJsonCollection geoJsonCollection;
         HttpGet httpget = new HttpGet(uri);
-        httpget.setHeader("Referrer",MyProperties.getInstance().getProperty("geo_referrer"));
+        httpget.setHeader("Referrer", MyProperties.getInstance().getProperty("geo_referrer"));
         try (CloseableHttpClient httpclient = HttpClients.createDefault(); CloseableHttpResponse response = httpclient.execute(httpget)) {
             InputStream inputStream = response.getEntity().getContent();
             Reader reader = new InputStreamReader(inputStream, "UTF-8");
             String jsonString = IOUtils.toString(reader);
             jsonString = splitJsonString(jsonString);
-            Type listType = new TypeToken<List<NominatimJson>>(){}.getType();
+            Type listType = new TypeToken<List<NominatimJson>>() {
+            }.getType();
             nominatimJson = gson.fromJson(jsonString, listType);
             geoJsonCollection = new GeoJsonCollection(nominatimJson);
             inputStream.close();
@@ -142,20 +154,27 @@ public class HttpNominatimRequest extends HttpAPIRequest {
         uriBuilder.setHost(MyProperties.getInstance().getProperty("geo_nhost"));
         uriBuilder.setPath(MyProperties.getInstance().getProperty("geo_npath"));
         uriBuilder.setParameter("q", queryString);
-        uriBuilder.setParameter("format","json");
-        uriBuilder.setParameter("json_callback","cb");
-        uriBuilder.setParameter("addressdetails","1");
-        uriBuilder.setParameter("limit","2");
+        uriBuilder.setParameter("format", "json");
+        uriBuilder.setParameter("json_callback", "cb");
+        uriBuilder.setParameter("addressdetails", "1");
+        uriBuilder.setParameter("limit", "2");
 
         return uriBuilder.build();
     }
 
-    private String splitJsonString(String json){
+    /**
+     * Extracts the geoJSON from the Response
+     * *
+     *
+     * @param json he Response from the Nominatim-API
+     * @return returns the extracted GeoJSON as a String
+     */
+    private String splitJsonString(String json) {
         String returnString;
-        int pos = json.indexOf( ')' );
-        returnString = pos >= 0 ? json.substring( 0, pos ) : json;
+        int pos = json.indexOf(')');
+        returnString = pos >= 0 ? json.substring(0, pos) : json;
         pos = returnString.indexOf('(');
-        returnString =  pos >= 0 ? returnString.substring( pos + ")".length() ) : "";
+        returnString = pos >= 0 ? returnString.substring(pos + ")".length()) : "";
 
         return returnString;
     }

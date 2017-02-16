@@ -50,7 +50,7 @@ public class HttpGraphhopperRequest extends HttpAPIRequest {
      * Executes request to graphhopper-geocoder API and creates a GeoJSON. Custom ClientJson is used for the input
      *
      * @param inputJson the request parameters combined in a custom ClientJson
-     * @return graphhopper-API response converted to GeoJSON
+     * @return graphhopper-API response converted to a String
      */
     @Override
     public String requestGeocoder(ClientInputJson inputJson) {
@@ -74,7 +74,7 @@ public class HttpGraphhopperRequest extends HttpAPIRequest {
      *
      * @param queryString the string containing the address
      * @param locale      the string defining the used language
-     * @return graphhopper-API response converted to GeoJSON
+     * @return graphhopper-API response converted to a String
      */
     @Override
     public String requestGeocoder(String queryString, String locale) {
@@ -102,6 +102,7 @@ public class HttpGraphhopperRequest extends HttpAPIRequest {
      *
      * @param uri the URL for the request to geocoder
      * @return the requested geoJSON
+     * @throws throws an exception if the request fails
      */
     @Override
     GeoJsonCollection doHttpGet(URI uri) throws IOException {

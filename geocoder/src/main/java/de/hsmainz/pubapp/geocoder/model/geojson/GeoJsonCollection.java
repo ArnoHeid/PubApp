@@ -38,14 +38,10 @@ public class GeoJsonCollection {
         }
     }
 
-    public GeoJsonCollection() {
-        //default Constructor for use this fail request
-    }
-
     public GeoJsonCollection(List<NominatimJson> nominatimJson) {
         type = "FeatureCollection";
         features = new ArrayList<>();
-        for (NominatimJson nomJson : nominatimJson){
+        for (NominatimJson nomJson : nominatimJson) {
             features.add(new Features(nomJson));
         }
     }

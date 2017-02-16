@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.net.URI;
 
 /**
- *
- *
  * @author Arno
  * @since 03.12.2016.
  */
@@ -49,10 +47,10 @@ public class GeocoderServiceMain {
      * Main server method.
      *
      * @param args load properties file
-     * @throws IOException
+     * @throws IOException throws an exception if Server Start fails
      */
     public static void main(String[] args) throws IOException {
-        if(args.length > 0){
+        if (args.length > 0) {
             MyProperties.setPropertiesFile(args[0]);
         }
 
@@ -60,7 +58,7 @@ public class GeocoderServiceMain {
         final HttpServer server = startServer();
         logger.trace("Geocoder started");
 
-        System.out.println(String.format("Jersey app started with WADL available at "
+        logger.trace(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", buildURL()));
 
         System.in.read();
@@ -87,9 +85,9 @@ public class GeocoderServiceMain {
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(buildURL()), rc);
     }
 
-    private static String buildURL(){
+    private static String buildURL() {
         String port = MyProperties.getInstance().getProperty("geo_port");
-        return BASE_URI + ":" + port + "/" +PATH;
+        return BASE_URI + ":" + port + "/" + PATH;
     }
 
     //****************************************

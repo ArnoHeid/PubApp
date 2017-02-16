@@ -11,6 +11,7 @@ import java.util.Properties;
 
 /**
  * Handles Properties Files
+ *
  * @author Arno
  * @since 30.01.2017.
  */
@@ -34,7 +35,7 @@ public class MyProperties extends Properties {
     // INIT/CONSTRUCTOR
     //****************************************
 
-    private MyProperties(){
+    private MyProperties() {
 
     }
 
@@ -42,9 +43,9 @@ public class MyProperties extends Properties {
     // GETTER/SETTER
     //****************************************
 
-    static void setPropertiesFile(String propertiesFileName){
+    static void setPropertiesFile(String propertiesFileName) {
         File newProp = new File(propertiesFileName);
-        if(newProp.exists())
+        if (newProp.exists())
             propertiesFile = newProp;
     }
 
@@ -53,18 +54,19 @@ public class MyProperties extends Properties {
     //****************************************
 
     /**
+     * This method returns and loads if necessary the properties.
      *
-     * @return
+     * @return the Instance of the MyProperties class
      */
-    public static MyProperties getInstance(){
-        if(instance==null){
+    public static MyProperties getInstance() {
+        if (instance == null) {
             try {
                 instance = new MyProperties();
                 InputStream in = MyProperties.class.getClass().getResourceAsStream(defaultPropertiesFile);
                 instance.load(in);
                 in.close();
 
-                if(propertiesFile!=null){
+                if (propertiesFile != null) {
                     FileInputStream fin = new FileInputStream(propertiesFile);
                     instance.load(fin);
                     fin.close();
