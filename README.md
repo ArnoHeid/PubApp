@@ -12,19 +12,33 @@ Get your own API-Keys for [Graphhopper](https://graphhopper.com/#pricing) and [g
 
 ### Installing
 
-
-
 ```
 Install Java JDK 1.8 or higher.
 Download Sourcecode form github.
 Import Sourecode in your development environment
 ```
 
-Test the geocoder microservice using a webbrowser.
+##How to start the microservices
+
+###Geocoder
+
+The geocoder accepts one parameter to pass a custom properties-File
 
 ```
-http://localhost:8080/pubapp/geocoder?queryString=Mainz&api=hjg&locale=de
+java -jar geocoder.jar custom.properties
 ```
+
+Calling the geocoder microservice using a webbrowser.
+
+```
+http://localhost:8080/pubapp/geocoder?queryString=Mainz&locale=de
+```
+
+###POI
+
+
+###Routing
+
 
 ## Deployment
 
