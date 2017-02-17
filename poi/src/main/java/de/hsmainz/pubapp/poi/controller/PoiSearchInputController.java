@@ -3,6 +3,7 @@ package de.hsmainz.pubapp.poi.controller;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -28,7 +29,14 @@ public class PoiSearchInputController {
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	private ResourceBundle config = ResourceBundle.getBundle("config");
+	private final ResourceBundle config = ResourceBundle.getBundle("config");
+	private final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
+	private final String bboxString = config.getString("bounding_box_search");
+	private final String radiusString = config.getString("radius_search");
+	private final String googleString = config.getString("google_places_api");
+	private final String overpassString = config.getString("overpass_api");
+
+	String errorMessage = "";
 	// ****************************************
 	// INIT/CONSTRUCTOR
 	// ****************************************
@@ -53,21 +61,22 @@ public class PoiSearchInputController {
 	 *            searchType
 	 * @return all POIs found
 	 */
-	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, PoiSearchService poiSearchService) {
+	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, String searchType, String api) {
+		PoiSearchService poiSearchService = getPoiSearchService(criteria, searchType, api);
 		List<ResultPoi> allPois = new ArrayList<>();
 		Set<ResultPoi> foundPois = new HashSet<>();
 
-		if (config.getString("bounding_box_search").equals(poiSearchService.getSearchType())) {
+		if (bboxString.equals(poiSearchService.getSearchType())) {
 			Coordinate[] coords = new Coordinate[2];
 			coords[0] = criteria.getCoordinates().get(0);
-			coords[1] = criteria.getCoordinates().get(1);
+			coords[1] = criteria.getCoordinates().get(criteria.getCoordinates().size() - 1);
 
 			for (String currentInterest : criteria.getInterests()) {
 				Set<ResultPoi> poisForBBox = poiSearchService.getPoisWithinBBox(currentInterest, coords);
 				foundPois.addAll(poisForBBox);
 			}
 
-		} else {
+		} else if (radiusString.equals(poiSearchService.getSearchType())) {
 			for (Coordinate currentCoordinate : criteria.getCoordinates()) {
 				for (String currentInterest : criteria.getInterests()) {
 					Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
@@ -85,9 +94,69 @@ public class PoiSearchInputController {
 		return allPois;
 
 	}
+
+	public String validateInput(SelectedSearchCriteria criteria, String api, String searchType) {
+		if (criteria != null) {
+			if (bboxString.equalsIgnoreCase(searchType) && criteria.getCoordinates().size() < 2) {
+				errorMessage = lables.getString("error_bbox_amout_coords");
+			}
+
+			if (criteria.getInterests() == null || criteria.getInterests().isEmpty()) {
+				errorMessage = lables.getString("error_no_interest");
+			}
+
+		} else {
+			errorMessage = lables.getString("error_criteria");
+		}
+
+		return errorMessage;
+	}
+
 	// ****************************************
 	// PRIVATE METHODS
 	// ****************************************
+
+	private PoiSearchService getPoiSearchService(SelectedSearchCriteria criteria, String searchType, String api) {
+		PoiSearchService poiSearchService = null;
+		if (bboxString.equalsIgnoreCase(searchType)) {
+			poiSearchService = new PoiSearchWithOverpass();
+			poiSearchService.setSearchType(searchType);
+		} else if (radiusString.equalsIgnoreCase(searchType)) {
+			if (googleString.equals(api)) {
+				poiSearchService = new PoiSearchWithGooglePlaces();
+			} else if (overpassString.equals(api)) {
+				poiSearchService = new PoiSearchWithOverpass();
+			} else {
+				if ("google".equalsIgnoreCase(config.getString("standard_api"))) {
+					poiSearchService = new PoiSearchWithGooglePlaces();
+				} else if ("overpass".equalsIgnoreCase(config.getString("standard_api"))) {
+					poiSearchService = new PoiSearchWithOverpass();
+				}
+			}
+			poiSearchService.setSearchType(radiusString);
+		} else if (googleString.equals(api)) {
+			poiSearchService = new PoiSearchWithGooglePlaces();
+			poiSearchService.setSearchType(radiusString);
+		} else if (overpassString.equalsIgnoreCase(api)) {
+			poiSearchService = new PoiSearchWithOverpass();
+			poiSearchService.setSearchType(config.getString("standard_search_type"));
+
+		} else {
+			if ("google".equalsIgnoreCase(config.getString("standard_api"))) {
+				poiSearchService = new PoiSearchWithGooglePlaces();
+				poiSearchService.setSearchType(radiusString);
+			} else if ("overpass".equalsIgnoreCase(config.getString("standard_api"))) {
+				poiSearchService = new PoiSearchWithOverpass();
+				poiSearchService.setSearchType(config.getString("standard_search_type"));
+			}
+
+			if (poiSearchService == null) {
+				logger.error("No valid standard data for search available");
+			}
+
+		}
+		return poiSearchService;
+	}
 
 	// *****************************************
 	// INNER CLASSES

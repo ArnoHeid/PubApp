@@ -40,6 +40,7 @@ public class RequestHandlerTest {
 				System.out.print((char) c);
 
 		} catch (Exception e) {
+			System.out.println(e);
 			fail("Failed" + e);
 		}
 
@@ -98,7 +99,7 @@ public class RequestHandlerTest {
 		SelectedSearchCriteria criteria = new SelectedSearchCriteria();
 		criteria.setCoordinates(coords);
 		criteria.setInterests(interests);
-		return "callback=" + "xxx" + "&criteria=" + new Gson().toJson(criteria) + "&api=google&searchtype=radius";
+		return "callback=" + "xxx" + "&criteria=" + new Gson().toJson(criteria) + "&api=overpass&searchtype=bbox";
 
 	}
 }

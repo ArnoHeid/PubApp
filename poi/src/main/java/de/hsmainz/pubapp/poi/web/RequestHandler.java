@@ -2,9 +2,6 @@ package de.hsmainz.pubapp.poi.web;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.ws.rs.FormParam;
 //import javax.ws.rs.GET;
@@ -18,10 +15,6 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 
 import de.hsmainz.pubapp.poi.controller.PoiSearchInputController;
-import de.hsmainz.pubapp.poi.controller.PoiSearchService;
-import de.hsmainz.pubapp.poi.controller.PoiSearchWithGooglePlaces;
-import de.hsmainz.pubapp.poi.controller.PoiSearchWithOverpass;
-import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.SelectedSearchCriteria;
 
 /**
@@ -38,15 +31,10 @@ public class RequestHandler {
 	// CONSTANTS
 	// ****************************************
 	private final Logger logger = Logger.getLogger(RequestHandler.class);
-	private final ResourceBundle config = ResourceBundle.getBundle("config");
-	private final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
-	private final String bboxString = config.getString("bounding_box_search");
-	private final String radiusString = config.getString("radius_search");
+
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	private PoiSearchService poiSearchService;
-	private String errorMessage;
 
 	// ****************************************
 	// INIT/CONSTRUCTOR
@@ -85,20 +73,17 @@ public class RequestHandler {
 
 		// Define needed Parameters for Response
 		ResponseHandler responseHandler = new ResponseHandler();
-		String response = null;
-		List<ResultPoi> allPois;
-		PoiSearchInputController poiInputController = new PoiSearchInputController();
+
 		SelectedSearchCriteria criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
-		// Validate input parameters and handle request
-		try {
-			if (!valid(criteria, api, searchType)) {
-				response = responseHandler.getErrorResponse(errorMessage);
-			} else {
-				allPois = poiInputController.getPoisForCriteria(criteria, poiSearchService);
-				response = responseHandler.getResponse(allPois);
-			}
-		} catch (IOException e) {
-			logger.error(e);
+		PoiSearchInputController poiInputController = new PoiSearchInputController();
+		String errorMessage = poiInputController.validateInput(criteria, api, searchType);
+
+		// generate response for Client
+		String response = null;
+		if (errorMessage.isEmpty() || errorMessage == null) {
+			response = responseHandler.getResponse(poiInputController.getPoisForCriteria(criteria, searchType, api));
+		} else {
+			response = responseHandler.getErrorResponse(errorMessage);
 		}
 
 		return addCallback(callback, response);
@@ -125,59 +110,6 @@ public class RequestHandler {
 	// ****************************************
 	// PRIVATE METHODS
 	// ****************************************
-	/**
-	 * Validate Client Request
-	 * 
-	 * @return boolean whether Input is valid
-	 */
-	private boolean valid(SelectedSearchCriteria criteria, String api, String searchType) throws IOException {
-		boolean valid = true;
-
-		if (criteria != null) {
-			if (bboxString.equalsIgnoreCase(searchType) || radiusString.equals(searchType)) {
-				criteria.setSearchType(searchType);
-			} else {
-				criteria.setSearchType(config.getString("standard_search_type"));
-			}
-			if (config.getString("google_places_api").equalsIgnoreCase(api)
-					|| config.getString("overpass_api").equalsIgnoreCase(api)) {
-				criteria.setApi(api);
-			} else {
-				criteria.setApi(config.getString("standard_api"));
-			}
-
-			if (criteria.getInterests() == null || criteria.getInterests().isEmpty()) {
-				errorMessage = lables.getString("error_no_interest");
-			}
-
-			setPoiSearchService(criteria);
-
-		} else {
-			errorMessage = lables.getString("error_criteria");
-		}
-		if (!(errorMessage == null || errorMessage.isEmpty())) {
-			valid = false;
-		}
-		return valid;
-	}
-
-	private void setPoiSearchService(SelectedSearchCriteria criteria) {
-		if (bboxString.equals(criteria.getSearchType())) {
-			if (criteria.getCoordinates().size() != 2) {
-				errorMessage = lables.getString("error_bbox_amout_coords");
-			}
-			poiSearchService = new PoiSearchWithOverpass();
-			poiSearchService.setSearchType(criteria.getSearchType());
-		} else if (radiusString.equals(criteria.getSearchType())) {
-			if (config.getString("google_places_api").equals(criteria.getApi())) {
-				poiSearchService = new PoiSearchWithGooglePlaces();
-			} else {
-				poiSearchService = new PoiSearchWithOverpass();
-			}
-			poiSearchService.setSearchType(config.getString("radius_search"));
-		}
-
-	}
 
 	// *****************************************
 	// INNER CLASSES

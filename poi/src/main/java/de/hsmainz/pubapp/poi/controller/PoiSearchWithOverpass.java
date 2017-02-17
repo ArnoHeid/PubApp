@@ -219,7 +219,12 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 
 			Details details = new Details();
 			try {
-				details.setOpeningHours(overpassPoi.getTags().getOpeningHours());
+				String openingHours = overpassPoi.getTags().getOpeningHours();
+				if (openingHours.isEmpty() || openingHours == null) {
+					details.setOpeningHours(lables.getString("message_no_opening_hours"));
+				} else {
+					details.setOpeningHours(openingHours);
+				}
 				details.setIsOpen(lables.getString("message_no_open_now"));
 			} catch (NullPointerException e) {
 				logger.info(

@@ -49,29 +49,34 @@ public class ResponseHandler {
 	 * @return GeoJSON as String with all POIs found
 	 */
 	public String getResponse(List<ResultPoi> allPois) {
+		if (allPois != null) {
+			List<GeoJsonFeature> features = new ArrayList<>();
+			for (ResultPoi place : allPois) {
+				// set coordinates for GeoJsonGeometry
+				double[] coordinates = new double[2];
+				coordinates[1] = place.getLat();
+				coordinates[0] = place.getLon();
+				GeoJsonFeature currentFeature = null;
 
-		List<GeoJsonFeature> features = new ArrayList<>();
-		for (ResultPoi place : allPois) {
-			// set coordinates for GeoJsonGeometry
-			double[] coordinates = new double[2];
-			coordinates[1] = place.getLat();
-			coordinates[0] = place.getLon();
-			GeoJsonFeature currentFeature = null;
+				try {
+					currentFeature = new GeoJsonFeature("Feature",
+							new GeoJsonProperties(place.getName(), place.getInterest(),
+									place.getDetails().getOpeningHours(), place.getDetails().getIsOpen()),
+							new GeoJsonGeometry("Point", coordinates));
+					features.add(currentFeature);
 
-			try {
-				currentFeature = new GeoJsonFeature("Feature",
-						new GeoJsonProperties(place.getName(), place.getInterest(),
-								place.getDetails().getOpeningHours(), place.getDetails().getIsOpen()),
-						new GeoJsonGeometry("Point", coordinates));
-				features.add(currentFeature);
-
-			} catch (NullPointerException e) {
-				logger.error("Creating response as GeoJson failed: ", e);
+				} catch (NullPointerException e) {
+					logger.error("Creating response as GeoJson failed: ", e);
+				}
 			}
-		}
 
-		GeoJsonFeatureCollection featureCollection = new GeoJsonFeatureCollection("FeatureCollection", features);
-		return new Gson().toJson(featureCollection);
+			GeoJsonFeatureCollection featureCollection = new GeoJsonFeatureCollection("FeatureCollection", features);
+			return new Gson().toJson(featureCollection);
+		} else {
+			String errorMessage = "There is no data available for your request. Please check your input.";
+			logger.info("Error message returned to Client:" + errorMessage);
+			return new Gson().toJson(new ReturnError("Error", errorMessage));
+		}
 	}
 
 	/**
