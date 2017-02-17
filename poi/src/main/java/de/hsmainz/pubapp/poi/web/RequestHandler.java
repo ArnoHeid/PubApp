@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.FormParam;
+//import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
@@ -74,13 +75,14 @@ public class RequestHandler {
 	 *         opening hours; fail: error message according to failure
 	 * @throws IOException
 	 */
-	@GET
+	@POST
 	@Produces(MediaType.TEXT_PLAIN)
-	public String get(@QueryParam("callback") String callback, @QueryParam("criteria") String selectedSearchCriteria,
-			@QueryParam("api") String api, @QueryParam("searchtype") String searchType)
-			throws InvocationTargetException {
-		logger.debug("MicroService GET method called: " + "Search Criteria given: " + selectedSearchCriteria
+	public String get(@FormParam("callback") String callback, @FormParam("criteria") String selectedSearchCriteria,
+			@FormParam("api") String api, @FormParam("searchtype") String searchType) throws InvocationTargetException {
+
+		logger.debug("MicroService POST method called: " + "Search Criteria given: " + selectedSearchCriteria
 				+ "API to use: " + api + "Given search type: " + searchType);
+
 		// Define needed Parameters for Response
 		ResponseHandler responseHandler = new ResponseHandler();
 		String response = null;
