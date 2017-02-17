@@ -33,12 +33,14 @@ public interface HttpAPIRequest {
      * @param startPoint
      * @param endPoint
      * @param locale
+     * @param vehicle
      * @param pointsEncoded
      * @return
      */
     GeoJsonCollection requestRouting(String startPoint,
                                      String endPoint,
                                      String locale,
+                                     String vehicle,
                                      String pointsEncoded);
 
     //****************************************

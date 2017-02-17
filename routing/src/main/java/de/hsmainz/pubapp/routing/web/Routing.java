@@ -58,16 +58,17 @@ public class Routing extends RoutingTemplate {
             @QueryParam("startPoint") String startPoint,
             @QueryParam("endPoint") String endPoint,
             @QueryParam("locale") @DefaultValue("de") String locale,
+            @QueryParam("vehicle") @DefaultValue("foot") String vehicle,
             @QueryParam("pointsEncoded") @DefaultValue("false") String pointsEncoded,
             @QueryParam("callback") @DefaultValue("") String callback){
         Gson gson = new Gson();
 
-        if(!validateInput(startPoint, endPoint, locale, pointsEncoded)) {
+        if(!validateInput(startPoint, endPoint, locale, vehicle, pointsEncoded)) {
             return jsonCallbackWrapper(callback, getErrorResponse(errorMessage));
         }
 
         HttpAPIRequest httpApiRequest = new HttpGraphhopperRequest();
-        GeoJsonCollection geoJsonCollection = httpApiRequest.requestRouting(startPoint, endPoint, locale, pointsEncoded);
+        GeoJsonCollection geoJsonCollection = httpApiRequest.requestRouting(startPoint, endPoint, locale, vehicle, pointsEncoded);
 
         if ("{}".equals(gson.toJson(geoJsonCollection))) { // empty
             return jsonCallbackWrapper(callback, getErrorResponse(labels.getString("message_graphhopper_req_failed")));
@@ -85,12 +86,14 @@ public class Routing extends RoutingTemplate {
      * @param startPoint
      * @param endPoint
      * @param locale
+     * @param vehicle
      * @param pointsEncoded
      * @return
      */
     private boolean validateInput(String startPoint,
                                   String endPoint,
                                   String locale,
+                                  String vehicle,
                                   String pointsEncoded) {
         boolean valid = true;
 
@@ -100,6 +103,12 @@ public class Routing extends RoutingTemplate {
             errorMessage = labels.getString("error_no_locale");
         } else if (!locale.matches("de|en|fr|it")) {
             errorMessage = labels.getString("error_locale_not_supported");
+        }
+
+        if (vehicle == null || vehicle.isEmpty()) {
+            errorMessage = labels.getString("error_no_vehicle");
+        } else if (!vehicle.matches("foot|car")) {
+            errorMessage = labels.getString("error_vehicle_not_supported");
         }
 
         if (startPoint == null || startPoint.isEmpty()) {

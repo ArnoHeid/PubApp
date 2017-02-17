@@ -51,9 +51,10 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     public GeoJsonCollection requestRouting(String startPoint,
                                             String endPoint,
                                             String locale,
+                                            String vehicle,
                                             String pointsEncoded) {
         // validation is now prior to this
-        return doHttpGet(buildGraphhopperUri(startPoint, endPoint, locale, pointsEncoded));
+        return doHttpGet(buildGraphhopperUri(startPoint, endPoint, locale, vehicle, pointsEncoded));
     }
 
     //****************************************
@@ -65,12 +66,14 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @param startPoint
      * @param endPoint
      * @param locale
+     * @param vehicle
      * @param pointsEncoded
      * @return
      */
     private URI buildGraphhopperUri (String startPoint,
                                      String endPoint,
                                      String locale,
+                                     String vehicle,
                                      String pointsEncoded) {
 
         APIKeys apiKeys;
@@ -84,14 +87,14 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         }
 
         URIBuilder uriBuilder = new URIBuilder();
-        uriBuilder.setScheme("https"); // always use HTTPS if available ;)
+        uriBuilder.setScheme("https");
         uriBuilder.setHost("graphhopper.com");
         uriBuilder.setPath("/api/1/route");
         uriBuilder.addParameter("point", startPoint);
         uriBuilder.addParameter("point", endPoint);
         uriBuilder.setParameter("locale", locale);
         uriBuilder.setParameter("points_encoded", pointsEncoded);
-        uriBuilder.addParameter("vehicle","foot");
+        uriBuilder.addParameter("vehicle", vehicle);
         uriBuilder.setParameter("key", apiKeys.getGraphhopperKey());
 
         URI uri = null;
@@ -102,7 +105,7 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
             logger.catching(e);
         }
 
-//        System.out.println(uri.toString()); // TODO remove; logging the link which will be called
+        // System.out.println(uri.toString()); // TODO remove; logging the link which will be called
         return uri;
     }
 
