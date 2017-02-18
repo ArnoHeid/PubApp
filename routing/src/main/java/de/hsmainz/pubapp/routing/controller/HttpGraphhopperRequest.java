@@ -90,11 +90,11 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         try {
             uri = uriBuilder.build();
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            // e.printStackTrace(); // sonarcube doesnt like this, left for convenience when debugging
             logger.catching(e);
         }
 
-        // System.out.println(uri.toString()); // TODO remove; logging the link which will be called
+        // System.out.println(uri.toString()); // logging the link which will be called, left for convenience when debugging
         return uri;
     }
 
@@ -113,9 +113,10 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
             inputStream.close();
         } catch (Exception e){
             geoJsonCollection = new GeoJsonCollection();
-            e.printStackTrace();
+            // e.printStackTrace(); // sonarcube doesnt like this, left for convenience when debugging
             logger.catching(e);
         }
+
         return geoJsonCollection;
     }
 

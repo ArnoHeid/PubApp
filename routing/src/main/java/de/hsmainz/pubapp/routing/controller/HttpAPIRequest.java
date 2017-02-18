@@ -6,6 +6,7 @@ import de.hsmainz.pubapp.routing.model.geojson.GeoJsonCollection;
  * @author Sarah
  * @since 20.12.2016
  */
+@FunctionalInterface
 public interface HttpAPIRequest {
 
     //****************************************

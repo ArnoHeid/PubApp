@@ -119,7 +119,7 @@ public class Routing extends RoutingTemplate {
             errorMessage = labels.getString("error_no_endpoint");
         }
 
-        // TODO? validate if start- & endpoint are proper points
+        // Future? validate if start- & endpoint are proper points
         // e.g. using regex for twice, separated by ",",
         // one number or two numbers, optional followed by "." and at least one number
 

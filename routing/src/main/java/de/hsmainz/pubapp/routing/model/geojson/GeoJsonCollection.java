@@ -28,7 +28,7 @@ public class GeoJsonCollection {
     //****************************************
 
     public GeoJsonCollection() {
-
+        // empty to be able to return empty collection
     }
 
     public GeoJsonCollection(GraphhopperJson graphhopperJson){
