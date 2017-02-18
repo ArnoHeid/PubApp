@@ -3,6 +3,7 @@ package de.hsmainz.pubapp.poi.web;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -63,8 +64,9 @@ public class RequestHandler {
 	 * @throws IOException
 	 */
 	@POST
+	@Consumes("application/x-www-form-urlencoded")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String get(@FormParam("callback") String callback, @FormParam("criteria") String selectedSearchCriteria,
+	public String post(@FormParam("callback") String callback, @FormParam("criteria") String selectedSearchCriteria,
 			@FormParam("api") String api, @FormParam("searchtype") String searchType) throws InvocationTargetException {
 
 		logger.debug("MicroService POST method called: " + "Search Criteria given: " + selectedSearchCriteria
