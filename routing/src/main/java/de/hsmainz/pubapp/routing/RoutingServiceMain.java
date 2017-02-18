@@ -18,7 +18,9 @@ public class RoutingServiceMain {
     //****************************************
     // CONSTANTS
     //****************************************
-    public static final String BASE_URI = "http://localhost:8090/pubapp/"; // Base URI the Grizzly HTTP server will listen on
+
+    public static final String BASE_URI = "http://localhost";
+    private static final String PATH = "/pubapp/";
     private static final Logger logger = LogManager.getLogger(RoutingServiceMain.class);
 
     //****************************************
@@ -48,11 +50,15 @@ public class RoutingServiceMain {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+        if (args.length > 0) {
+            MyProperties.setPropertiesFile(args[0]);
+        }
+
         final HttpServer server = startServer();
         logger.trace("Routing service started");
 
         System.out.println(String.format("Jersey app started with WADL available at "
-                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+                + "%sapplication.wadl\nHit enter to stop it...", buildURL()));
 
         System.in.read();
 
@@ -71,7 +77,17 @@ public class RoutingServiceMain {
      */
     private static HttpServer startServer() {
         final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.routing.web");
-        return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+        return GrizzlyHttpServerFactory.createHttpServer(URI.create(buildURL()), rc);
+    }
+
+    /**
+     * Get server URL.
+     *
+     * @return Server URL
+     */
+    private static String buildURL() {
+        String port = MyProperties.getInstance().getProperty("routing_port");
+        return BASE_URI + ":" + port + PATH;
     }
 
     //****************************************

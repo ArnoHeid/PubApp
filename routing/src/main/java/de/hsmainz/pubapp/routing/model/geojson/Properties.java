@@ -1,10 +1,12 @@
 package de.hsmainz.pubapp.routing.model.geojson;
 
 /**
+ * GeoJSON requires `properties` to exist, but is empty atm., therefore this empty class exists.
+ *
  * @author Sarah
  * @since 20.12.2016
  */
-public class Properties { // TODO Do I need Properties? Is it useful in this case?
+public class Properties {
 
     //****************************************
     // CONSTANTS

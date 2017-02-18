@@ -1,7 +1,7 @@
 package de.hsmainz.pubapp.routing.controller;
 
 import com.google.gson.Gson;
-import de.hsmainz.pubapp.routing.model.APIKeys;
+import de.hsmainz.pubapp.routing.MyProperties;
 import de.hsmainz.pubapp.routing.model.geojson.GeoJsonCollection;
 import de.hsmainz.pubapp.routing.model.graphhopperjson.GraphhopperJson;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -12,7 +12,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -76,26 +75,16 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
                                      String vehicle,
                                      String pointsEncoded) {
 
-        APIKeys apiKeys;
-
-        try {
-            apiKeys = APIKeys.readKeys();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            logger.catching(e);
-            apiKeys = new APIKeys();
-        }
-
         URIBuilder uriBuilder = new URIBuilder();
-        uriBuilder.setScheme("https");
-        uriBuilder.setHost("graphhopper.com");
-        uriBuilder.setPath("/api/1/route");
+        uriBuilder.setScheme(MyProperties.getInstance().getProperty("routing_gscheme"));
+        uriBuilder.setHost(MyProperties.getInstance().getProperty("routing_ghost"));
+        uriBuilder.setPath(MyProperties.getInstance().getProperty("routing_gpath"));
         uriBuilder.addParameter("point", startPoint);
         uriBuilder.addParameter("point", endPoint);
         uriBuilder.setParameter("locale", locale);
         uriBuilder.setParameter("points_encoded", pointsEncoded);
         uriBuilder.addParameter("vehicle", vehicle);
-        uriBuilder.setParameter("key", apiKeys.getGraphhopperKey());
+        uriBuilder.setParameter("key", MyProperties.getInstance().getProperty("graphhopper_key"));
 
         URI uri = null;
         try {

@@ -37,8 +37,37 @@ http://localhost:8080/pubapp/geocoder?queryString=Mainz&locale=de
 ###POI
 
 
-###Routing
+### Routing
 
+The routing service accepts one parameter specifying a config file to override the default config.
+
+```bash
+java -jar routing.jar config.properties
+```
+
+Sending a request to the routing service.
+
+**Overview**
+
+| Parameter | Default | Description
+| --- | --- | --- |
+| `startPoint` | None | `startPoint` is required. Start of the route. E.g. `50.938056,6.956944` |
+| `endPoint` | None | `endPoint` is required. End of the route. E.g. `50,8.271111` |
+| `callback` | None | `callback` is optional. Wraps the JSON in the provided string and brackets. For JSONP usage. E.g. `pleaseCallMeBackBaby` |
+| `vehicle` | `foot` | `vehicle` is optional. Definies the method of transport. Values other than `foot`, `car` are rejected. |
+| `locale` | `de` | `locale` is optional. Intended for specifying the language. Values other than `de`, `en`, `fr`, `it` are rejected. |
+
+**Example 1**, minimal parameters.
+
+```
+http://localhost:8090/pubapp/routing?startPoint=50.938056,6.956944&endPoint=50,8.271111
+```
+
+**Example 2**, common parameters.
+
+```
+http://localhost:8090/pubapp/routing?callback=pleaseCallMeBackBaby&startPoint=50.938056,6.956944&endPoint=50,8.271111&locale=de&vehicle=car
+```
 
 ## Deployment
 
