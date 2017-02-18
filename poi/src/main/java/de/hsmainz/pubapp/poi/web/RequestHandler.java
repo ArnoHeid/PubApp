@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.ws.rs.FormParam;
-//import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -76,11 +75,11 @@ public class RequestHandler {
 
 		SelectedSearchCriteria criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
 		PoiSearchInputController poiInputController = new PoiSearchInputController();
-		String errorMessage = poiInputController.validateInput(criteria, api, searchType);
+		String errorMessage = poiInputController.validateInput(criteria, searchType);
 
 		// generate response for Client
-		String response = null;
-		if (errorMessage.isEmpty() || errorMessage == null) {
+		String response;
+		if (errorMessage == null || errorMessage.isEmpty()) {
 			response = responseHandler.getResponse(poiInputController.getPoisForCriteria(criteria, searchType, api));
 		} else {
 			response = responseHandler.getErrorResponse(errorMessage);

@@ -2,7 +2,6 @@ package de.hsmainz.pubapp.poi;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -24,9 +23,7 @@ public class PoiServiceMain {
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	private static ResourceBundle config = ResourceBundle.getBundle("config");
 	private static Logger logger = Logger.getLogger(PoiServiceMain.class);
-	public static final String BASE_URI = config.getString("url");
 
 	// ****************************************
 	// INIT/CONSTRUCTOR
@@ -47,18 +44,21 @@ public class PoiServiceMain {
 	 * @param args
 	 * @throws IOException
 	 */
-	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws IOException {
+		if (args.length > 0) {
+			MyProperties.setPropertiesFile(args[0]);
+		}
+		String url = MyProperties.getInstance().getProperty("poi_url");
 		if (logger.isInfoEnabled()) {
 			logger.info("Starting server...");
 		}
 		try {
-			final HttpServer server = startServer();
+			final HttpServer server = startServer(url);
 			if (logger.isInfoEnabled()) {
-				logger.info("Server started... " + "reachable at:" + BASE_URI);
+				logger.info("Server started... " + "reachable at:" + url);
 			}
 			System.in.read();
-			server.stop();
+			server.shutdownNow();
 		} catch (Exception e) {
 			logger.error("Failed to start Server", e);
 		}
@@ -70,9 +70,9 @@ public class PoiServiceMain {
 	 * 
 	 * @return created HttpServer
 	 */
-	public static HttpServer startServer() {
+	public static HttpServer startServer(String url) {
 		final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.poi.web");
-		return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+		return GrizzlyHttpServerFactory.createHttpServer(URI.create(url), rc);
 	}
 	// ****************************************
 	// PRIVATE METHODS

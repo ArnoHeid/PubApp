@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import de.hsmainz.pubapp.poi.MyProperties;
 import de.hsmainz.pubapp.poi.model.Coordinate;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
 import de.hsmainz.pubapp.poi.model.SelectedSearchCriteria;
@@ -29,12 +30,14 @@ public class PoiSearchInputController {
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	private final ResourceBundle config = ResourceBundle.getBundle("config");
 	private final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
-	private final String bboxString = config.getString("bounding_box_search");
-	private final String radiusString = config.getString("radius_search");
-	private final String googleString = config.getString("google_places_api");
-	private final String overpassString = config.getString("overpass_api");
+	private final String bboxString = MyProperties.getInstance().getProperty("poi_bounding_box_search");
+	private final String radiusString = MyProperties.getInstance().getProperty("poi_radius_search");
+	private final String googleString = MyProperties.getInstance().getProperty("poi_google_places_api");
+	private final String overpassString = MyProperties.getInstance().getProperty("poi_overpass_api");
+	private final String standardSearchType = MyProperties.getInstance().getProperty("poi_standard_search_type");
+	private final String standardApi = MyProperties.getInstance().getProperty("poi_standard_api");
+	private final String radius = MyProperties.getInstance().getProperty("poi_radius_width");
 
 	String errorMessage = "";
 	// ****************************************
@@ -56,13 +59,14 @@ public class PoiSearchInputController {
 	 * @param criteria
 	 *            stores data for selected interests and search area in
 	 *            coordinates
-	 * @param poiSearchService
-	 *            defines which and how API should be requested according to
-	 *            searchType
+	 * @param searchType
+	 *            given type of search either radius or bounding box search
+	 * @param api
+	 *            given api to use, either overpassAPI or googlePlacesAPI
 	 * @return all POIs found
 	 */
 	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, String searchType, String api) {
-		PoiSearchService poiSearchService = getPoiSearchService(criteria, searchType, api);
+		PoiSearchService poiSearchService = getPoiSearchService(searchType, api);
 		List<ResultPoi> allPois = new ArrayList<>();
 		Set<ResultPoi> foundPois = new HashSet<>();
 
@@ -80,7 +84,7 @@ public class PoiSearchInputController {
 			for (Coordinate currentCoordinate : criteria.getCoordinates()) {
 				for (String currentInterest : criteria.getInterests()) {
 					Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
-							currentCoordinate, Integer.valueOf(config.getString("radius_width")));
+							currentCoordinate, Integer.valueOf(radius));
 					foundPois.addAll(poisForNode);
 				}
 			}
@@ -95,7 +99,20 @@ public class PoiSearchInputController {
 
 	}
 
-	public String validateInput(SelectedSearchCriteria criteria, String api, String searchType) {
+	/**
+	 * Validates if client input can be processed and generates error messages
+	 * if not
+	 * 
+	 * @param criteria
+	 *            given search criteria as java object
+	 * @param searchType
+	 *            given type of search, should be either radius or bounding box
+	 *            search
+	 * @return error message according to problem or empty string if data is
+	 *         valid
+	 */
+
+	public String validateInput(SelectedSearchCriteria criteria, String searchType) {
 		if (criteria != null) {
 			if (bboxString.equalsIgnoreCase(searchType) && criteria.getCoordinates().size() < 2) {
 				errorMessage = lables.getString("error_bbox_amout_coords");
@@ -116,41 +133,27 @@ public class PoiSearchInputController {
 	// PRIVATE METHODS
 	// ****************************************
 
-	private PoiSearchService getPoiSearchService(SelectedSearchCriteria criteria, String searchType, String api) {
+	private PoiSearchService getPoiSearchService(String searchType, String api) {
 		PoiSearchService poiSearchService = null;
-		if (bboxString.equalsIgnoreCase(searchType)) {
-			poiSearchService = new PoiSearchWithOverpass();
-			poiSearchService.setSearchType(searchType);
-		} else if (radiusString.equalsIgnoreCase(searchType)) {
-			if (googleString.equals(api)) {
-				poiSearchService = new PoiSearchWithGooglePlaces();
-			} else if (overpassString.equals(api)) {
-				poiSearchService = new PoiSearchWithOverpass();
-			} else {
-				if ("google".equalsIgnoreCase(config.getString("standard_api"))) {
-					poiSearchService = new PoiSearchWithGooglePlaces();
-				} else if ("overpass".equalsIgnoreCase(config.getString("standard_api"))) {
-					poiSearchService = new PoiSearchWithOverpass();
-				}
-			}
-			poiSearchService.setSearchType(radiusString);
-		} else if (googleString.equals(api)) {
+
+		if (googleString.equals(api)) {
 			poiSearchService = new PoiSearchWithGooglePlaces();
 			poiSearchService.setSearchType(radiusString);
 		} else if (overpassString.equalsIgnoreCase(api)) {
 			poiSearchService = new PoiSearchWithOverpass();
-			poiSearchService.setSearchType(config.getString("standard_search_type"));
-
+			if (searchType.equals(bboxString) || searchType.equals(radiusString)) {
+				poiSearchService.setSearchType(searchType);
+			} else {
+				poiSearchService.setSearchType(standardSearchType);
+			}
 		} else {
-			if ("google".equalsIgnoreCase(config.getString("standard_api"))) {
+			if (googleString.equalsIgnoreCase(standardApi)) {
 				poiSearchService = new PoiSearchWithGooglePlaces();
 				poiSearchService.setSearchType(radiusString);
-			} else if ("overpass".equalsIgnoreCase(config.getString("standard_api"))) {
+			} else if (overpassString.equalsIgnoreCase(standardApi)) {
 				poiSearchService = new PoiSearchWithOverpass();
-				poiSearchService.setSearchType(config.getString("standard_search_type"));
-			}
-
-			if (poiSearchService == null) {
+				poiSearchService.setSearchType(standardSearchType);
+			} else {
 				logger.error("No valid standard data for search available");
 			}
 

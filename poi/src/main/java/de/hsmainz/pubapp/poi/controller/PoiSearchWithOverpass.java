@@ -1,18 +1,12 @@
 package de.hsmainz.pubapp.poi.controller;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -30,18 +24,16 @@ import de.hsmainz.pubapp.poi.model.overpass.OverpassResultPoi;
  * @author caro
  *
  */
-public class PoiSearchWithOverpass implements PoiSearchService {
+public class PoiSearchWithOverpass extends PoiSearchService {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
-	private static final Logger logger = Logger.getLogger(PoiSearchWithOverpass.class);
 	private static final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
 	private static final String BASE_API_URL = "http://overpass-api.de/api/interpreter?data=[out:json][timeout:25];";
 
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	private String searchType;
 
 	// ****************************************
 	// INIT/CONSTRUCTOR
@@ -50,16 +42,7 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 	// ****************************************
 	// GETTER/SETTER
 	// ****************************************
-	@Override
-	public void setSearchType(String searchType) {
-		this.searchType = searchType;
 
-	}
-
-	@Override
-	public String getSearchType() {
-		return searchType;
-	}
 	// ****************************************
 	// PUBLIC METHODS
 	// ****************************************
@@ -95,24 +78,6 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 
 		List<ResultPoi> transformedPoiList = transformApiResultsToResultPoi(places);
 		return new HashSet<>(transformedPoiList);
-	}
-
-	@Override
-	public InputStreamReader postQuery(String request) {
-		URL url = null;
-		HttpURLConnection conn;
-		InputStreamReader in = null;
-		try {
-			url = new URL(request);
-			conn = (HttpURLConnection) url.openConnection();
-			in = new InputStreamReader(conn.getInputStream());
-
-		} catch (MalformedURLException e) {
-			logger.error("Error processing API URL" + e);
-		} catch (IOException e) {
-			logger.error("Error connecting API" + e);
-		}
-		return in;
 	}
 
 	// ****************************************
@@ -220,7 +185,7 @@ public class PoiSearchWithOverpass implements PoiSearchService {
 			Details details = new Details();
 			try {
 				String openingHours = overpassPoi.getTags().getOpeningHours();
-				if (openingHours.isEmpty() || openingHours == null) {
+				if (openingHours == null || openingHours.isEmpty()) {
 					details.setOpeningHours(lables.getString("message_no_opening_hours"));
 				} else {
 					details.setOpeningHours(openingHours);

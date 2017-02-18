@@ -1,11 +1,7 @@
 package de.hsmainz.pubapp.poi.controller;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,12 +11,11 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import de.hsmainz.pubapp.poi.MyProperties;
 import de.hsmainz.pubapp.poi.model.Coordinate;
 import de.hsmainz.pubapp.poi.model.Details;
 import de.hsmainz.pubapp.poi.model.ResultPoi;
@@ -33,23 +28,20 @@ import de.hsmainz.pubapp.poi.model.googleapi.GoogleResultPoi;
  * @author caro
  *
  */
-public class PoiSearchWithGooglePlaces implements PoiSearchService {
+public class PoiSearchWithGooglePlaces extends PoiSearchService {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
-	private static final Logger logger = Logger.getLogger(PoiSearchWithGooglePlaces.class);
-	private static final ResourceBundle config = ResourceBundle.getBundle("config");
 	private static final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
 
 	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
 	private static final String TYPE_SEARCH = "/search";
 	private static final String OUT_JSON = "/json";
-	private static final String API_KEY = config.getString("api_key_google");
+	private static final String API_KEY = MyProperties.getInstance().getProperty("api_key_google");
 
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	private String searchType;
 
 	// ****************************************
 	// INIT/CONSTRUCTOR
@@ -58,16 +50,6 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 	// ****************************************
 	// GETTER/SETTER
 	// ****************************************
-	@Override
-	public void setSearchType(String searchType) {
-		this.searchType = searchType;
-
-	}
-
-	@Override
-	public String getSearchType() {
-		return searchType;
-	}
 
 	// ****************************************
 	// PUBLIC METHODS
@@ -104,24 +86,6 @@ public class PoiSearchWithGooglePlaces implements PoiSearchService {
 		logger.warn("Tried to do BoundingBox Search with Google Places API with: " + interest + " and "
 				+ Arrays.toString(coords));
 		return new HashSet<>();
-	}
-
-	@Override
-	public InputStreamReader postQuery(String request) {
-		URL url = null;
-		HttpURLConnection conn;
-		InputStreamReader in = null;
-		try {
-			url = new URL(request);
-			conn = (HttpURLConnection) url.openConnection();
-			in = new InputStreamReader(conn.getInputStream());
-
-		} catch (MalformedURLException e) {
-			logger.error("Error processing API URL" + e);
-		} catch (IOException e) {
-			logger.error("Error connecting API" + e);
-		}
-		return in;
 	}
 
 	// ****************************************
