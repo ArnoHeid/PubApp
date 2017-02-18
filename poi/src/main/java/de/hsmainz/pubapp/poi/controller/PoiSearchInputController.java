@@ -146,6 +146,10 @@ public class PoiSearchInputController {
 			} else {
 				poiSearchService.setSearchType(standardSearchType);
 			}
+
+		} else if (bboxString.equals(searchType)) {
+			poiSearchService = new PoiSearchWithOverpass();
+			poiSearchService.setSearchType(searchType);
 		} else {
 			if (googleString.equalsIgnoreCase(standardApi)) {
 				poiSearchService = new PoiSearchWithGooglePlaces();

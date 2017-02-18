@@ -65,7 +65,7 @@ public class RequestHandler {
 	 */
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	public String post(@FormParam("callback") String callback, @FormParam("criteria") String selectedSearchCriteria,
 			@FormParam("api") String api, @FormParam("searchtype") String searchType) throws InvocationTargetException {
 
