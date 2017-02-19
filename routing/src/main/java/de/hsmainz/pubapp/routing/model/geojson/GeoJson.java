@@ -19,7 +19,7 @@ public class GeoJson {
 
     private String type;
     private JsonObject geometry;
-    private Properties properties = new Properties(); // GeoJSON requires `properties` to exist, but is empty atm.
+    private Properties properties = new Properties();
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -33,6 +33,19 @@ public class GeoJson {
     //****************************************
     // GETTER/SETTER
     //****************************************
+
+    public String getType() {
+        return type;
+    }
+
+    public JsonObject getGeometry() {
+        return geometry;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
 
     //****************************************
     // PUBLIC METHODS

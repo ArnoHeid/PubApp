@@ -6,7 +6,7 @@ package de.hsmainz.pubapp.routing.model.geojson;
  * @author Sarah
  * @since 20.12.2016
  */
-public class Properties {
+public class Properties { //NOSONAR this must exist for the GeoJSON, but isnt used here, which sonarcube doesnt like
 
     //****************************************
     // CONSTANTS

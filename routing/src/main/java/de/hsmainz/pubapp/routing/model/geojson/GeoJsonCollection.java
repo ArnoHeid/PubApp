@@ -43,6 +43,15 @@ public class GeoJsonCollection {
     // GETTER/SETTER
     //****************************************
 
+    public String getType() {
+        return type;
+    }
+
+    public List<GeoJson> getFeatures() {
+        return features;
+    }
+
+
     //****************************************
     // PUBLIC METHODS
     //****************************************
