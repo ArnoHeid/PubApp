@@ -277,7 +277,7 @@ POI_BBX = function() {
 				});
 				return L.marker(latlng, {icon: barIcon});
 				}
-			if (feature.properties.interest == 'ATM') {
+			if (feature.properties.interest == 'atm') {
 				var barIcon = L.icon({
 					iconUrl: './leaflet/png/atm.png',
 					iconAnchor: [13, 27],
@@ -285,7 +285,7 @@ POI_BBX = function() {
 				});
 				return L.marker(latlng, {icon: barIcon});
 				}
-			if (feature.properties.interest == 'Nachtclub') {
+			if (feature.properties.interest == 'night_club') {
 				var barIcon = L.icon({
 					iconUrl: './leaflet/png/club.png',
 					iconAnchor: [13, 27],
@@ -293,7 +293,7 @@ POI_BBX = function() {
 				});
 				return L.marker(latlng, {icon: barIcon});
 				}
-			if (feature.properties.interest == 'Cafe') {
+			if (feature.properties.interest == 'cafe') {
 				var barIcon = L.icon({
 					iconUrl: './leaflet/png/cafe.png',
 					iconAnchor: [13, 27],
