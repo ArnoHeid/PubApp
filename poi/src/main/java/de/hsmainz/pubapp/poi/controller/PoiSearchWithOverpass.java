@@ -187,7 +187,7 @@ public class PoiSearchWithOverpass extends PoiSearchService {
 			Details details = new Details();
 			try {
 				String openingHours = overpassPoi.getTags().getOpeningHours();
-				if (openingHours.isEmpty() || openingHours == null) {
+				if (openingHours == null || openingHours.isEmpty()) {
 					details.setOpeningHours(lables.getString("message_no_opening_hours"));
 				} else {
 					details.setOpeningHours(openingHours);

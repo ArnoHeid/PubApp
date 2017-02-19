@@ -53,8 +53,8 @@ public class RequestHandler {
 	 * 
 	 * @param <HttpServletResponse>
 	 * 
-	 * @param callback
-	 *            Client can use this field for callback parameters
+	 * @param origin
+	 *            Client sends information about origin in header
 	 * @param selectedSearchCriteria
 	 *            Stores two Lists in JSON Format including all selected
 	 *            interests and all given coordinated
@@ -88,13 +88,10 @@ public class RequestHandler {
 		} else {
 			responseBody = responseHandler.getErrorResponse(errorMessage);
 		}
-		selectedSearchCriteria = null;
 
-		Response response = Response.status(200).entity(responseBody).header("Access-Control-Allow-Origin", origin)
+		return Response.status(200).entity(responseBody).header("Access-Control-Allow-Origin", origin)
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 				.header("Access-Control-Allow-Credentials", true).build();
-
-		return response;
 	}
 
 	// ****************************************

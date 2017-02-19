@@ -33,13 +33,11 @@ public class PoiSearchInputController {
 	private final String overpassString = MyProperties.getInstance().getProperty("poi_overpass_api");
 	private final String standardSearchType = MyProperties.getInstance().getProperty("poi_standard_search_type");
 	private final String standardApi = MyProperties.getInstance().getProperty("poi_standard_api");
-	// private String radius =
-	// MyProperties.getInstance().getProperty("poi_radius_width");
 	private static final Logger logger = Logger.getLogger(PoiSearchInputController.class);
 	// ****************************************
 	// VARIABLES
 	// ****************************************
-	public String errorMessage = "";
+	private String errorMessage = "";
 	private String radius = MyProperties.getInstance().getProperty("poi_radius_width");
 
 	// ****************************************
@@ -83,15 +81,7 @@ public class PoiSearchInputController {
 			}
 
 		} else if (radiusString.equals(poiSearchService.getSearchType())) {
-			int elementsToConsider = 20;
-			if (criteria.getCoordinates().size() >= 200 && criteria.getCoordinates().size() <= 1000) {
-				elementsToConsider = 100;
-			} else if (criteria.getCoordinates().size() >= 1000 && criteria.getCoordinates().size() <= 5000) {
-				elementsToConsider = 200;
-			} else if (criteria.getCoordinates().size() > 5000) {
-				elementsToConsider = 500;
-				radius = "10000";
-			}
+			int elementsToConsider = defineNumberOfNodesNeeded(criteria);
 
 			for (int i = 0; i <= criteria.getCoordinates().size(); i += elementsToConsider) {
 				Coordinate currentCoordinate = criteria.getCoordinates().get(i);
@@ -104,14 +94,12 @@ public class PoiSearchInputController {
 
 			// Always consider area at the end of the route and check if picked
 			// coordinate is not null
-			if (criteria.getCoordinates().size() > 20) {
+			if (criteria.getCoordinates().get(criteria.getCoordinates().size() - 10) != null) {
 				for (String currentInterest : criteria.getInterests()) {
-					if (criteria.getCoordinates().get(criteria.getCoordinates().size() - 10) != null) {
-						Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
-								criteria.getCoordinates().get(criteria.getCoordinates().size() - 10),
-								Integer.valueOf(radius));
-						foundPois.addAll(poisForNode);
-					}
+					Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
+							criteria.getCoordinates().get(criteria.getCoordinates().size() - 10),
+							Integer.valueOf(radius));
+					foundPois.addAll(poisForNode);
 				}
 			}
 
@@ -175,7 +163,7 @@ public class PoiSearchInputController {
 			poiSearchService.setSearchType(radiusString);
 		} else if (overpassString.equalsIgnoreCase(api)) {
 			poiSearchService = new PoiSearchWithOverpass();
-			if (searchType.equals(bboxString) || searchType.equals(radiusString)) {
+			if (searchType.equals(radiusString)) {
 				poiSearchService.setSearchType(searchType);
 			} else {
 				poiSearchService.setSearchType(standardSearchType);
@@ -193,6 +181,25 @@ public class PoiSearchInputController {
 
 		}
 		return poiSearchService;
+	}
+
+	/**
+	 * Define number for jumping over more elements if list hits certain sizes
+	 * 
+	 * @param criteria
+	 * @return how many elements in coordinate list should be considered
+	 */
+	private int defineNumberOfNodesNeeded(SelectedSearchCriteria criteria) {
+		int elementsToConsider = 20;
+		if (criteria.getCoordinates().size() >= 200 && criteria.getCoordinates().size() <= 1000) {
+			elementsToConsider = 100;
+		} else if (criteria.getCoordinates().size() >= 1000 && criteria.getCoordinates().size() <= 5000) {
+			elementsToConsider = 200;
+		} else if (criteria.getCoordinates().size() > 5000) {
+			elementsToConsider = 500;
+			radius = "10000";
+		}
+		return elementsToConsider;
 	}
 
 	// *****************************************
