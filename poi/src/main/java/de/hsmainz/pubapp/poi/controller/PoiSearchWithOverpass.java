@@ -80,38 +80,6 @@ public class PoiSearchWithOverpass extends PoiSearchService {
 		return new HashSet<>(transformedPoiList);
 	}
 
-	// ****************************************
-	// PRIVATE METHODS
-	// ****************************************
-	/**
-	 * Create Request String for Radius Search
-	 * 
-	 * @param interest
-	 * @param lat
-	 * @param lng
-	 * @param radius
-	 * @return String of Request-URL that needs to be called according to given
-	 *         parameters
-	 */
-	private String buildRequestRadius(String interest, double lat, double lng, int radius) {
-		StringBuilder sb = new StringBuilder(BASE_API_URL);
-		String amenityQueryString = "[amenity=" + interest + "]";
-		String coordWithRadiusQueryString = "(around:" + radius + "," + lat + "," + lng + ");";
-		sb.append("(node" + amenityQueryString);
-		sb.append(coordWithRadiusQueryString);
-		sb.append("way" + amenityQueryString);
-		sb.append(coordWithRadiusQueryString);
-		sb.append("relation" + amenityQueryString);
-		sb.append(coordWithRadiusQueryString);
-		sb.append(");out;");
-		String requestUri = sb.toString();
-		if (logger.isDebugEnabled()) {
-			logger.debug("Request URI: " + requestUri);
-		}
-
-		return requestUri;
-	}
-
 	/**
 	 * Create Request String for Bounding Box Search
 	 * 
@@ -122,12 +90,10 @@ public class PoiSearchWithOverpass extends PoiSearchService {
 	 *         parameters
 	 */
 	public String buildRequestBBox(String interest, Coordinate[] coords) {
-
 		double n;
 		double s;
 		double e;
 		double w;
-
 		if (coords[0].getLat() >= coords[1].getLat()) {
 			n = coords[0].getLat();
 			s = coords[1].getLat();
@@ -153,6 +119,38 @@ public class PoiSearchWithOverpass extends PoiSearchService {
 		sb.append(bBoxQueryString);
 		sb.append("relation" + amenityQueryString);
 		sb.append(bBoxQueryString);
+		sb.append(");out;");
+		String requestUri = sb.toString();
+		if (logger.isDebugEnabled()) {
+			logger.debug("Request URI: " + requestUri);
+		}
+
+		return requestUri;
+	}
+
+	// ****************************************
+	// PRIVATE METHODS
+	// ****************************************
+	/**
+	 * Create Request String for Radius Search
+	 * 
+	 * @param interest
+	 * @param lat
+	 * @param lng
+	 * @param radius
+	 * @return String of Request-URL that needs to be called according to given
+	 *         parameters
+	 */
+	private String buildRequestRadius(String interest, double lat, double lng, int radius) {
+		StringBuilder sb = new StringBuilder(BASE_API_URL);
+		String amenityQueryString = "[amenity=" + interest + "]";
+		String coordWithRadiusQueryString = "(around:" + radius + "," + lat + "," + lng + ");";
+		sb.append("(node" + amenityQueryString);
+		sb.append(coordWithRadiusQueryString);
+		sb.append("way" + amenityQueryString);
+		sb.append(coordWithRadiusQueryString);
+		sb.append("relation" + amenityQueryString);
+		sb.append(coordWithRadiusQueryString);
 		sb.append(");out;");
 		String requestUri = sb.toString();
 		if (logger.isDebugEnabled()) {

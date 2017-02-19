@@ -33,7 +33,6 @@ public class PoiSearchWithGooglePlaces extends PoiSearchService {
 	// CONSTANTS
 	// ****************************************
 	private static final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
-
 	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
 	private static final String TYPE_SEARCH = "/search";
 	private static final String OUT_JSON = "/json";

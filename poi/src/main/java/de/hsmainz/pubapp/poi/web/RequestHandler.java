@@ -8,6 +8,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
@@ -66,7 +67,7 @@ public class RequestHandler {
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String post(@FormParam("callback") String callback, @FormParam("criteria") String selectedSearchCriteria,
+	public String post(@QueryParam("callback") String callback, @FormParam("criteria") String selectedSearchCriteria,
 			@FormParam("api") String api, @FormParam("searchtype") String searchType) throws InvocationTargetException {
 
 		logger.debug("MicroService POST method called: " + "Search Criteria given: " + selectedSearchCriteria
@@ -74,7 +75,6 @@ public class RequestHandler {
 
 		// Define needed Parameters for Response
 		ResponseHandler responseHandler = new ResponseHandler();
-
 		SelectedSearchCriteria criteria = new Gson().fromJson(selectedSearchCriteria, SelectedSearchCriteria.class);
 		PoiSearchInputController poiInputController = new PoiSearchInputController();
 		String errorMessage = poiInputController.validateInput(criteria, searchType);
@@ -86,6 +86,7 @@ public class RequestHandler {
 		} else {
 			response = responseHandler.getErrorResponse(errorMessage);
 		}
+		selectedSearchCriteria = null;
 
 		return addCallback(callback, response);
 	}

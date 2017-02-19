@@ -26,10 +26,6 @@ public class PoiSearchInputController {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
-	private static final Logger logger = Logger.getLogger(PoiSearchInputController.class);
-	// ****************************************
-	// VARIABLES
-	// ****************************************
 	private final ResourceBundle lables = ResourceBundle.getBundle("lables", Locale.getDefault());
 	private final String bboxString = MyProperties.getInstance().getProperty("poi_bounding_box_search");
 	private final String radiusString = MyProperties.getInstance().getProperty("poi_radius_search");
@@ -38,8 +34,12 @@ public class PoiSearchInputController {
 	private final String standardSearchType = MyProperties.getInstance().getProperty("poi_standard_search_type");
 	private final String standardApi = MyProperties.getInstance().getProperty("poi_standard_api");
 	private final String radius = MyProperties.getInstance().getProperty("poi_radius_width");
+	private static final Logger logger = Logger.getLogger(PoiSearchInputController.class);
+	// ****************************************
+	// VARIABLES
+	// ****************************************
+	public String errorMessage = "";
 
-	String errorMessage = "";
 	// ****************************************
 	// INIT/CONSTRUCTOR
 	// ****************************************
@@ -66,6 +66,7 @@ public class PoiSearchInputController {
 	 * @return all POIs found
 	 */
 	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, String searchType, String api) {
+		searchType = checkNumberOfGivenCoordinates(criteria.getCoordinates(), searchType);
 		PoiSearchService poiSearchService = getPoiSearchService(searchType, api);
 		List<ResultPoi> allPois = new ArrayList<>();
 		Set<ResultPoi> foundPois = new HashSet<>();
@@ -81,7 +82,8 @@ public class PoiSearchInputController {
 			}
 
 		} else if (radiusString.equals(poiSearchService.getSearchType())) {
-			for (Coordinate currentCoordinate : criteria.getCoordinates()) {
+			for (int i = 0; i < criteria.getCoordinates().size(); i += 20) {
+				Coordinate currentCoordinate = criteria.getCoordinates().get(i);
 				for (String currentInterest : criteria.getInterests()) {
 					Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
 							currentCoordinate, Integer.valueOf(radius));
@@ -132,11 +134,19 @@ public class PoiSearchInputController {
 	// ****************************************
 	// PRIVATE METHODS
 	// ****************************************
-
+	/**
+	 * Determines which API should be used considering also the serach type
+	 * 
+	 * @param searchType
+	 * @param api
+	 * @return certain PoiSearchService according to given data
+	 */
 	private PoiSearchService getPoiSearchService(String searchType, String api) {
 		PoiSearchService poiSearchService = null;
-
-		if (googleString.equals(api)) {
+		if (bboxString.equals(searchType)) {
+			poiSearchService = new PoiSearchWithOverpass();
+			poiSearchService.setSearchType(searchType);
+		} else if (googleString.equals(api)) {
 			poiSearchService = new PoiSearchWithGooglePlaces();
 			poiSearchService.setSearchType(radiusString);
 		} else if (overpassString.equalsIgnoreCase(api)) {
@@ -146,10 +156,6 @@ public class PoiSearchInputController {
 			} else {
 				poiSearchService.setSearchType(standardSearchType);
 			}
-
-		} else if (bboxString.equals(searchType)) {
-			poiSearchService = new PoiSearchWithOverpass();
-			poiSearchService.setSearchType(searchType);
 		} else {
 			if (googleString.equalsIgnoreCase(standardApi)) {
 				poiSearchService = new PoiSearchWithGooglePlaces();
@@ -163,6 +169,23 @@ public class PoiSearchInputController {
 
 		}
 		return poiSearchService;
+	}
+
+	/**
+	 * Checks if there are too many coordinates for radius search and sets
+	 * searchType to Bounding Box search
+	 * 
+	 * @param coords
+	 *            List of all coordinates given
+	 * @param searchType
+	 *            given searchType
+	 * @return searchType which could now be bbox
+	 */
+	private String checkNumberOfGivenCoordinates(List<Coordinate> coords, String searchType) {
+		if (coords.size() > 200) {
+			searchType = bboxString;
+		}
+		return searchType;
 	}
 
 	// *****************************************
