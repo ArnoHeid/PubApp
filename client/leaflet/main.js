@@ -1,6 +1,6 @@
 var api_geocoder = "http://143.93.114.139/geocoder";	/* URL für den Microservice: Geocoder  */
 var api_routing = "http://143.93.114.139/routing";	/* URL für den Microservice: Routing  */
-var api_poi = "http://localhost:8000/pubapp/poi";		/* URL für den Microservice: Points of Interest  */
+var api_poi = "http://localhost:8000/pubapp/poi/";		/* URL für den Microservice: Points of Interest  */
 var mymap;
 var GEOJSON;
 var routing_arr;
@@ -32,7 +32,7 @@ function init() {																// Creates the map when the website is opened /
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>, Powered by Google and Overpass',
             maxZoom: 18,
-            id: 'mapbox.light',
+            id: 'mapbox.streets',
             accessToken: 'pk.eyJ1IjoibG9yb2RvbiIsImEiOiJjaXo5a25uMzEwMDFlMzNvMHRrN3Rpd251In0.rbyeEiTl7Rzr7R-YlxwzSQ'
         }).addTo(mymap);														//Loads the Design from Mapbox and adds the layer to the map //
 	
@@ -200,9 +200,9 @@ routing = function() {
 				var latPOI = '"lat":' + JSON.stringify(data.features[0].geometry.coordinates[a][b]);
 				}
 			}
-			postPOIstring = postPOIstring + '{' + latPOI + ',' + lngPOI + '},';
+			postPOIstring = postPOIstring + '{' + latPOI + ',' + lngPOI + '}' + ',';
 		}
-		postPOIstring = postPOIstring.slice(0, -1);
+		//postPOIstring = postPOIstring.slice(0, -1);
 		console.log(postPOIstring);
 		polyline = L.geoJSON(data, {color: 'red'}).addTo(mymap);
 		$('#poi').show();
@@ -241,13 +241,19 @@ POI_BBX = function() {
 	myJsonString = JSON.stringify(interest);
 	$.ajax({														
     type: 'POST',
-    dataType: 'json',
     url: api_poi,
-	crossDomain : true,
-    xhrFields: { withCredentials: true },
+    async: true,
+    headers: {	
+				'Accept': 'application/json',
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+	dataType: 'json',
+	contentType: 'application/x-www-form-urlencoded',
+	crossDomain : true,     
+	xhrFields: {
+        withCredentials: true
+    },
 	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[{"lat":' + polyline.getBounds().getSouthWest().lat + ',"lng":' + polyline.getBounds().getSouthWest().lng + '},{"lat":' + polyline.getBounds().getNorthEast().lat + ',"lng":' + polyline.getBounds().getNorthEast().lng + '}]}&searchtype=bbox',
-    crossDomain : true,
-    xhrFields: { withCredentials: true },
 	success: function (data) {
 		console.log(data);
 		GEOJSON = L.geoJSON(data, {

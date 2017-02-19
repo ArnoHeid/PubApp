@@ -3,13 +3,13 @@ package de.hsmainz.pubapp.poi.web;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
@@ -51,6 +51,8 @@ public class RequestHandler {
 	/**
 	 * Handles Client GET Request
 	 * 
+	 * @param <HttpServletResponse>
+	 * 
 	 * @param callback
 	 *            Client can use this field for callback parameters
 	 * @param selectedSearchCriteria
@@ -65,9 +67,8 @@ public class RequestHandler {
 	 * @throws IOException
 	 */
 	@POST
-	@Consumes("application/x-www-form-urlencoded")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String post(@QueryParam("callback") String callback, @FormParam("criteria") String selectedSearchCriteria,
+	public Response post(@HeaderParam("origin") String origin, @FormParam("criteria") String selectedSearchCriteria,
 			@FormParam("api") String api, @FormParam("searchtype") String searchType) throws InvocationTargetException {
 
 		logger.debug("MicroService POST method called: " + "Search Criteria given: " + selectedSearchCriteria
@@ -80,15 +81,20 @@ public class RequestHandler {
 		String errorMessage = poiInputController.validateInput(criteria, searchType);
 
 		// generate response for Client
-		String response;
+		String responseBody;
 		if (errorMessage == null || errorMessage.isEmpty()) {
-			response = responseHandler.getResponse(poiInputController.getPoisForCriteria(criteria, searchType, api));
+			responseBody = responseHandler
+					.getResponse(poiInputController.getPoisForCriteria(criteria, searchType, api));
 		} else {
-			response = responseHandler.getErrorResponse(errorMessage);
+			responseBody = responseHandler.getErrorResponse(errorMessage);
 		}
 		selectedSearchCriteria = null;
 
-		return addCallback(callback, response);
+		Response response = Response.status(200).entity(responseBody).header("Access-Control-Allow-Origin", origin)
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+				.header("Access-Control-Allow-Credentials", true).build();
+
+		return response;
 	}
 
 	/**
