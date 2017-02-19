@@ -1,6 +1,6 @@
 var api_geocoder = "http://143.93.114.139/geocoder";	/* URL für den Microservice: Geocoder  */
 var api_routing = "http://143.93.114.139/routing";	/* URL für den Microservice: Routing  */
-var api_poi = "http://localhost:8000/pubapp/poi/";		/* URL für den Microservice: Points of Interest  */
+var api_poi = "http://143.93.114.139/poi";		/* URL für den Microservice: Points of Interest  */
 var mymap;
 var GEOJSON;
 var routing_arr;
@@ -181,7 +181,8 @@ routing = function() {
 	if (polyline != null) {
 		polyline.remove();
 	}
-	tmpEnde = document.getElementById("endpunkt_button").value;		
+	tmpStart = document.getElementById('startpunkt_button').value;
+	tmpEnde = document.getElementById('endpunkt_button').value;		
 	$.ajax({																			 /* Second Ajaxquery with GET */
     type: 'GET',                                                                        
     dataType: 'jsonp',                                                                 
@@ -277,7 +278,7 @@ POI_BBX = function() {
 				});
 				return L.marker(latlng, {icon: barIcon});
 				}
-			if (feature.properties.interest == 'ATM') {
+			if (feature.properties.interest == 'atm') {
 				var barIcon = L.icon({
 					iconUrl: './leaflet/png/atm.png',
 					iconAnchor: [13, 27],
@@ -285,7 +286,7 @@ POI_BBX = function() {
 				});
 				return L.marker(latlng, {icon: barIcon});
 				}
-			if (feature.properties.interest == 'Nachtclub') {
+			if (feature.properties.interest == 'night_club') {
 				var barIcon = L.icon({
 					iconUrl: './leaflet/png/club.png',
 					iconAnchor: [13, 27],
@@ -293,7 +294,7 @@ POI_BBX = function() {
 				});
 				return L.marker(latlng, {icon: barIcon});
 				}
-			if (feature.properties.interest == 'Cafe') {
+			if (feature.properties.interest == 'cafe') {
 				var barIcon = L.icon({
 					iconUrl: './leaflet/png/cafe.png',
 					iconAnchor: [13, 27],
