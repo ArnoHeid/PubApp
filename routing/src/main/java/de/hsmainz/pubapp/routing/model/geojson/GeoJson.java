@@ -17,9 +17,9 @@ public class GeoJson {
     // VARIABLES
     //****************************************
 
-    private String type; //NOSONAR this must exist for the GeoJSON, but isnt used here, which sonarcube doesnt like
-    private JsonObject geometry; //NOSONAR this must exist for the GeoJSON, but isnt used here, which sonarcube doesnt like
-    private Properties properties = new Properties(); //NOSONAR this must exist for the GeoJSON, but isnt used here, which sonarcube doesnt like
+    private String type;
+    private JsonObject geometry;
+    private Properties properties = new Properties();
 
     //****************************************
     // INIT/CONSTRUCTOR
@@ -33,6 +33,19 @@ public class GeoJson {
     //****************************************
     // GETTER/SETTER
     //****************************************
+
+    public String getType() {
+        return type;
+    }
+
+    public JsonObject getGeometry() {
+        return geometry;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
 
     //****************************************
     // PUBLIC METHODS

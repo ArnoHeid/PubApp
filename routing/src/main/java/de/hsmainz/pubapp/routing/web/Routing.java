@@ -111,6 +111,9 @@ public class Routing extends RoutingTemplate {
             errorMessage = labels.getString("error_vehicle_not_supported");
         }
 
+        // Future? validate if start- & endpoint are proper points
+        // e.g. using regex for twice, separated by ",",
+        // one number or two numbers, optional followed by "." and at least one number
         if (startPoint == null || startPoint.isEmpty()) {
             errorMessage = labels.getString("error_no_startpoint");
         }
@@ -118,10 +121,6 @@ public class Routing extends RoutingTemplate {
         if (endPoint == null || endPoint.isEmpty()) {
             errorMessage = labels.getString("error_no_endpoint");
         }
-
-        // Future? validate if start- & endpoint are proper points
-        // e.g. using regex for twice, separated by ",",
-        // one number or two numbers, optional followed by "." and at least one number
 
         if (pointsEncoded == null || pointsEncoded.isEmpty() || !pointsEncoded.matches("true|false")) {
             // pointsEncoded could be defined as boolean, but since it will be send via HTTP anyway…

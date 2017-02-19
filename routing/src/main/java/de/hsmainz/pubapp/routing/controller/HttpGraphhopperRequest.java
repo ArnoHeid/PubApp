@@ -69,11 +69,11 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
      * @param pointsEncoded
      * @return
      */
-    private URI buildGraphhopperUri (String startPoint,
-                                     String endPoint,
-                                     String locale,
-                                     String vehicle,
-                                     String pointsEncoded) {
+    private URI buildGraphhopperUri(String startPoint,
+                                    String endPoint,
+                                    String locale,
+                                    String vehicle,
+                                    String pointsEncoded) {
 
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme(MyProperties.getInstance().getProperty("routing_gscheme"));
@@ -98,6 +98,11 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
         return uri;
     }
 
+    /**
+     *
+     * @param uri
+     * @return
+     */
     private GeoJsonCollection doHttpGet(URI uri) {
 
         Gson gson = new Gson();
