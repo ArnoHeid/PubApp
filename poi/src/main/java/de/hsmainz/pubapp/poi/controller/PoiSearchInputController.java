@@ -94,7 +94,8 @@ public class PoiSearchInputController {
 
 			// Always consider area at the end of the route and check if picked
 			// coordinate is not null
-			if (criteria.getCoordinates().get(criteria.getCoordinates().size() - 10) != null) {
+			if (criteria.getCoordinates().size() > 20
+					&& criteria.getCoordinates().get(criteria.getCoordinates().size() - 10) != null) {
 				for (String currentInterest : criteria.getInterests()) {
 					Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
 							criteria.getCoordinates().get(criteria.getCoordinates().size() - 10),
