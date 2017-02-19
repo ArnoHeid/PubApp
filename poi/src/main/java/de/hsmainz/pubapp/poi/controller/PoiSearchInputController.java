@@ -33,12 +33,14 @@ public class PoiSearchInputController {
 	private final String overpassString = MyProperties.getInstance().getProperty("poi_overpass_api");
 	private final String standardSearchType = MyProperties.getInstance().getProperty("poi_standard_search_type");
 	private final String standardApi = MyProperties.getInstance().getProperty("poi_standard_api");
-	private final String radius = MyProperties.getInstance().getProperty("poi_radius_width");
+	// private String radius =
+	// MyProperties.getInstance().getProperty("poi_radius_width");
 	private static final Logger logger = Logger.getLogger(PoiSearchInputController.class);
 	// ****************************************
 	// VARIABLES
 	// ****************************************
 	public String errorMessage = "";
+	private String radius = MyProperties.getInstance().getProperty("poi_radius_width");
 
 	// ****************************************
 	// INIT/CONSTRUCTOR
@@ -66,7 +68,6 @@ public class PoiSearchInputController {
 	 * @return all POIs found
 	 */
 	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, String searchType, String api) {
-		searchType = checkNumberOfGivenCoordinates(criteria.getCoordinates(), searchType);
 		PoiSearchService poiSearchService = getPoiSearchService(searchType, api);
 		List<ResultPoi> allPois = new ArrayList<>();
 		Set<ResultPoi> foundPois = new HashSet<>();
@@ -74,7 +75,7 @@ public class PoiSearchInputController {
 		if (bboxString.equals(poiSearchService.getSearchType())) {
 			Coordinate[] coords = new Coordinate[2];
 			coords[0] = criteria.getCoordinates().get(0);
-			coords[1] = criteria.getCoordinates().get(criteria.getCoordinates().size() - 1);
+			coords[1] = criteria.getCoordinates().get(1);
 
 			for (String currentInterest : criteria.getInterests()) {
 				Set<ResultPoi> poisForBBox = poiSearchService.getPoisWithinBBox(currentInterest, coords);
@@ -82,12 +83,35 @@ public class PoiSearchInputController {
 			}
 
 		} else if (radiusString.equals(poiSearchService.getSearchType())) {
-			for (int i = 0; i < criteria.getCoordinates().size(); i += 20) {
+			int elementsToConsider = 20;
+			if (criteria.getCoordinates().size() >= 200 && criteria.getCoordinates().size() <= 1000) {
+				elementsToConsider = 100;
+			} else if (criteria.getCoordinates().size() >= 1000 && criteria.getCoordinates().size() <= 5000) {
+				elementsToConsider = 200;
+			} else if (criteria.getCoordinates().size() > 5000) {
+				elementsToConsider = 500;
+				radius = "10000";
+			}
+
+			for (int i = 0; i <= criteria.getCoordinates().size(); i += elementsToConsider) {
 				Coordinate currentCoordinate = criteria.getCoordinates().get(i);
 				for (String currentInterest : criteria.getInterests()) {
 					Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
 							currentCoordinate, Integer.valueOf(radius));
 					foundPois.addAll(poisForNode);
+				}
+			}
+
+			// Always consider area at the end of the route and check if picked
+			// coordinate is not null
+			if (criteria.getCoordinates().size() > 20) {
+				for (String currentInterest : criteria.getInterests()) {
+					if (criteria.getCoordinates().get(criteria.getCoordinates().size() - 10) != null) {
+						Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
+								criteria.getCoordinates().get(criteria.getCoordinates().size() - 10),
+								Integer.valueOf(radius));
+						foundPois.addAll(poisForNode);
+					}
 				}
 			}
 
@@ -169,23 +193,6 @@ public class PoiSearchInputController {
 
 		}
 		return poiSearchService;
-	}
-
-	/**
-	 * Checks if there are too many coordinates for radius search and sets
-	 * searchType to Bounding Box search
-	 * 
-	 * @param coords
-	 *            List of all coordinates given
-	 * @param searchType
-	 *            given searchType
-	 * @return searchType which could now be bbox
-	 */
-	private String checkNumberOfGivenCoordinates(List<Coordinate> coords, String searchType) {
-		if (coords.size() > 200) {
-			searchType = bboxString;
-		}
-		return searchType;
 	}
 
 	// *****************************************
