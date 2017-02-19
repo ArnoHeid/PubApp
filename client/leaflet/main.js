@@ -1,6 +1,6 @@
 var api_geocoder = "http://143.93.114.139/geocoder";	/* URL für den Microservice: Geocoder  */
 var api_routing = "http://143.93.114.139/routing";	/* URL für den Microservice: Routing  */
-var api_poi = "http://localhost:8000/pubapp/poi/";		/* URL für den Microservice: Points of Interest  */
+var api_poi = "http://143.93.114.139/poi";		/* URL für den Microservice: Points of Interest  */
 var mymap;
 var GEOJSON;
 var routing_arr;
