@@ -1,8 +1,8 @@
-var mymap;
-var GEOJSON;
 var api_geocoder = "http://143.93.114.139/geocoder";	/* URL für den Microservice: Geocoder  */
 var api_routing = "http://143.93.114.139/routing";	/* URL für den Microservice: Routing  */
-var api_poi = "localhost:8000/pubapp/poi";		/* URL für den Microservice: Points of Interest  */
+var api_poi = "http://localhost:8000/pubapp/poi";		/* URL für den Microservice: Points of Interest  */
+var mymap;
+var GEOJSON;
 var routing_arr;
 var geocoder_json;
 var lat;
@@ -24,25 +24,23 @@ var tmpStart;
 var tmpEnde;
 var myJsonString;
 var postPOIstring = '';
+var vehicle = 'foot';
 
-function init() {																// Sobald das HTML Dokument geladen wird, wird eine Karte erstellt //
+function init() {																// Creates the map when the website is opened //
 	 mymap = L.map('mapid').setView([50, 8.26], 14);
 	
-	/*L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-		attribution: 'Map by Leaflet; Ein Studentenprojekt der Hochschule Mainz: <a href=information.html>Information</a>'
-	}).addTo(mymap);*/
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>, Powered by Google and Overpass',
             maxZoom: 18,
             id: 'mapbox.light',
             accessToken: 'pk.eyJ1IjoibG9yb2RvbiIsImEiOiJjaXo5a25uMzEwMDFlMzNvMHRrN3Rpd251In0.rbyeEiTl7Rzr7R-YlxwzSQ'
-        }).addTo(mymap);
+        }).addTo(mymap);														//Loads the Design from Mapbox and adds the layer to the map //
 	
 
 	var popup = L.popup();
 	
-	function onMapClick(e) {
-    popup
+	function onMapClick(e) {																			//Each click on the map saves the coordinates of this point, shows it in a popup
+    popup																								//and gets displayed in the textfield.
         .setLatLng(e.latlng)
         .setContent('<div class="popup">You clicked the map at ' + e.latlng.toString() + '</div>')
         .openOn(mymap);
@@ -85,7 +83,6 @@ function getCoords(feature, layer) {
 		$('#startpunkt_button').val(startclicklat + ", " + startclicklng);
 				tmpStart = startclicklat + ", " + startclicklng;
 		i = i + 1;
-		$('#notification').html("<b>Bitte wählen Sie jetzt von der Karte einen Endpunkt aus!</b>");
 		}
 		else {
 		endclicklat = e.latlng.lat;
@@ -98,7 +95,7 @@ function getCoords(feature, layer) {
 	});
 }
 
-clearall = function() {
+clearall = function() {																//Reloads the complete map
 		mymap.remove();
 		mymap = L.map('mapid').setView([50, 8.26], 14);
 		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -121,14 +118,7 @@ deselectall = function() {
 	for (c = 0; c < document.forms[0].length; c++) {
 		document.forms[0].elements[c].checked = false;
 	}
-}
-
-/*togglesidebar = function() {
-	$('#sidebar').toggle();
-}*/
-
-
-		
+}		
 
 jQuery.support.cors = true;
 	
@@ -148,12 +138,12 @@ geocoder = function() {
 	}
 	else {
 	place = document.getElementById("search_button").value;	
-	document.getElementById("startpunkt_button").value = null;				/* Setz den Wert der Textfelder auf null */
-	document.getElementById("endpunkt_button").value = null;				/*	 Setz den Wert der Textfelder auf null */
-	$.post({														/* Erste Ajax-Abfrage mit GET */
+	document.getElementById("startpunkt_button").value = null;				/* Sets the textvalue to null */
+	document.getElementById("endpunkt_button").value = null;				/*	 Sets the textvalue to null */
+	$.post({																/* First Ajaxquery with GET */
     dataType: 'jsonp',
     url: api_geocoder,
-	data: 'queryString=' + place + '&locale=de',				/* Schickt die Eingaben als jQuery an den Microservice */
+	data: 'queryString=' + place + '&locale=de',							/* Sends the data to the Microservice */
     crossDomain : true,
     xhrFields: { withCredentials: true },
 	success: 
@@ -179,32 +169,30 @@ geocoder = function() {
         alert(textStatus);
     });
 	}
-	console.log(GEOJSON);
 }
 
 routing = function() {
+	if (document.getElementById('routingswitch').checked == true) {
+		vehicle = 'car';
+	}
 	if (GEOJSON != null) {
 		GEOJSON.remove();
 	}
 	if (polyline != null) {
 		polyline.remove();
 	}
-	console.log(tmpStart);
-	tmpEnde = document.getElementById("endpunkt_button").value;
-	console.log(tmpEnde);
-	$.ajax({														/* Zweite Ajax-Abfrage mit GET */
-    type: 'GET',
-    dataType: 'jsonp',
-    url: api_routing,
-	data: 'startPoint=' + tmpStart + '&endPoint=' + tmpEnde,	/* Schickt die Eingaben als jQuery an den Microservice */
-    crossDomain : true,
+	tmpEnde = document.getElementById("endpunkt_button").value;		
+	$.ajax({																			 /* Second Ajaxquery with GET */
+    type: 'GET',                                                                        
+    dataType: 'jsonp',                                                                 
+    url: api_routing,                                                                   
+	data: 'startPoint=' + tmpStart + '&endPoint=' + tmpEnde + '&vehicle=' + vehicle,	/* Sends the data to the Microservice */
+    crossDomain : true,                                                                 
     xhrFields: { withCredentials: true },
 	success: 
-	function (data) {
-		console.log(data.features[0].geometry.coordinates[0][0]);
-		for (a = 0; a < data.features[0].geometry.coordinates.length; a++) {
+	function (data) {																	/* Creates a GEOJSON from the resulting Data for the later use in the POI Function */
+		for (a = 0; a < data.features[0].geometry.coordinates.length; a++) {			
 			for (b = 0; b <= 1; b++) {
-				console.log(b);
 				if (b == 0) {
 				var lngPOI = '"lng":' + JSON.stringify(data.features[0].geometry.coordinates[a][b]);
 				}
@@ -233,6 +221,7 @@ routing = function() {
 
 
 POI_BBX = function() {
+	interest.splice(0, interest.length);
 	if (layer_marker1 != null) {
 			layer_marker1.remove();
 		} 
@@ -254,6 +243,8 @@ POI_BBX = function() {
     type: 'POST',
     dataType: 'json',
     url: api_poi,
+	crossDomain : true,
+    xhrFields: { withCredentials: true },
 	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[{"lat":' + polyline.getBounds().getSouthWest().lat + ',"lng":' + polyline.getBounds().getSouthWest().lng + '},{"lat":' + polyline.getBounds().getNorthEast().lat + ',"lng":' + polyline.getBounds().getNorthEast().lng + '}]}&searchtype=bbox',
     crossDomain : true,
     xhrFields: { withCredentials: true },
@@ -261,7 +252,7 @@ POI_BBX = function() {
 		console.log(data);
 		GEOJSON = L.geoJSON(data, {
 		onEachFeature: function (feature, layer) {
-        layer.bindPopup('<div class="popup">' + feature.properties.interest + '<br>' + feature.properties.name + '<p>' + feature.properties.openingHours + '<p></div>');
+        layer.bindPopup('<div class="popup">' + feature.properties.interest + '<br>' + feature.properties.name + '<br>' + feature.properties.isOpen + '<br>' + feature.properties.openingHours + '</div>');
 		},
 		pointToLayer: function(feature, latlng) {
 			if (feature.properties.interest == 'bar') {
@@ -318,6 +309,7 @@ POI_BBX = function() {
 }
 
 POI = function() {
+	interest.splice(0, interest.length);
 	if (layer_marker1 != null) {
 			layer_marker1.remove();
 		} 
@@ -338,11 +330,13 @@ POI = function() {
 	type: 'POST',
     dataType: 'json',
     url: api_poi,
+	crossDomain : true,
+    xhrFields: { withCredentials: true },
 	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[' + postPOIstring + ']}&api=overpass&searchtype=radius',
 	success: function (data) {
 		GEOJSON = L.geoJSON(data,
 		{onEachFeature: function (feature, layer) {
-			layer.bindPopup('<div class="popup">'  + feature.properties.interest + '<br>' + feature.properties.name + '<p>' + feature.properties.openingHours + '<p></div>');
+			layer.bindPopup('<div class="popup">'  + feature.properties.interest + '<br>' + feature.properties.name + '<br>' + feature.properties.isOpen + '<br>' + feature.properties.openingHours + '</div>');
 			},
 		pointToLayer: function(feature, latlng) {
 			if (feature.properties.interest == 'bar') {
