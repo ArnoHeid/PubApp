@@ -2,7 +2,7 @@ var mymap;
 var GEOJSON;
 var api_geocoder = "http://143.93.114.139/geocoder";	/* URL für den Microservice: Geocoder  */
 var api_routing = "http://143.93.114.139/routing";	/* URL für den Microservice: Routing  */
-var api_poi = "http://143.93.114.139/poi";		/* URL für den Microservice: Points of Interest  */
+var api_poi = "localhost:8000/pubapp/poi";		/* URL für den Microservice: Points of Interest  */
 var routing_arr;
 var geocoder_json;
 var lat;
@@ -23,6 +23,8 @@ var layer_marker2;
 var tmpStart;
 var tmpEnde;
 var myJsonString;
+var postPOIstring = '';
+
 function init() {																// Sobald das HTML Dokument geladen wird, wird eine Karte erstellt //
 	 mymap = L.map('mapid').setView([50, 8.26], 14);
 	
@@ -199,8 +201,22 @@ routing = function() {
     xhrFields: { withCredentials: true },
 	success: 
 	function (data) {
+		console.log(data.features[0].geometry.coordinates[0][0]);
+		for (a = 0; a < data.features[0].geometry.coordinates.length; a++) {
+			for (b = 0; b <= 1; b++) {
+				console.log(b);
+				if (b == 0) {
+				var lngPOI = '"lng":' + JSON.stringify(data.features[0].geometry.coordinates[a][b]);
+				}
+				else {
+				var latPOI = '"lat":' + JSON.stringify(data.features[0].geometry.coordinates[a][b]);
+				}
+			}
+			postPOIstring = postPOIstring + '{' + latPOI + ',' + lngPOI + '},';
+		}
+		postPOIstring = postPOIstring.slice(0, -1);
+		console.log(postPOIstring);
 		polyline = L.geoJSON(data, {color: 'red'}).addTo(mymap);
-		console.log(polyline.getBounds());
 		$('#poi').show();
 		$('#poiauswahl').show();
 		$('#poi_bbx').show();
@@ -235,8 +251,8 @@ POI_BBX = function() {
 	console.log(interest);
 	myJsonString = JSON.stringify(interest);
 	$.ajax({														
-    type: 'GET',
-    dataType: 'jsonp',
+    type: 'POST',
+    dataType: 'json',
     url: api_poi,
 	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[{"lat":' + polyline.getBounds().getSouthWest().lat + ',"lng":' + polyline.getBounds().getSouthWest().lng + '},{"lat":' + polyline.getBounds().getNorthEast().lat + ',"lng":' + polyline.getBounds().getNorthEast().lng + '}]}&searchtype=bbox',
     crossDomain : true,
@@ -318,15 +334,12 @@ POI = function() {
 		}
 	}
 	myJsonString = JSON.stringify(interest);
-	$.ajax({														
-    type: 'GET',
-    dataType: 'jsonp',
+	$.ajax({
+	type: 'POST',
+    dataType: 'json',
     url: api_poi,
-	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[{"lat":' + startclicklat + ',"lng":' + startclicklng + '},{"lat":' + endclicklat + ',"lng":' + endclicklng + '}]}',
-    crossDomain : true,
-    xhrFields: { withCredentials: true },
+	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[' + postPOIstring + ']}&api=overpass&searchtype=radius',
 	success: function (data) {
-		console.log(data);
 		GEOJSON = L.geoJSON(data,
 		{onEachFeature: function (feature, layer) {
 			layer.bindPopup('<div class="popup">'  + feature.properties.interest + '<br>' + feature.properties.name + '<p>' + feature.properties.openingHours + '<p></div>');
