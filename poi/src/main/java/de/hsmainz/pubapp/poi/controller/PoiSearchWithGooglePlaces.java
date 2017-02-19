@@ -55,7 +55,8 @@ public class PoiSearchWithGooglePlaces extends PoiSearchService {
 	// ****************************************
 	@Override
 	public Set<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
-		String request = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
+		String interestStringAltered = interest.replaceAll("[_]", "");
+		String request = buildRequestRadius(interestStringAltered, coord.getLat(), coord.getLng(), radius);
 		InputStreamReader in = postQuery(request);
 
 		List<ResultPoi> resultPois = null;

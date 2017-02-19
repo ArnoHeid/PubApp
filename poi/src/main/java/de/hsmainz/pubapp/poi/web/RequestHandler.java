@@ -80,7 +80,7 @@ public class RequestHandler {
 		PoiSearchInputController poiInputController = new PoiSearchInputController();
 		String errorMessage = poiInputController.validateInput(criteria, searchType);
 
-		// generate response for Client
+		// Generate response for Client
 		String responseBody;
 		if (errorMessage == null || errorMessage.isEmpty()) {
 			responseBody = responseHandler
@@ -95,24 +95,6 @@ public class RequestHandler {
 				.header("Access-Control-Allow-Credentials", true).build();
 
 		return response;
-	}
-
-	/**
-	 * Adds callback to response JSON string
-	 * 
-	 * @param callback
-	 *            String defined by client
-	 * @param response
-	 *            JSON Response String according to request
-	 * @return
-	 */
-	public String addCallback(String callback, String response) {
-		if (callback == null || callback.isEmpty()) {
-			return response;
-		} else {
-			return callback + "(" + response + ")";
-		}
-
 	}
 
 	// ****************************************

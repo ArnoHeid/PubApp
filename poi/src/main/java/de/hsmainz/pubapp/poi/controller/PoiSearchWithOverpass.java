@@ -49,8 +49,8 @@ public class PoiSearchWithOverpass extends PoiSearchService {
 
 	@Override
 	public Set<ResultPoi> getPoisWithinRadius(String interest, Coordinate coord, int radius) {
-		String request = buildRequestRadius(interest, coord.getLat(), coord.getLng(), radius);
-
+		String interestStringAltered = interest.replaceAll("[_]", "");
+		String request = buildRequestRadius(interestStringAltered, coord.getLat(), coord.getLng(), radius);
 		InputStreamReader in = postQuery(request);
 		List<ResultPoi> resultPois = null;
 		try {
@@ -60,7 +60,7 @@ public class PoiSearchWithOverpass extends PoiSearchService {
 			if (places.isEmpty()) {
 				logger.info("No POIs found with URL:" + request);
 			}
-			resultPois = transformApiResultsToResultPoi(places);
+			resultPois = transformApiResultsToResultPoi(places, interest);
 		} catch (Exception e) {
 			logger.error("Problem while saving POIs in List", e);
 		}
@@ -70,13 +70,15 @@ public class PoiSearchWithOverpass extends PoiSearchService {
 
 	@Override
 	public Set<ResultPoi> getPoisWithinBBox(String interest, Coordinate[] coords) {
-		String requestStart = buildRequestBBox(interest, coords);
+		String interestStringAltered = interest.replaceAll("[_]", "");
+		String requestStart = buildRequestBBox(interestStringAltered, coords);
 		InputStreamReader in = postQuery(requestStart);
 
-		OverpassPoiSearchResult placesResult = new Gson().fromJson(in, OverpassPoiSearchResult.class);
+		Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+		OverpassPoiSearchResult placesResult = gson.fromJson(in, OverpassPoiSearchResult.class);
 		List<OverpassResultPoi> places = placesResult.getList();
 
-		List<ResultPoi> transformedPoiList = transformApiResultsToResultPoi(places);
+		List<ResultPoi> transformedPoiList = transformApiResultsToResultPoi(places, interest);
 		return new HashSet<>(transformedPoiList);
 	}
 
@@ -167,23 +169,25 @@ public class PoiSearchWithOverpass extends PoiSearchService {
 	 * @param places
 	 *            List of all Results that Overpass-API returned saved in
 	 *            OverpassResultPoi
+	 * @param interest
+	 *            Given interest for POI search
 	 * @return all result POIs as List transformed in ResultPoi-Objects
 	 */
-	private List<ResultPoi> transformApiResultsToResultPoi(List<OverpassResultPoi> places) {
+	private List<ResultPoi> transformApiResultsToResultPoi(List<OverpassResultPoi> places, String interest) {
 
 		List<ResultPoi> results = new ArrayList<>();
 
 		for (OverpassResultPoi overpassPoi : places) {
 			ResultPoi resultPoi = new ResultPoi();
 			resultPoi.setName(overpassPoi.getTags().getName());
-			resultPoi.setInterest(overpassPoi.getTags().getAmenity());
+			resultPoi.setInterest(interest);
 			resultPoi.setLat(overpassPoi.getLat());
 			resultPoi.setLon(overpassPoi.getLon());
 
 			Details details = new Details();
 			try {
 				String openingHours = overpassPoi.getTags().getOpeningHours();
-				if (openingHours == null || openingHours.isEmpty()) {
+				if (openingHours.isEmpty() || openingHours == null) {
 					details.setOpeningHours(lables.getString("message_no_opening_hours"));
 				} else {
 					details.setOpeningHours(openingHours);
