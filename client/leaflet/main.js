@@ -181,7 +181,8 @@ routing = function() {
 	if (polyline != null) {
 		polyline.remove();
 	}
-	tmpEnde = document.getElementById("endpunkt_button").value;		
+	tmpStart = document.getElementById('startpunkt_button').value;
+	tmpEnde = document.getElementById('endpunkt_button').value;		
 	$.ajax({																			 /* Second Ajaxquery with GET */
     type: 'GET',                                                                        
     dataType: 'jsonp',                                                                 
