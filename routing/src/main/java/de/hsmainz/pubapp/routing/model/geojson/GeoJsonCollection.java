@@ -20,7 +20,7 @@ public class GeoJsonCollection {
     // VARIABLES
     //****************************************
 
-    private String type;
+    private String type; //NOSONAR this must exist for the GeoJSON, but isnt used here, which sonarcube doesnt like
     private List<GeoJson> features;
 
     //****************************************

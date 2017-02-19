@@ -57,7 +57,7 @@ public class RoutingServiceMain {
         final HttpServer server = startServer();
         logger.trace("Routing service started");
 
-        System.out.println(String.format("Jersey app started with WADL available at "
+        logger.trace(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", buildURL()));
 
         System.in.read();
