@@ -148,6 +148,9 @@ geocoder = function() {
     xhrFields: { withCredentials: true },
 	success: 
 	function (data) {
+		if (data.type == 'Error') {
+			alert(data.errorMessage);
+		}
 	tmpStart = data.features[0].geometry.coordinates[1] + ',' + data.features[0].geometry.coordinates[0];
 	startclicklat = data.features[0].geometry.coordinates[1];
 	startclicklng = data.features[0].geometry.coordinates[0];
@@ -185,14 +188,18 @@ routing = function() {
 	tmpEnde = document.getElementById('endpunkt_button').value;		
 	$.ajax({																			 /* Second Ajaxquery with GET */
     type: 'GET',                                                                        
-    dataType: 'jsonp',                                                                 
+    dataType: 'jsonp',   
+	async: true,
     url: api_routing,                                                                   
 	data: 'startPoint=' + tmpStart + '&endPoint=' + tmpEnde + '&vehicle=' + vehicle,	/* Sends the data to the Microservice */
     crossDomain : true,                                                                 
     xhrFields: { withCredentials: true },
 	success: 
-	function (data) {																	/* Creates a GEOJSON from the resulting Data for the later use in the POI Function */
-		for (a = 0; a < data.features[0].geometry.coordinates.length; a++) {			
+	function (data) {
+		if (data.type == 'Error') {
+			alert(data.errorMessage);
+		}																		
+		for (a = 0; a < data.features[0].geometry.coordinates.length; a++) {			/* Creates a GEOJSON from the resulting Data for the later use in the POI Function */
 			for (b = 0; b <= 1; b++) {
 				if (b == 0) {
 				var lngPOI = '"lng":' + JSON.stringify(data.features[0].geometry.coordinates[a][b]);
@@ -203,8 +210,7 @@ routing = function() {
 			}
 			postPOIstring = postPOIstring + '{' + latPOI + ',' + lngPOI + '}' + ',';
 		}
-		//postPOIstring = postPOIstring.slice(0, -1);
-		console.log(postPOIstring);
+		postPOIstring = postPOIstring.slice(0, -1);
 		polyline = L.geoJSON(data, {color: 'red'}).addTo(mymap);
 		$('#poi').show();
 		$('#poiauswahl').show();
@@ -243,7 +249,6 @@ POI_BBX = function() {
 	$.ajax({														
     type: 'POST',
     url: api_poi,
-    async: true,
     headers: {	
 				'Accept': 'application/json',
 				'Content-Type': 'application/x-www-form-urlencoded',
@@ -254,9 +259,12 @@ POI_BBX = function() {
 	xhrFields: {
         withCredentials: true
     },
+	async: true,
 	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[{"lat":' + polyline.getBounds().getSouthWest().lat + ',"lng":' + polyline.getBounds().getSouthWest().lng + '},{"lat":' + polyline.getBounds().getNorthEast().lat + ',"lng":' + polyline.getBounds().getNorthEast().lng + '}]}&searchtype=bbox',
 	success: function (data) {
-		console.log(data);
+		if (data.type == 'Error') {
+			alert(data.errorMessage);
+		}
 		GEOJSON = L.geoJSON(data, {
 		onEachFeature: function (feature, layer) {
         layer.bindPopup('<div class="popup">' + feature.properties.interest + '<br>' + feature.properties.name + '<br>' + feature.properties.isOpen + '<br>' + feature.properties.openingHours + '</div>');
@@ -335,12 +343,22 @@ POI = function() {
 	myJsonString = JSON.stringify(interest);
 	$.ajax({
 	type: 'POST',
-    dataType: 'json',
     url: api_poi,
-	crossDomain : true,
-    xhrFields: { withCredentials: true },
+    headers: {	
+				'Accept': 'application/json',
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+	dataType: 'json',
+	contentType: 'application/x-www-form-urlencoded',
+	crossDomain : true,     
+	xhrFields: {
+        withCredentials: true
+    },
 	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[' + postPOIstring + ']}&api=overpass&searchtype=radius',
 	success: function (data) {
+		if (data.type == 'Error') {
+			alert(data.errorMessage);
+		}
 		GEOJSON = L.geoJSON(data,
 		{onEachFeature: function (feature, layer) {
 			layer.bindPopup('<div class="popup">'  + feature.properties.interest + '<br>' + feature.properties.name + '<br>' + feature.properties.isOpen + '<br>' + feature.properties.openingHours + '</div>');
