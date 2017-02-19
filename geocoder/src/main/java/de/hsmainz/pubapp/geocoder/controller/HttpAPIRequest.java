@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -51,7 +52,15 @@ public abstract class HttpAPIRequest {
      * @param inputJson the request parameters combined in a custom ClientJson
      * @return API response converted to a String
      */
-    public abstract String requestGeocoder(ClientInputJson inputJson);
+    public String requestGeocoder(ClientInputJson inputJson) {
+        String returnString;
+        if (!validateInput(inputJson)) {
+            returnString = gson.toJson(new ErrorJson(lables.getString("message_Input_Empty")));
+        } else {
+            returnString = requestGeocoder(inputJson.getQueryString(), inputJson.getLocale());
+        }
+        return returnString;
+    }
 
     /**
      * Executes request to geocoder API and creates GeoJSON
@@ -60,11 +69,34 @@ public abstract class HttpAPIRequest {
      * @param locale      the string defining the used language
      * @return API response converted to a String
      */
-    public abstract String requestGeocoder(String queryString, String locale);
+    public String requestGeocoder(String queryString, String locale) {
+        String returnString;
+        if (!validateInput(queryString)) {
+            returnString = gson.toJson(new ErrorJson(lables.getString("message_Input_Empty")));
+        } else {
+            try {
+                URI uri = buildUri(queryString, locale);
+                returnString = request(uri);
+            } catch (URISyntaxException e) {
+                logger.catching(e);
+                returnString = gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
+            }
+        }
+        return returnString;
+    }
 
     //****************************************
     // PRIVATE METHODS
     //****************************************
+
+    /**
+     * Creates the URI for API request
+     *
+     * @param queryString the string containing the address
+     * @param locale      the string defining the used language
+     * @return Uri for geocoder request to graphhopper API
+     */
+    abstract URI buildUri(String queryString, String locale) throws URISyntaxException;
 
     /**
      * Executes the request to the API

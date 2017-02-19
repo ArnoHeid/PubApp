@@ -3,8 +3,6 @@ package de.hsmainz.pubapp.geocoder.controller;
 
 import com.google.gson.reflect.TypeToken;
 import de.hsmainz.pubapp.geocoder.MyProperties;
-import de.hsmainz.pubapp.geocoder.model.ClientInputJson;
-import de.hsmainz.pubapp.geocoder.model.ErrorJson;
 import de.hsmainz.pubapp.geocoder.model.geojson.GeoJsonCollection;
 import de.hsmainz.pubapp.geocoder.model.nominatimjson.NominatimJson;
 import org.apache.commons.io.IOUtils;
@@ -52,54 +50,6 @@ public class HttpNominatimRequest extends HttpAPIRequest {
     // PUBLIC METHODS
     //****************************************
 
-    /**
-     * Executes request to nominatim-geocoder API and creates a GeoJSON. Custom ClientJson is used for the input
-     *
-     * @param inputJson the request parameters combined in a custom ClientJson
-     * @return nominatim-API response converted to a String
-     */
-    @Override
-    public String requestGeocoder(ClientInputJson inputJson) {
-        String returnString;
-        if (!validateInput(inputJson)) {
-            returnString = gson.toJson(new ErrorJson(lables.getString("message_Input_Empty")));
-        } else {
-            try {
-                URI uri = buildNominatimUri(inputJson);
-                returnString = request(uri);
-            } catch (URISyntaxException e) {
-                logger.catching(e);
-                returnString = gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
-            }
-        }
-
-        return returnString;
-    }
-
-    /**
-     * Executes request to graphhopper-geocoder API and creates a GeoJSON
-     *
-     * @param queryString the string containing the address
-     * @param locale      the string defining the used language
-     * @return nominatim-API response converted to a String
-     */
-    @Override
-    public String requestGeocoder(String queryString, String locale) {
-        String returnString;
-        if (!validateInput(queryString)) {
-            returnString = gson.toJson(new ErrorJson(lables.getString("message_Input_Empty")));
-        } else {
-            try {
-                URI uri = buildNominatimUri(queryString, locale);
-                returnString = request(uri);
-            } catch (URISyntaxException e) {
-                logger.catching(e);
-                returnString = gson.toJson(new ErrorJson(lables.getString("error_incorrect_URI")));
-            }
-        }
-        return returnString;
-    }
-
     //****************************************
     // PRIVATE METHODS
     //****************************************
@@ -131,23 +81,14 @@ public class HttpNominatimRequest extends HttpAPIRequest {
     }
 
     /**
-     * Creates the URI for nominatim API request
-     *
-     * @param inputJson Class with input parameters
-     * @return Uri for geocoder request to graphhopper API
-     */
-    private URI buildNominatimUri(ClientInputJson inputJson) throws URISyntaxException {
-        return buildNominatimUri(inputJson.getQueryString(), inputJson.getLocale());
-    }
-
-    /**
      * Creates the URI for graphhopper API request
      *
      * @param queryString the string containing the address
      * @param locale      the string defining the used language
      * @return Uri for geocoder request to graphhopper API
      */
-    private URI buildNominatimUri(String queryString, String locale) throws URISyntaxException {
+    @Override
+    protected URI buildUri(String queryString, String locale) throws URISyntaxException {
 
         URIBuilder uriBuilder = new URIBuilder();
         uriBuilder.setScheme(MyProperties.getInstance().getProperty("geo_nscheme"));
