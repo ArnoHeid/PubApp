@@ -89,7 +89,7 @@ public class RequestHandler {
 			responseBody = responseHandler.getErrorResponse(errorMessage);
 		}
 
-		return Response.status(200).entity(responseBody).header("Access-Control-Allow-Origin", origin)
+		return Response.status(200).entity(responseBody).header("Access-Control-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 				.header("Access-Control-Allow-Credentials", true).build();
 	}
