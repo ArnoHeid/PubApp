@@ -24,9 +24,20 @@ Import Sourecode in your development environment
 
 The geocoder accepts one parameter to pass a custom properties-File
 
+```bash
+java -jar geocoder.jar config.properties
 ```
-java -jar geocoder.jar custom.properties
-```
+
+Sending a request to the geocoder service.
+
+**Overview**
+
+| Parameter | Default | Description
+| --- | --- | --- |
+| `queryString` | None | `queryString` is required. Main search parameter |
+| `locale` | `de` | `locale` is optional. Intended for specifying the language. Values other than `de`, `en`, `fr`, `it` are rejected. |
+| `api` | `nominatim` | `api` is optional. `nominatim` or `graphhopper` can be selected as the geocoding api |
+
 
 Calling the geocoder microservice using a webbrowser.
 
