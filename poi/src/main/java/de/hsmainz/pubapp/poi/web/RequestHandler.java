@@ -46,7 +46,7 @@ public class RequestHandler {
 	/**
 	 * Handles Client GET Request
 	 *
-	 * @param criteria
+	 * @param request
 	 *            all search criteria given by client including coordinates,
 	 *            interest and API and search type details
 	 * @return
