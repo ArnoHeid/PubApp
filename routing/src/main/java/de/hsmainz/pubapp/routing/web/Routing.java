@@ -2,7 +2,6 @@ package de.hsmainz.pubapp.routing.web;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import de.hsmainz.pubapp.routing.controller.HttpAPIRequest;
 import de.hsmainz.pubapp.routing.controller.HttpGraphhopperRequest;
 import de.hsmainz.pubapp.routing.model.geojson.GeoJsonCollection;
 
@@ -50,6 +49,12 @@ public class Routing extends RoutingTemplate {
      * Method handling HTTP GET requests. The returned object will be sent
      * to the client as "text/plain" media type.
      *
+     * @param startPoint Start point for the route
+     * @param endPoint End point for the route
+     * @param locale Locale or language
+     * @param vehicle Measure of transportation
+     * @param pointsEncoded Should graphhoper proprietary encode the points
+     * @param callback Callback name for JSONP
      * @return String that will be returned as a text/plain response.
      */
     @GET
@@ -67,8 +72,8 @@ public class Routing extends RoutingTemplate {
             return jsonCallbackWrapper(callback, getErrorResponse(errorMessage));
         }
 
-        HttpAPIRequest httpApiRequest = new HttpGraphhopperRequest();
-        GeoJsonCollection geoJsonCollection = httpApiRequest.requestRouting(startPoint, endPoint, locale, vehicle, pointsEncoded);
+        HttpGraphhopperRequest httpGraphhopperRequest = new HttpGraphhopperRequest();
+        GeoJsonCollection geoJsonCollection = httpGraphhopperRequest.requestRouting(startPoint, endPoint, locale, vehicle, pointsEncoded);
 
         if ("{}".equals(gson.toJson(geoJsonCollection))) { // empty
             return jsonCallbackWrapper(callback, getErrorResponse(labels.getString("message_graphhopper_req_failed")));
@@ -82,13 +87,14 @@ public class Routing extends RoutingTemplate {
     //****************************************
 
     /**
+     * Validating the queryText
      *
-     * @param startPoint
-     * @param endPoint
-     * @param locale
-     * @param vehicle
-     * @param pointsEncoded
-     * @return
+     * @param startPoint Start point for the route
+     * @param endPoint End point for the route
+     * @param locale Locale or language
+     * @param vehicle Measure of transportation
+     * @param pointsEncoded Should graphhoper proprietary encode the points
+     * @return If valid true, else false
      */
     private boolean validateInput(String startPoint,
                                   String endPoint,
@@ -135,9 +141,10 @@ public class Routing extends RoutingTemplate {
     }
 
     /**
+     * Get the error message by the key
      *
-     * @param errorMessage
-     * @return
+     * @param errorMessage Error message key
+     * @return Returns stringified json like {"Error": "some error"}
      */
     private String getErrorResponse(String errorMessage) {
         JsonObject error = new JsonObject();

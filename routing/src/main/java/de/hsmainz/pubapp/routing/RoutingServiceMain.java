@@ -19,7 +19,7 @@ public class RoutingServiceMain {
     // CONSTANTS
     //****************************************
 
-    public static final String BASE_URI = "http://localhost";
+    private static final String BASE_URI = "http://localhost";
     private static final String PATH = "/pubapp/";
     private static final Logger logger = LogManager.getLogger(RoutingServiceMain.class);
 
@@ -46,8 +46,8 @@ public class RoutingServiceMain {
     /**
      * RoutingServiceMain server method.
      *
-     * @param args load properties file
-     * @throws IOException
+     * @param args Load properties file
+     * @throws IOException IOException throws an exception if Server Start fails
      */
     public static void main(String[] args) throws IOException {
         if (args.length > 0) {

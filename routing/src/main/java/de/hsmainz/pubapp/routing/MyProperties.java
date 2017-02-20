@@ -44,6 +44,11 @@ public class MyProperties extends Properties {
 	// GETTER/SETTER
 	// ****************************************
 
+	/**
+	 * Set (custom) propertiesFile
+	 *
+	 * @param propertiesFileName Name of the propertiesFile to use
+	 */
 	static void setPropertiesFile(String propertiesFileName) {
 		File newProp = new File(propertiesFileName);
 		if (newProp.exists())
