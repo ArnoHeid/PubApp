@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 
 import de.hsmainz.pubapp.poi.controller.PoiSearchInputController;
 import de.hsmainz.pubapp.poi.model.SelectedSearchCriteria;
+import org.apache.log4j.Logger;
 
 /**
  * This Class handles requests sent to API. Given routing Coordinates or
@@ -27,6 +28,8 @@ public class RequestHandler {
 	// ****************************************
 	// CONSTANTS
 	// ****************************************
+
+	private static final Logger logger = Logger.getLogger(PoiSearchInputController.class);
 
 	// ****************************************
 	// VARIABLES
@@ -46,7 +49,7 @@ public class RequestHandler {
 	/**
 	 * Handles Client GET Request
 	 *
-	 * @param criteria
+	 * @param request
 	 *            all search criteria given by client including coordinates,
 	 *            interest and API and search type details
 	 * @return
@@ -68,8 +71,14 @@ public class RequestHandler {
 		// Generate response for Client
 		String responseBody;
 		if (errorMessage == null || errorMessage.isEmpty()) {
-			responseBody = responseHandler
-					.getResponse(poiInputController.getPoisForCriteria(criteria, searchType, api));
+			try {
+				responseBody = responseHandler
+						.getResponse(poiInputController.getPoisForCriteria(criteria, searchType, api));
+			}catch (NullPointerException e){
+				logger.error("",e);
+				responseBody = "Error";
+			}
+
 		} else {
 			responseBody = responseHandler.getErrorResponse(errorMessage);
 		}

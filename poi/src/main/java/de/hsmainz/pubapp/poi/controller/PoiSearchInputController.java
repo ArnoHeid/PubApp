@@ -65,7 +65,7 @@ public class PoiSearchInputController {
 	 *            given api to use, either overpassAPI or googlePlacesAPI
 	 * @return all POIs found
 	 */
-	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, String searchType, String api) {
+	public List<ResultPoi> getPoisForCriteria(SelectedSearchCriteria criteria, String searchType, String api){
 		PoiSearchService poiSearchService = getPoiSearchService(searchType, api);
 		List<ResultPoi> allPois = new ArrayList<>();
 		Set<ResultPoi> foundPois = new HashSet<>();
@@ -154,8 +154,8 @@ public class PoiSearchInputController {
 	 * @param api
 	 * @return certain PoiSearchService according to given data
 	 */
-	private PoiSearchService getPoiSearchService(String searchType, String api) {
-		PoiSearchService poiSearchService = null;
+	private PoiSearchService getPoiSearchService(String searchType, String api){
+		PoiSearchService poiSearchService;
 		if (bboxString.equals(searchType)) {
 			poiSearchService = new PoiSearchWithOverpass();
 			poiSearchService.setSearchType(searchType);
@@ -178,6 +178,7 @@ public class PoiSearchInputController {
 				poiSearchService.setSearchType(standardSearchType);
 			} else {
 				logger.error("No valid standard data for search available");
+				throw new NullPointerException();
 			}
 
 		}
