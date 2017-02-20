@@ -8,7 +8,7 @@ The project sourcecode can be downloaded for [https://github.com/ArnoHeid/PubApp
 
 ### Prerequisites
 
-Get your own API-Keys for [Graphhopper](https://graphhopper.com/#pricing) and [google](...)
+Get your own API-Keys for [Graphhopper](https://graphhopper.com/#pricing) and [google](https://developers.google.com/places/web-service/?hl=de)
 
 ### Installing
 
@@ -35,7 +35,49 @@ http://localhost:8080/pubapp/geocoder?queryString=Mainz&locale=de
 ```
 
 ###POI
+The poi service accepts one parameter specifying a config file to override the default config.properties File.
 
+```bash
+java -jar poi.jar config.properties
+```
+
+Poi service can be requested in a POST request containg the following data
+
+**Overview**
+
+| Parameter | Default | Description
+| --- | --- | --- |
+| `interests` | None | The client offers possible interests which can be selected and searched for. Each API (Google Places and overpassApi) allow more certain interests|
+| `coordinates` | None | A List of at least two coordinates is required in order to search. The Client is due to POST able to pass all nodes given from routing|
+| `searchType` | `bbox`| `searchType` is a parameter defining what kind of search should be fulfilled. A radius or bbox search is possible. Radius mean serach for each given coordinate within a certain radius. And bbox meaning, doing a bounding box search for given bounds.  |
+| `api` | `overpass` | `overpass` or `google` can be selected. Please note: Google Places is not set to do a bbox search. |
+
+**POST example with jQuery**.
+
+
+```
+$.ajax({														
+    type: 'POST',
+    url: api_poi,
+    async: true,
+    headers: {	
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+	dataType: 'json',
+	data: {
+	"interests": ["bar", "atm”],
+	"coordinates": [{
+		"lat": 49.9987,
+		"lng": 8.2691
+	}, {
+		"lat": 50.0093,
+		"lng": 8.2564
+	}],
+	"api": "overpass",
+	"searchtype": "radius"
+}
+```
 
 ### Routing
 
