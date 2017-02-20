@@ -203,7 +203,7 @@ routing = function() {
 			}
 			postPOIstring = postPOIstring + '{' + latPOI + ',' + lngPOI + '}' + ',';
 		}
-		//postPOIstring = postPOIstring.slice(0, -1);
+		postPOIstring = postPOIstring.slice(0, -1);
 		console.log(postPOIstring);
 		polyline = L.geoJSON(data, {color: 'red'}).addTo(mymap);
 		$('#poi').show();
@@ -220,7 +220,7 @@ routing = function() {
     });
 }
 
-
+var bboxString = 
 POI_BBX = function() {
 	interest.splice(0, interest.length);
 	if (layer_marker1 != null) {
@@ -246,16 +246,15 @@ POI_BBX = function() {
     async: true,
     headers: {	
 				'Accept': 'application/json',
-				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Type': 'application/json',
 			},
 	dataType: 'json',
-	contentType: 'application/x-www-form-urlencoded',
 	crossDomain : true,     
 	xhrFields: {
-        withCredentials: true
+        withCredentials: false
     },
-	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[{"lat":' + polyline.getBounds().getSouthWest().lat + ',"lng":' + polyline.getBounds().getSouthWest().lng + '},{"lat":' + polyline.getBounds().getNorthEast().lat + ',"lng":' + polyline.getBounds().getNorthEast().lng + '}]}&searchtype=bbox',
-	success: function (data) {
+	data: '{"interests":' + myJsonString + ',"coordinates":[{"lat":' + polyline.getBounds().getSouthWest().lat + ',"lng":' + polyline.getBounds().getSouthWest().lng + '},{"lat":' + polyline.getBounds().getNorthEast().lat + ',"lng":' + polyline.getBounds().getNorthEast().lng + '}]'  + ',"api":' + '"overpass",' + '"searchType":' + '"bbox"' + '}',
+		success: function (data) {
 		console.log(data);
 		GEOJSON = L.geoJSON(data, {
 		onEachFeature: function (feature, layer) {
@@ -310,6 +309,7 @@ POI_BBX = function() {
         console.log("done");
     })
     .fail( function(xhr, textStatus, errorThrown) {
+    	console.log('{"interests":' + myJsonString + ',"coordinates":[{"lat":' + polyline.getBounds().getSouthWest().lat + ',"lng":' + polyline.getBounds().getSouthWest().lng + '},{"lat":' + polyline.getBounds().getNorthEast().lat + ',"lng":' + polyline.getBounds().getNorthEast().lng + '}]'  + ',"api":' + '"overpass",' + '"searchType":' + '"bbox"' + '}');
         console.log(xhr);
         alert(textStatus);
     });
@@ -337,9 +337,13 @@ POI = function() {
 	type: 'POST',
     dataType: 'json',
     url: api_poi,
+    headers: {	
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
 	crossDomain : true,
-    xhrFields: { withCredentials: true },
-	data: 'criteria={"interests":' + myJsonString + ',"coordinates":[' + postPOIstring + ']}&api=overpass&searchtype=radius',
+    xhrFields: { withCredentials: false },
+	data: '{"interests":' + myJsonString + ',"coordinates":[' + postPOIstring + ']' + ',"api":' + '"google",' + '"searchType":' + '"radius"' + '}',
 	success: function (data) {
 		GEOJSON = L.geoJSON(data,
 		{onEachFeature: function (feature, layer) {
@@ -394,6 +398,7 @@ POI = function() {
         console.log("done");
     })
     .fail( function(xhr, textStatus, errorThrown) {
+    	console.log('{"interests":' + myJsonString + ',"coordinates":[' + postPOIstring + ']' + ',"api":' + '"overpass",' + '"searchtype":' + '"radius"' + '}')
         console.log(xhr);
         alert(textStatus);
     });

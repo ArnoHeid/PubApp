@@ -74,6 +74,8 @@ public class PoiServiceMain {
 
 	public static HttpServer startServer(String url) {
 		final ResourceConfig rc = new ResourceConfig().packages("de.hsmainz.pubapp.poi.web");
+		rc.register(new CORSFilter());
+
 		return GrizzlyHttpServerFactory.createHttpServer(URI.create(url), rc);
 	}
 	// ****************************************

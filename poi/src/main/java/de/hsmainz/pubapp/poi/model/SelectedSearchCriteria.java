@@ -12,6 +12,8 @@ import java.util.List;
 public class SelectedSearchCriteria {
 	private List<Coordinate> coordinates;
 	private List<String> interests;
+	private String searchType;
+	private String api;
 
 	public List<Coordinate> getCoordinates() {
 		return coordinates;
@@ -27,6 +29,22 @@ public class SelectedSearchCriteria {
 
 	public void setInterests(List<String> interests) {
 		this.interests = interests;
+	}
+
+	public String getSearchType() {
+		return searchType;
+	}
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
+	public String getApi() {
+		return api;
+	}
+
+	public void setApi(String api) {
+		this.api = api;
 	}
 
 }
