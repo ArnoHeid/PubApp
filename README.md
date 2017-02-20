@@ -58,10 +58,10 @@ Poi service can be requested in a POST request containg the following data
 
 | Parameter | Default | Description
 | --- | --- | --- |
-| `interests` | None | The client offers possible interests which can be selected and searched for. Each API (Google Places and overpassApi) allow more certain interests|
-| `coordinates` | None | A List of at least two coordinates is required in order to search. The Client is due to POST able to pass all nodes given from routing|
-| `searchType` | `bbox`| `searchType` is a parameter defining what kind of search should be fulfilled. A radius or bbox search is possible. Radius mean serach for each given coordinate within a certain radius. And bbox meaning, doing a bounding box search for given bounds.  |
-| `api` | `overpass` | `overpass` or `google` can be selected. Please note: Google Places is not set to do a bbox search. |
+| `interests` | None | `interests` are offered in client. It is possible  to selecet diffrent interests. Each API (Google Places and overpassApi) allow more possible interests to search for|
+| `coordinates` | None |`coordinates` is a list of at least two coordinates is required in order to search. The client is able to pass all nodes given from routing via POST reequest|
+| `searchType` | `bbox`| `searchType` is a parameter defining what kind of search should be fulfilled. A `radius` or `bbox` search is possible. Radius means serach for each given coordinate within a certain radius. And bbox means doing a bounding box search for given bounds.|
+| `api` | `overpass` | `overpass` or `google` can be selected. Please note: Google Places is not able to do a bbox search. |
 
 **POST example with jQuery**.
 
