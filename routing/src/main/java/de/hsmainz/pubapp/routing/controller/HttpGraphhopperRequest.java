@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
  * @author Sarah
  * @since 05.12.2016
  */
-public class HttpGraphhopperRequest implements HttpAPIRequest {
+public class HttpGraphhopperRequest {
 
     //****************************************
     // CONSTANTS
@@ -46,7 +46,16 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     // PUBLIC METHODS
     //****************************************
 
-    @Override
+    /**
+     * Request routing from Graphhopper
+     *
+     * @param startPoint Start point for the route
+     * @param endPoint End point for the route
+     * @param locale Locale or language
+     * @param vehicle Measure of transportation
+     * @param pointsEncoded Should graphhoper proprietary encode the points
+     * @return The fetched GeoJsonCollection
+     */
     public GeoJsonCollection requestRouting(String startPoint,
                                             String endPoint,
                                             String locale,
@@ -61,13 +70,14 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     //****************************************
 
     /**
+     * Build the URI for the routing request
      *
-     * @param startPoint
-     * @param endPoint
-     * @param locale
-     * @param vehicle
-     * @param pointsEncoded
-     * @return
+     * @param startPoint Start point for the route
+     * @param endPoint End point for the route
+     * @param locale Locale or language
+     * @param vehicle Measure of transportation
+     * @param pointsEncoded Should graphhoper proprietary encode the points
+     * @return URI for the request
      */
     private URI buildGraphhopperUri(String startPoint,
                                     String endPoint,
@@ -99,9 +109,10 @@ public class HttpGraphhopperRequest implements HttpAPIRequest {
     }
 
     /**
+     * Do the actual HTTP GET request
      *
-     * @param uri
-     * @return
+     * @param uri URI to be requested
+     * @return The fetched GeoJsonCollection
      */
     private GeoJsonCollection doHttpGet(URI uri) {
 
