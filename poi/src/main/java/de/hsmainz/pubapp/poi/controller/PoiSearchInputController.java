@@ -70,40 +70,45 @@ public class PoiSearchInputController {
 		List<ResultPoi> allPois = new ArrayList<>();
 		Set<ResultPoi> foundPois = new HashSet<>();
 
-		if (bboxString.equals(poiSearchService.getSearchType())) {
-			Coordinate[] coords = new Coordinate[2];
-			coords[0] = criteria.getCoordinates().get(0);
-			coords[1] = criteria.getCoordinates().get(1);
+		try {
+			if (bboxString.equals(poiSearchService.getSearchType())) {
+				Coordinate[] coords = new Coordinate[2];
+				coords[0] = criteria.getCoordinates().get(0);
+				coords[1] = criteria.getCoordinates().get(1);
 
-			for (String currentInterest : criteria.getInterests()) {
-				Set<ResultPoi> poisForBBox = poiSearchService.getPoisWithinBBox(currentInterest, coords);
-				foundPois.addAll(poisForBBox);
-			}
-
-		} else if (radiusString.equals(poiSearchService.getSearchType())) {
-			int elementsToConsider = defineNumberOfNodesNeeded(criteria);
-
-			for (int i = 0; i <= criteria.getCoordinates().size(); i += elementsToConsider) {
-				Coordinate currentCoordinate = criteria.getCoordinates().get(i);
 				for (String currentInterest : criteria.getInterests()) {
-					Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
-							currentCoordinate, Integer.valueOf(radius));
-					foundPois.addAll(poisForNode);
+					Set<ResultPoi> poisForBBox = poiSearchService.getPoisWithinBBox(currentInterest, coords);
+					foundPois.addAll(poisForBBox);
 				}
-			}
 
-			// Always consider area at the end of the route and check if picked
-			// coordinate is not null
-			if (criteria.getCoordinates().size() > 20
-					&& criteria.getCoordinates().get(criteria.getCoordinates().size() - 10) != null) {
-				for (String currentInterest : criteria.getInterests()) {
-					Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
-							criteria.getCoordinates().get(criteria.getCoordinates().size() - 10),
-							Integer.valueOf(radius));
-					foundPois.addAll(poisForNode);
+			} else if (radiusString.equals(poiSearchService.getSearchType())) {
+				int elementsToConsider = defineNumberOfNodesNeeded(criteria);
+
+				for (int i = 0; i <= criteria.getCoordinates().size(); i += elementsToConsider) {
+					Coordinate currentCoordinate = criteria.getCoordinates().get(i);
+					for (String currentInterest : criteria.getInterests()) {
+						Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
+								currentCoordinate, Integer.valueOf(radius));
+						foundPois.addAll(poisForNode);
+					}
 				}
-			}
 
+				// Always consider area at the end of the route and check if
+				// picked
+				// coordinate is not null
+				if (criteria.getCoordinates().size() > 20
+						&& criteria.getCoordinates().get(criteria.getCoordinates().size() - 10) != null) {
+					for (String currentInterest : criteria.getInterests()) {
+						Set<ResultPoi> poisForNode = poiSearchService.getPoisWithinRadius(currentInterest,
+								criteria.getCoordinates().get(criteria.getCoordinates().size() - 10),
+								Integer.valueOf(radius));
+						foundPois.addAll(poisForNode);
+					}
+				}
+
+			}
+		} catch (NullPointerException e) {
+			logger.error("Something went wrong while requesting APIs" + e);
 		}
 		allPois.addAll(foundPois);
 		if (logger.isDebugEnabled()) {
