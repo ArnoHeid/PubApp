@@ -138,8 +138,8 @@ geocoder = function() {
 	}
 	else {
 	place = document.getElementById("search_button").value;	
-	document.getElementById("startpunkt_button").value = null;				/* Sets the textvalue to null */
-	document.getElementById("endpunkt_button").value = null;				/*	 Sets the textvalue to null */
+	//document.getElementById("startpunkt_button").value = null;				/* Sets the textvalue to null */
+	//document.getElementById("endpunkt_button").value = null;				/*	 Sets the textvalue to null */
 	$.post({																/* First Ajaxquery with GET */
     dataType: 'jsonp',
     url: api_geocoder,
@@ -148,11 +148,20 @@ geocoder = function() {
     xhrFields: { withCredentials: true },
 	success: 
 	function (data) {
-	tmpStart = data.features[0].geometry.coordinates[1] + ',' + data.features[0].geometry.coordinates[0];
-	startclicklat = data.features[0].geometry.coordinates[1];
-	startclicklng = data.features[0].geometry.coordinates[0];
-	document.getElementById("startpunkt_button").value = data.features[0].geometry.coordinates[1] + ',' + data.features[0].geometry.coordinates[0];
-	i = i + 1;
+		if(i==0){
+				tmpStart = data.features[0].geometry.coordinates[1] + ',' + data.features[0].geometry.coordinates[0];
+				startclicklat = data.features[0].geometry.coordinates[1];
+				startclicklng = data.features[0].geometry.coordinates[0];
+				document.getElementById("startpunkt_button").value = data.features[0].geometry.coordinates[1] + ',' + data.features[0].geometry.coordinates[0];
+				i = i + 1;				
+				}
+			else{
+				tmpEnde = data.features[0].geometry.coordinates[1] + ',' + data.features[0].geometry.coordinates[0];
+				endclicklat = data.features[0].geometry.coordinates[1];
+				endclicklng = data.features[0].geometry.coordinates[0];
+				document.getElementById("endpunkt_button").value = data.features[0].geometry.coordinates[1] + ',' + data.features[0].geometry.coordinates[0];
+				i = 0;	
+			}
 	GEOJSON = L.geoJSON(data, {
 		onEachFeature: getCoords
 	}).addTo(mymap);
@@ -192,6 +201,7 @@ routing = function() {
     xhrFields: { withCredentials: true },
 	success: 
 	function (data) {																	/* Creates a GEOJSON from the resulting Data for the later use in the POI Function */
+		postPOIstring = '';
 		for (a = 0; a < data.features[0].geometry.coordinates.length; a++) {			
 			for (b = 0; b <= 1; b++) {
 				if (b == 0) {
