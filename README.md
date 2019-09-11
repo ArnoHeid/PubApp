@@ -148,7 +148,7 @@ var api_poi = "your poi adress";
 ## Authors
 
 * **Arno** - *geocoder* - [ArnoHeid](https://github.com/ArnoHeid)
-* **Carolin** - *poi* - [carolinrottmann](https://github.com/carolinrottmann)
+* **Carolin** - *poi* - [crottmn](https://github.com/crottm)
 * **Lorenz** - *client* - [Lorenzgrauf](https://github.com/Lorenzgrauf)
 * **Sarah** - *routing* - [SarahKoziol](https://github.com/SarahKoziol)
 
